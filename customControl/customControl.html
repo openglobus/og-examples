@@ -23,17 +23,20 @@
 <body>
     <div id="globus" style="width:100%;height:100%"></div>
     <script>
-        //Define custom control class
-        var CustomControl = function (options) {
-            og.inheritance.base(this, options);
 
-            function parseLonLat(val) {
+        //Define custom control class
+        class CustomControl extends og.Control {
+            constructor(options) {
+                super(options);
+            }
+
+            static parseLonLat(val) {
                 var parts = val.match(/([+-]?\d+\.\d+).+?([+-]?\d+\.\d+)/);
                 if (parts) return new og.LonLat(parts[2], parts[1]);
                 return new og.LonLat();
-            };
+            }
 
-            function getUrlVars() {
+            static getUrlVars() {
                 var vars = {};
                 var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
                     function (m, key, value) {
@@ -42,7 +45,7 @@
                 return vars;
             }
 
-            this.onadd = function () {
+            onadd() {
                 var lonlatEl = document.createElement("input");
                 lonlatEl.type = "text";
                 lonlatEl.placeholder = "Enter coordinates";
@@ -50,26 +53,26 @@
                 lonlatEl.addEventListener("keyup", function (event) {
                     event.preventDefault();
                     if (event.keyCode == 13) {
-                        that.planet.flyLonLat(parseLonLat(this.value));
+                        that.planet.flyLonLat(CustomControl.parseLonLat(this.value));
                     }
                 });
 
                 this.renderer.div.appendChild(lonlatEl);
-            };
+            }
 
-            this.oninit = function () {
+            oninit() {
                 var params = document.URL.split('?');
                 if (params[1]) {
-                    var urlVars = getUrlVars(params[1]);
+                    var urlVars = CustomControl.getUrlVars(params[1]);
                     var e = urlVars.e.split(','),
                         f = urlVars.f.split(','),
                         u = urlVars.u.split(',');
 
-                    e = new og.math.Vector3(parseFloat(e[0]), parseFloat(e[1]), parseFloat(e[2]));
-                    f = new og.math.Vector3(parseFloat(f[0]), parseFloat(f[1]), parseFloat(f[2]));
-                    u = new og.math.Vector3(parseFloat(u[0]), parseFloat(u[1]), parseFloat(u[2]));
+                    e = new og.Vec3(parseFloat(e[0]), parseFloat(e[1]), parseFloat(e[2]));
+                    f = new og.Vec3(parseFloat(f[0]), parseFloat(f[1]), parseFloat(f[2]));
+                    u = new og.Vec3(parseFloat(u[0]), parseFloat(u[1]), parseFloat(u[2]));
 
-                    globus.planet.camera.set(e, e.sub(f), u);
+                    globus.planet.camera.set(e, e.add(f), u);
                     globus.planet.camera.update();
                 }
 
@@ -80,12 +83,10 @@
                         "&u=" + c.getUp().x.toFixed(5) + "," + c.getUp().y.toFixed(5) + "," + c.getUp().z.toFixed(5);
                     history.replaceState("", "", splits[0] + "?" + cameraStr);
                 });
-            };
+            }
         };
 
-        og.inheritance.extend(CustomControl, og.control.BaseControl);
-
-        var osm = new og.layer.XYZ("OpenStreetMap", {
+        let osm = new og.layer.XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
             shininess: 20,
             diffuse: [0.89, 0.9, 0.83],
@@ -95,10 +96,10 @@
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        globus = new og.Globus({
+        let globus = new og.Globe({
             "target": "globus",
             "name": "Earth",
-            "terrain": new og.terrainProvider.TerrainProvider("OpenGlobus"),
+            "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm]
         });
 

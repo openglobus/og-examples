@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,11 +31,15 @@
     <div class="clocksContainer">
         <div class="clockDiv">
             <table>
-                <caption><b>Default Clock</b></caption>
+                <caption>
+                    <b>Default Clock</b>
+                </caption>
                 <tr>
                     <td id="dateDef"></td>
                     <td id="timeDef"></td>
-                    <td><input type="number" value="18200.0" id="multDef" style="width:80px;" /></td>
+                    <td>
+                        <input type="number" value="18200.0" id="multDef" style="width:80px;" />
+                    </td>
                 </tr>
             </table>
         </div>
@@ -77,7 +82,7 @@
             { 'utc': og.jd.DateToUTC(new Date(2015, 0, 5)), 'lonlat': [0, 0] }
         ];
 
-        pointLayer = new og.layer.Vector("pointLayer", {
+        var pointLayer = new og.layer.Vector("pointLayer", {
             'groundAlign': true,
             'entities': [marker]
         });
@@ -92,10 +97,10 @@
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        globus = new og.Globus({
+        var globus = new og.Globe({
             "target": "globus",
             "name": "Earth",
-            "terrain": new og.terrainProvider.TerrainProvider("OpenGlobus"),
+            "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm, pointLayer]
         });
 
@@ -156,4 +161,5 @@
 
     </script>
 </body>
+
 </html>
