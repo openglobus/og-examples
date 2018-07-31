@@ -84,6 +84,22 @@
 
         globe.planet.viewExtentArr([8.08, 46.72, 8.31, 46.75]);
 
+        globe.renderer.events.on("lclick", function (e) {
+
+            var ll = globe.planet.getLonLatFromPixelTerrain(e, true);
+
+            pointLayer.add(new og.Entity({
+                'name': 'New Marker',
+                'lonlat': ll,
+                'billboard': {
+                    'src': 'marker.png',
+                    'size': [29, 48],
+                    'offset': [0, 24]
+                }
+            }));
+
+        });
+
     </script>
 </body>
 
