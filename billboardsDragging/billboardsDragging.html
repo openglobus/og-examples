@@ -100,6 +100,10 @@
 
         });
 
+        pointLayer.events.on("rclick", function (e) {
+            e.pickingObject.remove();
+        });
+
     </script>
 </body>
 
