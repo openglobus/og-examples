@@ -38,10 +38,10 @@
                 this.indicesBuffer = null;
             }
 
-            initialization() {
+            init() {
 
                 //Initialize shader program
-                this.renderer.handler.addShaderProgram(new og.webgl.ShaderProgram("myShader", {
+                this.renderer.handler.addProgram(new og.webgl.Program("myShader", {
                     'uniforms': {
                         'uMVMatrix': 'mat4',
                         'uPMatrix': 'mat4',
@@ -184,7 +184,7 @@
             frame() {
 
                 var r = this.renderer;
-                var sh = r.handler.shaderPrograms.myShader;
+                var sh = r.handler.programs.myShader;
                 var p = sh._program;
                 var gl = r.handler.gl;
 
@@ -226,7 +226,7 @@
 
         var renderer = new og.Renderer(handler);
         renderer.initialize();
-        renderer.addRenderNodes([new MyScene(), new og.scene.Axes()]);
+        renderer.addNodes([new MyScene(), new og.scene.Axes()]);
         renderer.addControls([
             new og.control.SimpleNavigation({ 'speed': 0.3 }),
             new og.control.ShowFps()

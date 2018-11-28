@@ -159,10 +159,10 @@
         frameBuffer.init();
 
         //Bind framebuffer texture to the geoTexture2d layer.
-        geoTex.bindTexture(frameBuffer.texture);
+        geoTex.bindTexture(frameBuffer.textures[0]);
 
         //Attach vector field shader.
-        handler.addShaderProgram(new og.webgl.ShaderProgram("vectorMap", {
+        handler.addProgram(new og.webgl.Program("vectorMap", {
             uniforms: {
                 'iGlobalTime': 'float',
                 'iResolution': 'vec2'
@@ -186,11 +186,12 @@
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             //Actually a better way to replace this function to native gl.
-            r.handler.shaderPrograms.vectorMap.set({
+            r.handler.programs.vectorMap.set({
                 'aPos': vertBuffer,
                 'iGlobalTime': animCounter += 0.03,
                 'iResolution': [1024, 1024]
-            }).drawArray(r.handler.gl.TRIANGLE_STRIP, vertBuffer.numItems);
+            })
+                .drawArrays(r.handler.gl.TRIANGLE_STRIP, vertBuffer.numItems);
 
             frameBuffer.deactivate();
         });
