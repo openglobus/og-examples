@@ -3,8 +3,8 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="http://www.openglobus.org/og.css" type="text/css" />
-    <script src="http://www.openglobus.org/og.js"></script>
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
+    <script src="//www.openglobus.org/og.js"></script>
 </head>
 
 <body>
@@ -126,7 +126,7 @@
 
         let osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
-            url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
@@ -138,7 +138,7 @@
             frameWidth: 1024,
             frameHeight: 1024,
             opacity: 1.0,
-            attribution: '<a href="https://www.shadertoy.com/view/4s23DG">2D vector field visualization</a> <a href="http://casual-effects.com">by Morgan McGuire</a>'
+            attribution: '<a href="//www.shadertoy.com/view/4s23DG">2D vector field visualization</a> <a href="//casual-effects.com">by Morgan McGuire</a>'
         });
 
         let globus = new og.Globe({
