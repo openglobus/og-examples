@@ -60,7 +60,7 @@
         ).update();
 
         //Rotate points around the center
-        let center = pointLayer.getExtent().getCenter();
+        let center = new og.LonLat(8.5, 46.3);
         let angle = 0.1 * og.math.RADIANS;
         globus.renderer.events.on("draw", function () {
             pointLayer.each(function (e) {

@@ -52,13 +52,11 @@
 
     carrots.events.on("mouseenter", function (e) {
         let b = e.pickingObject.billboard;
-        b.setScale(3);
         b.setColor(1, 1, 1);
     });
 
     carrots.events.on("mouseleave", function (e) {
         let b = e.pickingObject.billboard;
-        b.setScale(1);
         b.setColorHTML(e.pickingObject.properties.color);
     });
 
