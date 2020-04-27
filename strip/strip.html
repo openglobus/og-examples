@@ -1,0 +1,80 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
+    <script src="//www.openglobus.org/og.js"></script>
+</head>
+
+<body>
+    <div id="globus" style="width:100%;height:100%"></div>
+    <script type="module">
+        'use strict';
+
+        var osm = new og.layer.XYZ("OpenStreetMap", {
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        var globe = new og.Globe({
+            "target": "globus",
+            "name": "Earth",
+            "layers": [osm]
+        });
+
+
+        let path = [];
+
+        let ell = globe.planet.ellipsoid;
+
+        function getLeaf(startPoi, endPoi, maxHeight = 8000000, n = 70) {
+            let path = [];
+            for (let i = 0; i <= n; i++) {
+                let p0 = og.Ellipsoid.getIntermediatePointOnGreatCircle(startPoi, endPoi, i / n);
+                let height = Math.sin(i / n * Math.PI) * maxHeight;
+                let p1 = new og.LonLat(p0.lon, p0.lat, height);
+                let pBottom = ell.lonLatToCartesian(p0),
+                    pTop = ell.lonLatToCartesian(p1);
+                path.push([pBottom, pTop]);
+            }
+            return path;
+        }
+
+
+        let rainbow = [
+            "rgba(255, 0, 0, 0.7)",
+            "rgba(255, 127, 0, 0.7)",
+            "rgba(255, 255, 0, 0.7)",
+            "rgba(0, 255, 0, 0.7)",
+            "rgba(0, 0, 255, 0.7)",
+            "rgba(46, 43, 95, 0.7)",
+            "rgba(139, 0, 255, 0.7)"
+        ];
+
+        let leaves = [];
+
+        let numLeaves = rainbow.length,
+            amp = 360 / numLeaves;
+
+        for (let i = 0; i < numLeaves; i++) {
+            leaves.push({
+                'strip': {
+                    'path': getLeaf(new og.LonLat(i * amp, 0, 0), new og.LonLat(i * amp + amp, 0, 0)),
+                    'color': rainbow[i]
+                }
+            });
+        }
+
+        var collection = new og.layer.Vector("Collection", {
+            'entities': leaves
+        });
+
+        globe.planet.addLayer(collection);
+
+    </script>
+</body>
+
+</html>
