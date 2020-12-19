@@ -25,7 +25,8 @@
 
         const pointLayer = new og.layer.Vector("points", {
             'relativeToGround': true,
-            'visibility': true
+            'visibility': true,
+	    'polygonOffsetUnits': -10000
         });
 
         const globe = new og.Globe({
@@ -65,7 +66,8 @@
                 'pathLonLat': pathLonLat,
                 'pathColors': pathColors,
                 'thickness': 3.3,
-                'isClosed': true
+                'isClosed': true,
+		'altitude': 3
             }
         });
 
