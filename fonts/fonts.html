@@ -66,7 +66,7 @@
                                 'size': size
                             }
                         }), new og.Entity({
-                            'cartesian': new Vec3(5, 40, 0),
+                            'cartesian': new og.Vec3(5, 40, 0),
                             'label': {
                                 'text': "Notable-Regular",
                                 'color': "black",
@@ -146,7 +146,6 @@
 
         renderer.addNodes([new og.scene.Axes(), myScene]);
 
-        window.Vec3 = Vec3;
         window.renderer = renderer;
 
     </script>
