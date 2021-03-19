@@ -26,7 +26,9 @@
         let handler = new og.Handler("frame", { 'autoActivate': true });
         let renderer = new og.Renderer(handler, {
             'backgroundColor': new og.Vec3(0.5, 0.5, 0.5),
-            'controls': [new og.control.SimpleNavigation()],
+            'controls': [new og.control.SimpleNavigation({
+                name: "SimpleNav"
+            })],
             'autoActivate': true
         });
 
