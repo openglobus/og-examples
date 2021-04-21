@@ -10,11 +10,18 @@
     <div id="globus" style="width:100%;height:100%"></div>
     <script>
 
+        var osm = new og.layer.XYZ("OpenStreetMap", {
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
         var ne = new og.layer.WMS("Natural Earth", {
             visibility: true,
-            isBaseLayer: true,
-            url: '//openglobus.org/geoserver/ne/',
-            layers: 'ne:HYP_HR_SR_OB_DR',
+            isBaseLayer: false,
+            url: '//openglobus.org:8080/geoserver/',
+            layers: 'tiger-ny',
             version: '1.1.1',
             opacity: 1.0,
             specular: [0.001, 0.00046, 0.0003],
@@ -26,7 +33,8 @@
             "target": "globus",
             "name": "Earth",
             "terrain": new og.terrain.GlobusTerrain(),
-            "layers": [ne]
+            "layers": [osm, ne],
+            'viewExtent': [-74.26124, 40.67448, -73.77663, 40.78772]
         });
 
     </script>
