@@ -10,8 +10,8 @@
 <body>
     <div id="globus" style="width:100%;height:100%"></div>
     <div style="position: absolute; left:0; padding:10px;">
-        <button id="btnOSM" style="float:left; margin: 3px;">OSM</button>
-        <button id="btnMQS" style="float:left; margin: 3px;">MapQuest Sat.</button>
+        <button id="btnOSM" style="float:left; margin: 3px;">OSM-1</button>
+        <button id="btnMQS" style="float:left; margin: 3px;">OSM-2</button>
     </div>
     <script>
 
@@ -23,7 +23,7 @@
             sat.setVisibility(true);
         };
 
-        let osm = new og.layer.XYZ("OpenStreetMap", {
+        let osm1 = new og.layer.XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
             shininess: 20,
             diffuse: [0.89, 0.9, 0.83],
@@ -33,22 +33,18 @@
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        let sat = new og.layer.XYZ("MapQuest Satellite", {
-            shininess: 20,
-            specular: [0.00048, 0.00037, 0.00035],
-            diffuse: [0.88, 0.85, 0.8],
-            ambient: [0.15, 0.1, 0.23],
+        let osm2 = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
-            url: "//api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWdldmxpY2hzY2FuZXgiLCJhIjoiY2pwcGdsaXlnMDQzdDQybXhsOWZlbXBvdSJ9.fR2YE-ehJA4iajaJBAPKvw",
-            visibility: false,
-            attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"'
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
         let globus = new og.Globe({
             "target": "globus",
             "name": "Earth",
             "terrain": new og.terrain.GlobusTerrain(),
-            "layers": [osm, sat]
+            "layers": [osm1, osm2]
         });
     </script>
 </body>
