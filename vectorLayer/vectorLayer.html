@@ -28,6 +28,8 @@
             "layers": [osm]
         });
 
+window.globus = globus;
+
         fetch("./countries.json")
             .then(r => {
                 return r.json();
