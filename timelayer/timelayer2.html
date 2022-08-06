@@ -1,0 +1,113 @@
+﻿<html>
+
+<head>
+    <title>Attribution Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css"/>
+    <script src="//www.openglobus.org/og.umd.js"></script>
+    <style>
+        .pl-pane {
+            position: absolute;
+            top: 35px;
+            left: 40px
+        }
+
+        .pl-button {
+            float: left;
+            margin: 5px;
+            padding: 5px;
+            width: 70px;
+        }
+
+        .pl-slider {
+            float: left;
+            margin-top: 11px;
+            width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="earth" style="width:100%;height:100%"></div>
+<div class="pl-pane">
+    <button class="pl-button pl-button__play">PLAY</button>
+    <button class="pl-button pl-button__stop">STOP</button>
+    <input type="range" min="0" max="100" value="0" class="pl-slider">
+</div>
+<script>
+    var globus = new Globe({
+        target: "earth",
+        name: "Earth",
+        terrain: new EmptyTerrain(),
+        layers: [],
+        useNightTexture: false,
+        useSpecularTexture: false
+    });
+
+    function getYearsLayers(yearsArr) {
+        let res = [];
+        for (let i = 0; i < yearsArr.length; i++) {
+            let y = yearsArr[i].toString();
+            let img = new GeoImage(`${y} million years}`, {
+                src: `./scotese/${y}.jpg`,
+                corners: [[-180, 90], [180, 90], [180, -90], [-180, -90]],
+                isBaseLayer: false,
+                attribution: '',
+                fullExtent: true
+            });
+            res.push(img);
+        }
+        return res;
+    }
+
+    let yearsAgo = [0, 20, 35, 50, 66, 90, 105, 120, 150, 170, 200, 220, 240, 260, 280, 300, 340, 370, 400, 430, 450, 470, 500, 540, 600, 750];
+    let timeLayers = getYearsLayers(yearsAgo);
+
+    let la = new LayerAnimation({
+        layers: timeLayers,
+        repeat: true
+    });
+
+    globus.planet.addControl(new LayerSwitcher());
+    globus.planet.addControl(la);
+
+    let $slider = document.querySelector(".pl-slider"),
+        $play = document.querySelector(".pl-button__play");
+
+    $play.addEventListener("click", (e) => {
+        if (e.target.innerText === "PLAY") {
+            e.target.innerText = "PAUSE";
+            la.play();
+        } else {
+            e.target.innerText = "PLAY";
+            la.pause();
+        }
+    });
+
+    document.querySelector(".pl-button__stop").addEventListener("click", () => {
+        document.querySelector(".pl-button__play").innerText = "PLAY";
+        la.stop();
+    });
+
+    $slider.addEventListener("input", (e) => {
+        $play.innerText = "PLAY";
+        let val = Number(e.target.value);
+        let index = Math.round(val * la.layers.length / 100);
+        la.pause();
+        la.setCurrentIndex(index, true, true);
+    });
+
+    la.events.on("change", (currIndex) => {
+        $slider.value = Math.round(currIndex * 100 / la.layers.length);
+    });
+
+    globus.sun.deactivate();
+
+    window.la = la;
+
+    window.globus = globus;
+
+</script>
+</body>
+
+</html>
