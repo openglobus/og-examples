@@ -35,7 +35,7 @@
     <input type="range" min="0" max="100" value="0" class="pl-slider">
 </div>
 <script>
-    let osm1 = new XYZ("osm-1", {
+    let osm1 = new og.layer.XYZ("osm-1", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         maxNativeZoom: 19,
@@ -43,15 +43,15 @@
         isSRGB: false,
     });
 
-    var globus = new Globe({
+    let globus = new og.Globe({
         target: "earth",
         name: "Earth",
-        terrain: new EmptyTerrain(),
+        terrain: new og.terrain.EmptyTerrain(),
         layers: [osm1],
     });
 
     function createCanvasTilesLayer(id) {
-        return new CanvasTiles(`cnv-${id}`, {
+        return new og.layer.CanvasTiles(`cnv-${id}`, {
             isBaseLayer: false,
             drawTile: function (material, applyCanvas) {
 
@@ -95,12 +95,12 @@
 
     let timeLayers = getCanvasLayers(10);
 
-    let la = new LayerAnimation({
+    let la = new og.control.LayerAnimation({
         layers: timeLayers,
         repeat: true
     });
 
-    globus.planet.addControl(new LayerSwitcher());
+    globus.planet.addControl(new og.control.LayerSwitcher());
     globus.planet.addControl(la);
 
     let $slider = document.querySelector(".pl-slider"),

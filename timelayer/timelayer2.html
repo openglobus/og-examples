@@ -35,10 +35,10 @@
     <input type="range" min="0" max="100" value="0" class="pl-slider">
 </div>
 <script>
-    var globus = new Globe({
+    let globus = new og.Globe({
         target: "earth",
         name: "Earth",
-        terrain: new EmptyTerrain(),
+        terrain: new og.terrain.EmptyTerrain(),
         layers: [],
         useNightTexture: false,
         useSpecularTexture: false
@@ -48,7 +48,7 @@
         let res = [];
         for (let i = 0; i < yearsArr.length; i++) {
             let y = yearsArr[i].toString();
-            let img = new GeoImage(`${y} million years}`, {
+            let img = new og.layer.GeoImage(`${y} million years}`, {
                 src: `./scotese/${y}.jpg`,
                 corners: [[-180, 90], [180, 90], [180, -90], [-180, -90]],
                 isBaseLayer: false,
@@ -63,12 +63,12 @@
     let yearsAgo = [0, 20, 35, 50, 66, 90, 105, 120, 150, 170, 200, 220, 240, 260, 280, 300, 340, 370, 400, 430, 450, 470, 500, 540, 600, 750];
     let timeLayers = getYearsLayers(yearsAgo);
 
-    let la = new LayerAnimation({
+    let la = new og.control.LayerAnimation({
         layers: timeLayers,
         repeat: true
     });
 
-    globus.planet.addControl(new LayerSwitcher());
+    globus.planet.addControl(new og.control.LayerSwitcher());
     globus.planet.addControl(la);
 
     let $slider = document.querySelector(".pl-slider"),
