@@ -26,10 +26,6 @@
         });
 
         var sat2 = new og.layer.XYZ("MapQuest Satellite With Labels", {
-            shininess: 20,
-            specular: [0.00048, 0.00037, 0.00035],
-            diffuse: [0.88, 0.85, 0.8],
-            ambient: [0.15, 0.1, 0.23],
             isBaseLayer: true,
             url: "//api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWdldmxpY2hzY2FuZXgiLCJhIjoiY2pwcGdsaXlnMDQzdDQybXhsOWZlbXBvdSJ9.fR2YE-ehJA4iajaJBAPKvw",
             visibility: false,
@@ -87,11 +83,10 @@
                 'lonlat': [14, 25],
                 'label': {
                     'text': "Green Area",
-                    'outline': 0.5,
-                    'outlineColor': "rgba(0,0,0,0.55)",
+                    'outline': 0.2,
+                    'outlineColor': "rgba(0,0,0,0.25)",
                     'size': 43,
                     'color': "#00ff00",
-                    'face': "verdana",
                     'align': "center"
                 }
             }, {
@@ -109,10 +104,9 @@
                 'label': {
                     'text': "Red Area",
                     'outline': 0.2,
-                    'outlineColor': "rgba(0,0,0,0.45)",
+                    'outlineColor': "rgba(0,0,0,0.25)",
                     'size': 23,
                     'color': "#ff0000",
-                    'face': "verdana",
                     'align': "center"
                 }
             }]
