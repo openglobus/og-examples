@@ -12,7 +12,7 @@ function main() {
     //coordinates of Bochum in lonlat
     let lonlatBochum = new og.LonLat(7, 51.5, 0);
     //coordinate above Bochum to allow a upwards direction of ray
-    let lonlatBochumAir = new og.LonLat(7, 51.5, 1000);
+    let lonlatBochumAir = new og.LonLat(7, 51.5, 2000000);
     //coordinates of Bochum in Cartesian
     let cartBochum = ellipsoid.lonLatToCartesian(lonlatBochum);
     let cartBochumAir = ellipsoid.lonLatToCartesian(lonlatBochumAir);
@@ -21,7 +21,6 @@ function main() {
         'ray': {
             'startPosition': cartBochum,
             'endPosition': cartBochumAir,
-            'length': 2000000,
             'startColor': "blue",
             'endColor': "green",
             'thickness': 5
@@ -31,7 +30,7 @@ function main() {
     //coordinates of Moscow in lonlat
     let lonlatMoscow = new og.LonLat(37.6, 55.75, 0);
     //coordinate above Moscow to allow a upwards direction of ray
-    let lonlatMoscowAir = new og.LonLat(37.6, 55.75, 1000);
+    let lonlatMoscowAir = new og.LonLat(37.6, 55.75, 1000000);
     //coordinates of Moscow in Cartesian
     let cartMoscow = ellipsoid.lonLatToCartesian(lonlatMoscow);
     let cartMoscowAir = ellipsoid.lonLatToCartesian(lonlatMoscowAir);
@@ -40,7 +39,6 @@ function main() {
         'ray': {
             'startPosition': cartMoscow,
             'endPosition': cartMoscowAir,
-            'length': 1000000,
             'startColor': "red",
             'endColor': "green",
             'thickness': 10
