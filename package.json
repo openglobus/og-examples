@@ -1,0 +1,16 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "OpenGlobus Examples",
+  "main": "index.js",
+  "homepage": "https://openglobus.github.io/examples",
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d ."
+  },
+  "author": "",
+  "license": "ISC"
+}

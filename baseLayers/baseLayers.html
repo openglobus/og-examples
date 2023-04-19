@@ -1,0 +1,49 @@
+﻿<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css"/>
+    <script src="//www.openglobus.org/og.umd.js"></script>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<div style="position: absolute; left:0; padding:10px;">
+    <button id="btnOSM" style="float:left; margin: 3px;">OSM</button>
+    <button id="btnMQS" style="float:left; margin: 3px;">SAT</button>
+</div>
+<script>
+
+    document.getElementById("btnOSM").onclick = function () {
+        osm.setVisibility(true);
+    };
+
+    document.getElementById("btnMQS").onclick = function () {
+        sat.setVisibility(true);
+    };
+
+    let osm = new og.layer.XYZ("OpenStreetMap", {
+        isBaseLayer: true,
+        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        visibility: true,
+        attribution: 'Data @ OpenStreetMap contributors, ODbL'
+    });
+
+    let sat = new og.layer.XYZ("MapBox Satellite", {
+        isBaseLayer: true,
+        url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWdldmxpY2hzY2FuZXgiLCJhIjoiY2pwcGdsaXlnMDQzdDQybXhsOWZlbXBvdSJ9.fR2YE-ehJA4iajaJBAPKvw",
+        visibility: false,
+        attribution: `Mapbox Sattelite`
+    });
+
+    let globus = new og.Globe({
+        "target": "globus",
+        "name": "Earth",
+        "terrain": new og.terrain.GlobusTerrain(),
+        "layers": [osm, sat]
+    });
+</script>
+</body>
+
+</html>

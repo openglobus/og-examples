@@ -1,0 +1,83 @@
+﻿<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
+    <script src="//www.openglobus.org/og.umd.js"></script>
+</head>
+
+<body>
+    <div id="globus" style="width:100%;height:100%"></div>
+</body>
+<script>
+    function rnd(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    let entities = [],
+        colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'darkblue', 'purple']
+
+    for (let i = 0; i < 5000; i++) {
+        entities.push(new og.Entity({
+            'name': 'sat-' + i,
+            'lonlat': [rnd(-180, 180), rnd(-90, 90), rnd(100000, 5000000)],
+            'billboard': {
+                'src': './carrot.png',
+                'size': [24, 24],
+                'color': colors[i % 7],
+                'rotation': rnd(0, 360)
+            },
+            'properties': {
+                'bearing': rnd(0, 360),
+                'color': colors[i % 7]
+            }
+        }));
+    }
+
+    let carrots = new og.EntityCollection({
+        'entities': entities,
+        'scaleByDistance': [6000000, 24000000, 10000000000]
+    });
+
+    carrots.events.on("draw", function (c) {
+        c.each(function (e) {
+            let c = e.getLonLat();
+            let ll = globus.planet.ellipsoid.getBearingDestination(c, e.properties.bearing, 2000);
+            e.properties.bearing = og.Ellipsoid.getFinalBearing(c, ll);
+            e.setLonLat(new og.LonLat(ll.lon, ll.lat, c.height));
+            e.billboard.setRotation(e.billboard.getRotation() + 0.01);
+        });
+    });
+
+    carrots.events.on("mouseenter", function (e) {
+        let b = e.pickingObject.billboard;
+        b.setColor(1, 1, 1);
+    });
+
+    carrots.events.on("mouseleave", function (e) {
+        let b = e.pickingObject.billboard;
+        b.setColorHTML(e.pickingObject.properties.color);
+    });
+
+    let sat = new og.layer.XYZ("MapQuest Satellite", {
+        isBaseLayer: true,
+        url: "//tileproxy.cloud.mapquest.com/tiles/1.0.0/sat/{z}/{x}/{y}.png",
+        visibility: true,
+        attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"'
+    });
+
+
+    let globus = new og.Globe({
+        "target": "globus",
+        "name": "Earth",
+        "terrain": new og.terrain.GlobusTerrain(),
+        "layers": [sat]
+    });
+
+    carrots.addTo(globus.planet);
+
+    globus.planet.flyLonLat(new og.LonLat(54.5, 43.5, 20108312));
+</script>
+
+</html>

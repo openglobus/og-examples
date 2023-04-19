@@ -1,0 +1,110 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
+    <script src="//www.openglobus.org/og.umd.js"></script>
+</head>
+
+<body>
+    <div id="earth" style="width:100%;height:100%"></div>
+    <script>
+
+        let pointLayer = new og.layer.Vector("points", {
+            'clampToGround': true,
+            'entities': [{
+                'name': 'Blue Marker',
+                'lonlat': [8.19, 46.73],
+                'billboard': {
+                    'src': 'marker.png',
+                    'size': [29, 48],
+                    'offset': [0, 24]
+                }
+            }, {
+                'name': 'label',
+                'lonlat': [8.25, 46.74],
+                'label': {
+                    'text': 'Touch me',
+                    'size': [35],
+                    'outlineColor': "rgba(0,0,0,.5)"
+                }
+            }],
+            'async': false
+        });
+
+        let pickingObject = null;
+        let startClick = new og.Vec2(),
+            startPos;
+
+        pointLayer.events.on("mouseenter", function (e) {
+            e.renderer.handler.canvas.style.cursor = "pointer";
+        });
+
+        pointLayer.events.on("mouseleave", function (e) {
+            e.renderer.handler.canvas.style.cursor = "default";
+        });
+
+        pointLayer.events.on("ldown", function (e) {
+            e.renderer.controls.mouseNavigation.deactivate();
+            startClick.set(e.x, e.y);
+            pickingObject = e.pickingObject;
+            startPos = e.pickingObject.layer.planet.getPixelFromCartesian(pickingObject.getCartesian());
+        });
+
+        pointLayer.events.on("lup", function (e) {
+            e.renderer.controls.mouseNavigation.activate();
+            pickingObject = null;
+        });
+
+        let osm = new og.layer.XYZ("OSM", {
+            'isBaseLayer': true,
+            'url': "//b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            'visibility': true,
+            'attribution': 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        let globe = new og.Globe({
+            "target": "earth",
+            "name": "Earth",
+            "terrain": new og.terrain.GlobusTerrain(),
+            "layers": [osm, pointLayer]
+        });
+
+        globe.planet.renderer.events.on("mousemove", function (e) {
+            if (pickingObject) {
+                var d = new og.Vec2(e.x, e.y).sub(startClick);
+                var endPos = startPos.add(d);
+                var coords = this.getCartesianFromPixelTerrain(endPos);
+                if (coords) {
+                    pickingObject.setCartesian3v(coords);
+                }
+            }
+        }, globe.planet);
+
+        globe.planet.viewExtentArr([8.08, 46.72, 8.31, 46.75]);
+
+        globe.renderer.events.on("lclick", function (e) {
+
+            var ll = globe.planet.getLonLatFromPixelTerrain(e, true);
+
+            pointLayer.add(new og.Entity({
+                'name': 'New Marker',
+                'lonlat': ll,
+                'billboard': {
+                    'src': 'marker.png',
+                    'size': [29, 48],
+                    'offset': [0, 24]
+                }
+            }));
+
+        });
+
+        pointLayer.events.on("rclick", function (e) {
+            e.pickingObject.remove();
+        });
+
+    </script>
+</body>
+
+</html>

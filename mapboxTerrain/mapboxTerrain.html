@@ -1,0 +1,31 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
+    <script src="//www.openglobus.org/og.umd.js"></script>
+</head>
+
+<body style="margin:0;">
+    <div id="globus" style="width:100%;height:100%"></div>
+    <script type="module">
+        'use strict';
+
+        let osm = new og.layer.XYZ("OpenStreetMap", {
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        let globus = new og.Globe({
+            "target": "globus",
+            "name": "Mapbox Earth",
+            "terrain": new og.terrain.MapboxTerrain(),
+            "layers": [osm]
+        });
+    </script>
+</body>
+
+</html>
