@@ -30,6 +30,6 @@ jobs:
           source-directory: .
           destination-github-username: openglobus
           destination-repository-name: openglobus.github.io
-          user-email: github-actions[bot]@users.noreply.github.com
+          user-email: pvlt.job@gmail.com
           target-branch: master
           target-directory: examples
