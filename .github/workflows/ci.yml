@@ -21,9 +21,6 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@master
-        with:
-          persist-credentials: false
-          submodules: true
 
       - name: Deploy to external repository
         uses: pavletto/github-action-push-to-another-repository@main
