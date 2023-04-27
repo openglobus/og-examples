@@ -1,0 +1,38 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          submodules: true
+
+      - name: Deploy to external repository
+        uses: pavletto/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY  }}
+        with:
+          destination-github-username: openglobus
+          destination-repository-name: openglobus.github.io
+          user-email: github-actions[bot]@users.noreply.github.com
+          target-branch: master
+          target-directory: examples
+          exclude-directories: "docs"
