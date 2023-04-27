@@ -33,4 +33,4 @@ jobs:
           user-email: github-actions[bot]@users.noreply.github.com
           target-branch: master
           target-directory: examples
-          exclude-directories: "docs"
+          exclude-directories: "examples/.git"
