@@ -32,4 +32,4 @@ jobs:
           destination-repository-name: openglobus.github.io
           user-email: pvlt.job@gmail.com
           target-branch: master
-          target-directory: examples
+          target-directory: tests
