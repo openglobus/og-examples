@@ -3,8 +3,7 @@
 <head>
     <title>Attribution Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
 </head>
 
 <body>
@@ -12,12 +11,18 @@
     <button id="viewPoint" style="position: absolute; left:10px; margin:10px;">View point</button>
     <button id="flyPoint" style="position: absolute; left:100px; margin:10px;">Fly point</button>
     <button id="viewExtent" style="position: absolute; left:210px; margin:10px;">View extent</button>
-    <script>
+    <script type="module">
         'use strict';
+
+        import { Globe } from '../../src/og/Globe.js';
+        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import { Extent } from '../../src/og/Extent.js';
+        import { LonLat } from '../../src/og/LonLat.js';
 
         document.getElementById("viewPoint").onclick = function () {
             const DIST = 2000;
-            let viewPoi = new og.LonLat(9.98464, 46.06157, 3039);
+            let viewPoi = new LonLat(9.98464, 46.06157, 3039);
             let ell = globus.planet.ellipsoid;
             globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST);
         };
@@ -26,8 +31,8 @@
 
             let ell = globus.planet.ellipsoid;
 
-            let destPos = new og.LonLat(10.13176, 46.18868, 10779);
-            let viewPoi = new og.LonLat(9.98464, 46.06157, 3039);
+            let destPos = new LonLat(10.13176, 46.18868, 10779);
+            let viewPoi = new LonLat(9.98464, 46.06157, 3039);
 
             let lookCart = ell.lonLatToCartesian(viewPoi);
             let upVec = ell.lonLatToCartesian(destPos).normalize();
@@ -37,20 +42,20 @@
         };
 
         document.getElementById("viewExtent").onclick = function () {
-            globus.planet.flyExtent(new og.Extent(new og.LonLat(9.53297, 46.02795), new og.LonLat(11.56212, 45.78692)));
+            globus.planet.flyExtent(new Extent(new LonLat(9.53297, 46.02795), new LonLat(11.56212, 45.78692)));
         };
 
-        let osm = new og.layer.XYZ("OpenStreetMap", {
+        let osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,
             url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        let globus = new og.Globe({
+        let globus = new Globe({
             "target": "globus",
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new GlobusTerrain(),
             "layers": [osm]
         });
 

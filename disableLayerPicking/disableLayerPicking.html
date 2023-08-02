@@ -3,8 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
     <style>
         #layerName {
             position: absolute;
@@ -24,17 +23,30 @@
     <script type="module">
         'use strict';
 
-        var sat = new og.layer.XYZ("MapQuest Satellite", {
+        import { Globe } from '../../src/og/Globe.js';
+        import { Layer } from '../../src/og/layer/Layer.js';
+        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import { Vector } from '../../src/og/layer/Vector.js';
+        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+
+        var sat = new XYZ("MapQuest Satellite", {
+            shininess: 20,
+            specular: [0.00048, 0.00037, 0.00035],
+            diffuse: [0.88, 0.85, 0.8],
+            ambient: [0.15, 0.1, 0.23],
             isBaseLayer: false,
             url: "//tileproxy.cloud.mapquest.com/tiles/1.0.0/sat/{z}/{x}/{y}.png",
             visibility: true,
-            attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="http://opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"',
+            attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"',
             zIndex: 0,
-            pickingEnabled: false  //property to switch off layer picking events
+            pickingEnabled: false
         });
 
-        var osm = new og.layer.XYZ("OpenStreetMap", {
+        var osm = new XYZ("OpenStreetMap", {
+            specular: [0.0003, 0.00012, 0.00001],
             extent: [[42.3, 43.21], [42.6, 43.42]],
+            shininess: 20,
+            diffuse: [0.89, 0.9, 0.83],
             isBaseLayer: false,
             url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             visibility: true,
@@ -44,20 +56,20 @@
         });
 
 
-        var vec = new og.layer.Vector("Disable picking or event handling", {
+        var vec = new Vector("Disable picking or event handling", {
             fading: true,
             'visibility': true,
             'isBaseLayer': false,
             'diffuse': [0, 0, 0],
             'ambient': [1, 1, 1],
             'zIndex': 2,
-            'pickingEnabled': false,    //property to switch off layer picking events
+            'pickingEnabled': false,
             'entities': [{
                 'geometry': {
                     'type': "Polygon",
                     'coordinates': [[[42.4, 43.3], [42.42, 43.34], [42.44, 43.35], [42.49, 43.34], [42.5, 43.302]]],
-                    'style': {
-                        'lineWidth': 8,
+                    'style':{
+                        'lineWidth': 8, 
                         'fillColor': "rgba(190, 0, 0, 0.6)",
                         'lineColor': "red"
                     }
@@ -65,10 +77,10 @@
             }]
         });
 
-        var globus = new og.Globe({
+        var globus = new Globe({
             "target": "globus",
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new GlobusTerrain(),
             "layers": [sat, osm, vec]
         });
 

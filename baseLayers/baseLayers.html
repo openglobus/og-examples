@@ -3,8 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css"/>
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -13,7 +12,11 @@
     <button id="btnOSM" style="float:left; margin: 3px;">OSM</button>
     <button id="btnMQS" style="float:left; margin: 3px;">SAT</button>
 </div>
-<script>
+<script type="module">
+
+    import {Globe} from '../../src/og/Globe.js';
+    import {GlobusTerrain} from '../../src/og/terrain/GlobusTerrain.js';
+    import {XYZ} from '../../src/og/layer/XYZ.js';
 
     document.getElementById("btnOSM").onclick = function () {
         osm.setVisibility(true);
@@ -23,24 +26,24 @@
         sat.setVisibility(true);
     };
 
-    let osm = new og.layer.XYZ("OpenStreetMap", {
+    let osm = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
         attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
 
-    let sat = new og.layer.XYZ("MapBox Satellite", {
+    let sat = new XYZ("MapBox Satellite", {
         isBaseLayer: true,
         url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWdldmxpY2hzY2FuZXgiLCJhIjoiY2pwcGdsaXlnMDQzdDQybXhsOWZlbXBvdSJ9.fR2YE-ehJA4iajaJBAPKvw",
         visibility: false,
         attribution: `Mapbox Sattelite`
     });
 
-    let globus = new og.Globe({
+    let globus = new Globe({
         "target": "globus",
         "name": "Earth",
-        "terrain": new og.terrain.GlobusTerrain(),
+        "terrain": new GlobusTerrain(),
         "layers": [osm, sat]
     });
 </script>

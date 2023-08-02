@@ -2,34 +2,15 @@
 <html>
 
 <head>
-    <title>OpenGlobus - Lighting Example</title>
+    <title>OpenStreetMap Base Layer</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <script src="./lighting.js" type="module"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
 </head>
 
 <body>
     <div id="earth" style="width:100%;height:100%"></div>
 </body>
-
-<script>
-    var osm = new og.layer.XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: "Data @ OpenStreetMap contributors, ODbL"
-    });
-
-    var globe = new og.Globe({
-        target: "earth",
-        name: "Earth",
-        terrain: new og.terrain.GlobusTerrain(),
-        layers: [osm]
-    });
-
-    globe.planet.addControl(new og.control.Lighting());
-
-    window.globe = globe;
-</script>
 
 </html>

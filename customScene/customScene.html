@@ -3,8 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
 </head>
 
 <body style="margin:0;">
@@ -15,7 +14,19 @@
         <div style="float:left; padding: 15px;">
             <input type="checkbox" id="axisScene" checked>Axis scene activity</div>
     </div>
-    <script>
+    <script type="module">
+        'use strict';
+
+        import * as math from '../../src/og/math.js';
+        import { Axes } from '../../src/og/scene/Axes.js';
+        import { RenderNode } from '../../src/og/scene/RenderNode.js';
+        import { Program } from '../../src/og/webgl/Program.js';
+        import { Handler } from '../../src/og/webgl/Handler.js';
+        import { Renderer } from '../../src/og/renderer/Renderer.js';
+        import { SimpleNavigation } from '../../src/og/control/SimpleNavigation.js';
+        import { ShowFps } from '../../src/og/control/ShowFps.js';
+        import { Vec3 } from '../../src/og/math/Vec3.js';
+        import { Mat4 } from '../../src/og/math/Mat4.js';
 
 
         document.getElementById("cubeScene").onchange = function () {
@@ -25,7 +36,7 @@
             renderer.renderNodes.Axes.setActive(this.checked);
         };
 
-        class MyScene extends og.RenderNode {
+        class MyScene extends RenderNode {
             constructor() {
                 super("MyScene");
 
@@ -41,7 +52,7 @@
             init() {
 
                 //Initialize shader program
-                this.renderer.handler.addProgram(new og.webgl.Program("myShader", {
+                this.renderer.handler.addProgram(new Program("myShader", {
                     'uniforms': {
                         'uMVMatrix': 'mat4',
                         'uPMatrix': 'mat4',
@@ -191,10 +202,10 @@
                 sh.activate();
 
                 //Cube rotation
-                var gradRad = this._grad * og.math.RADIANS;
-                var rotate = og.Mat4.identity()
-                    .rotate(new og.Vec3(0, 1, 0), gradRad)
-                    .rotate(new og.Vec3(1, 0, 0), gradRad);
+                var gradRad = this._grad * math.RADIANS;
+                var rotate = Mat4.identity()
+                    .rotate(new Vec3(0, 1, 0), gradRad)
+                    .rotate(new Vec3(1, 0, 0), gradRad);
                 this._grad++;
 
                 var modelViewMat = r.activeCamera._viewMatrix.mul(rotate);
@@ -205,7 +216,7 @@
                 gl.uniform1i(p.uniforms.uSampler, 0);
 
                 gl.uniformMatrix4fv(p.uniforms.uMVMatrix, false, modelViewMat._m);
-                gl.uniformMatrix4fv(p.uniforms.uPMatrix, false, r.activeCamera._projectionMatrix._m);
+                gl.uniformMatrix4fv(p.uniforms.uPMatrix, false, r.activeCamera.getProjectionMatrix());
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, this.vericesBuffer);
                 gl.vertexAttribPointer(p.attributes.aVertexPosition, this.vericesBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -218,20 +229,20 @@
             }
         }
 
-        var handler = new og.webgl.Handler("myCanvas", {
+        var handler = new Handler("myCanvas", {
             alpha: false
         });
 
         handler.initialize();
 
-        var renderer = new og.Renderer(handler);
+        var renderer = new Renderer(handler);
         renderer.initialize();
-        renderer.addNodes([new MyScene(), new og.scene.Axes()]);
+        renderer.addNodes([new MyScene(), new Axes()]);
         renderer.addControls([
-            new og.control.SimpleNavigation({ 'speed': 0.3 }),
-            new og.control.ShowFps()
+            new SimpleNavigation({ 'speed': 0.3 }),
+            new ShowFps()
         ]);
-        renderer.activeCamera.set(new og.Vec3(5, 5, 5), og.Vec3.ZERO).update();
+        renderer.activeCamera.set(new Vec3(5, 5, 5), Vec3.ZERO).update();
         renderer.start();
     </script>
 </body>

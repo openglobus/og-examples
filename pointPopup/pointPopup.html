@@ -3,8 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
 </head>
 
 <body>
@@ -12,23 +11,28 @@
     <script type="module">
         'use strict';
 
-        let osm = new og.layer.XYZ("OpenStreetMap", {
+        import { Globe } from '../../src/og/Globe.js';
+        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import { Popup } from '../../src/og/Popup.js';
+        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+
+        var osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,
             url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        let globe = new og.Globe({
+        var globe = new Globe({
             target: "globus",
             name: "Earth",
             layers: [osm],
-            terrain: new og.terrain.GlobusTerrain()
+            terrain: new GlobusTerrain()
         });
 
-        let myPopup = new og.Popup({
+        let myPopup = new Popup({
             planet: globe.planet,
-            offset: [0, -25],
+            offset: [0, 0],
             visibility: false
         });
 

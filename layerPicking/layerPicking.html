@@ -3,8 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//www.openglobus.org/og.css" type="text/css" />
-    <script src="//www.openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
     <style>
         #layerName {
             position: absolute;
@@ -21,9 +20,16 @@
 <body>
     <div id="layerName"></div>
     <div id="globus" style="width:100%;height:100%"></div>
-    <script>
+    <script type="module">
+        'use strict';
 
-        var osm = new og.layer.XYZ("OpenStreetMap", {
+        import { Globe } from '../../src/og/Globe.js';
+        import { Layer } from '../../src/og/layer/Layer.js';
+        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import { WMS } from '../../src/og/layer/WMS.js';
+        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+
+        var osm = new XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
             extent: [[-130, 21], [-87, 58]],
             shininess: 20,
@@ -34,7 +40,7 @@
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
-        var sat = new og.layer.XYZ("MapQuest Satellite", {
+        var sat = new XYZ("MapQuest Satellite", {
             shininess: 20,
             extent: [[-106, 29], [-71, 52]],
             specular: [0.00048, 0.00037, 0.00035],
@@ -46,20 +52,20 @@
             attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"'
         });
 
-        var states = new og.layer.WMS("USA Population", {
+        var states = new WMS("USA Population", {
             extent: [[-127, 24.5], [-66.5, 48]],
             opacity: 0.7,
             visibility: true,
             isBaseLayer: false,
-            url: "//openglobus.org/geoserver/",
+            url: "//openglobus.org:8080/geoserver/",
             layers: "topp:states",
             transparentColor: [1.0, 1.0, 1.0]
         });
 
-        var globus = new og.Globe({
+        var globus = new Globe({
             "target": "globus",
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new GlobusTerrain(),
             "layers": [osm, sat, states]
         });
 
@@ -73,7 +79,7 @@
         });
 
         globus.planet.renderer.events.on("lclick", function (e) {
-            if (e.pickingObject instanceof og.Layer) {
+            if (e.pickingObject instanceof Layer) {
                 e.pickingObject.bringToFront();
             }
         });
