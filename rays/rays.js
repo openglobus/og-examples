@@ -1,10 +1,12 @@
-import { Globe } from "../../src/og/Globe.js";
-import { XYZ } from "../../src/og/layer/XYZ.js";
-import { GlobusTerrain } from "../../src/og/terrain/GlobusTerrain.js";
-import { LonLat } from "../../src/og/LonLat.js";
-import { Vector } from "../../src/og/layer/Vector.js";
-import { Entity } from "../../src/og/entity/Entity.js";
-import { wgs84 } from "../../src/og/ellipsoid/wgs84.js";
+import {
+    Globe,
+    Entity,
+    GlobusTerrain,
+    XYZ,
+    LonLat,
+    Vector,
+    wgs84
+} from "../../external/openglobus/@openglobus/og.esm.js";
 
 var osm = new XYZ("OpenStreetMap", {
     isBaseLayer: true,
