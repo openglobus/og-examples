@@ -11,15 +11,17 @@
     <script type="module">
         'use strict';
 
-        import * as math from '../../src/og/math.js';
-        import { Globe } from '../../src/og/Globe.js';
-        import { LonLat } from '../../src/og/LonLat.js';
-        import { Vec3 } from '../../src/og/math/Vec3.js';
-        import { Vec4 } from '../../src/og/math/Vec4.js';
-        import { Quat } from '../../src/og/math/Quat.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+import {
+    math,
+    Globe,
+    Entity,
+    GlobusTerrain,
+    XYZ,
+    LonLat,
+    Vector,
+    Vec3,
+    Quat
+} from "../../external/openglobus/dist/@openglobus/og.esm.js";
 
         //
         // Orbit circles
