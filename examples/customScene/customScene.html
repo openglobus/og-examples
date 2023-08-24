@@ -10,23 +10,27 @@
     <canvas id="myCanvas" style="width: 100%; height: 80%; display: block"></canvas>
     <div>
         <div style="float:left; padding: 15px;">
-            <input type="checkbox" id="cubeScene" checked>MyScene scene activity</div>
+            <input type="checkbox" id="cubeScene" checked>MyScene scene activity
+        </div>
         <div style="float:left; padding: 15px;">
-            <input type="checkbox" id="axisScene" checked>Axis scene activity</div>
+            <input type="checkbox" id="axisScene" checked>Axis scene activity
+        </div>
     </div>
     <script type="module">
         'use strict';
 
-        import * as math from '../../src/og/math.js';
-        import { Axes } from '../../src/og/scene/Axes.js';
-        import { RenderNode } from '../../src/og/scene/RenderNode.js';
-        import { Program } from '../../src/og/webgl/Program.js';
-        import { Handler } from '../../src/og/webgl/Handler.js';
-        import { Renderer } from '../../src/og/renderer/Renderer.js';
-        import { SimpleNavigation } from '../../src/og/control/SimpleNavigation.js';
-        import { ShowFps } from '../../src/og/control/ShowFps.js';
-        import { Vec3 } from '../../src/og/math/Vec3.js';
-        import { Mat4 } from '../../src/og/math/Mat4.js';
+        import {
+            math,
+            scene,
+            RenderNode,
+            Program,
+            Handler,
+            Renderer,
+            control,
+            Vec3,
+            Mat3,
+            Mat4
+        } from "../../dist/@openglobus/og.esm.js";
 
 
         document.getElementById("cubeScene").onchange = function () {
@@ -237,10 +241,10 @@
 
         var renderer = new Renderer(handler);
         renderer.initialize();
-        renderer.addNodes([new MyScene(), new Axes()]);
+        renderer.addNodes([new MyScene(), new scene.Axes()]);
         renderer.addControls([
-            new SimpleNavigation({ 'speed': 0.3 }),
-            new ShowFps()
+            new control.SimpleNavigation({ 'speed': 0.3 }),
+            new control.ShowFps()
         ]);
         renderer.activeCamera.set(new Vec3(5, 5, 5), Vec3.ZERO).update();
         renderer.start();

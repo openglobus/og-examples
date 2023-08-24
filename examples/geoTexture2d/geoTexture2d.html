@@ -124,12 +124,16 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { GeoTexture2d } from '../../src/og/layer/GeoTexture2d.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { Framebuffer } from '../../src/og/webgl/Framebuffer.js';
-        import { Program } from '../../src/og/webgl/Program.js';
+        import {
+            Entity,
+            EntityCollection,
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            GeoTexture2d,
+            Framebuffer,
+            Program
+        } from "../../dist/@openglobus/og.esm.js";
 
         let osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,

@@ -11,17 +11,17 @@
     <script type="module">
         'use strict';
 
-import {
-    math,
-    Globe,
-    Entity,
-    GlobusTerrain,
-    XYZ,
-    LonLat,
-    Vector,
-    Vec3,
-    Quat
-} from "../../external/openglobus/dist/@openglobus/og.esm.js";
+        import {
+            math,
+            Globe,
+            Entity,
+            GlobusTerrain,
+            XYZ,
+            LonLat,
+            Vector,
+            Vec3,
+            Quat
+        } from "../../dist/@openglobus/og.esm.js";
 
         //
         // Orbit circles
@@ -89,8 +89,8 @@ import {
                     }
                 }, {
                     'polyline': {
-                        'pathLonLat': [[ new LonLat(55, 2.3510, 200000), new LonLat(52, 17, 200000), new LonLat(50, 35, 300000)]],
-                        'pathColors': [[[1, 1, 1, 1],[1, 1, 0, 1], [1, 0, 0, 1]]],
+                        'pathLonLat': [[new LonLat(55, 2.3510, 200000), new LonLat(52, 17, 200000), new LonLat(50, 35, 300000)]],
+                        'pathColors': [[[1, 1, 1, 1], [1, 1, 0, 1], [1, 0, 0, 1]]],
                         'thickness': 5.5,
                         'color': "red",
                         'isClosed': false

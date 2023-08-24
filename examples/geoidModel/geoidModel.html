@@ -11,11 +11,13 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { EmptyTerrain } from '../../src/og/terrain/EmptyTerrain.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Geoid } from '../../src/og/terrain/Geoid.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            EmptyTerrain,
+            XYZ,
+            Geoid
+        } from "../../dist/@openglobus/og.esm.js";
 
         class GeoidTerrain extends GlobusTerrain {
             constructor(name, options) {
@@ -81,8 +83,10 @@
                     terrain: new GeoidTerrain("egm96-15.pgm", {
                         geoid: geoid
                     }),
+                    maxAltitude: 3500000,
                     layers: [osm]
                 });
+                globe.planet.setHeightFactor(7000);
             });
 
     </script>

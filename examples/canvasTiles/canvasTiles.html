@@ -12,12 +12,13 @@
 
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { EmptyTerrain } from '../../src/og/terrain/EmptyTerrain.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { CanvasTiles } from '../../src/og/layer/CanvasTiles.js';
-        import { ToggleWireframe } from '../../src/og/control/ToggleWireframe.js';
-        import { SegmentLonLat } from '../../src/og/segment/SegmentLonLat.js';
+        import {
+            Globe,
+            EmptyTerrain,
+            XYZ,
+            CanvasTiles,
+            control
+        } from "../../dist/@openglobus/og.esm.js";
 
         const osm = new XYZ("OSM", {
             'specular': [0.0003, 0.00012, 0.00001],
@@ -91,7 +92,7 @@
             }
         });
 
-        window.globe.planet.addControl(new ToggleWireframe());
+        window.globe.planet.addControl(new control.ToggleWireframe());
     </script>
 </body>
 

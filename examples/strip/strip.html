@@ -11,13 +11,15 @@
     <script type="module">
         'use strict';
 
-        import * as math from '../../src/og/math.js';
-        import { Globe } from '../../src/og/Globe.js';
-        import { LonLat } from '../../src/og/LonLat.js';
-        import { Vec3 } from '../../src/og/math/Vec3.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { Ellipsoid } from '../../src/og/ellipsoid/Ellipsoid.js';
+        import {
+            math,
+            Globe,
+            LonLat,
+            GlobusTerrain,
+            XYZ,
+            Vector,
+            Ellipsoid
+        } from "../../dist/@openglobus/og.esm.js";
 
         var osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,

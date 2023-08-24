@@ -23,11 +23,12 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { Layer } from '../../src/og/layer/Layer.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            Vector,
+        } from "../../dist/@openglobus/og.esm.js";
 
         var sat = new XYZ("MapQuest Satellite", {
             shininess: 20,
@@ -68,8 +69,8 @@
                 'geometry': {
                     'type': "Polygon",
                     'coordinates': [[[42.4, 43.3], [42.42, 43.34], [42.44, 43.35], [42.49, 43.34], [42.5, 43.302]]],
-                    'style':{
-                        'lineWidth': 8, 
+                    'style': {
+                        'lineWidth': 8,
                         'fillColor': "rgba(190, 0, 0, 0.6)",
                         'lineColor': "red"
                     }

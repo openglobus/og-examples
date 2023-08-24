@@ -1,12 +1,12 @@
 import {
+    wgs84,
     Globe,
     Entity,
     GlobusTerrain,
     XYZ,
     LonLat,
-    Vector,
-    wgs84
-} from "../../external/openglobus/@openglobus/og.esm.js";
+    Vector
+} from "../../dist/@openglobus/og.esm.js";
 
 var osm = new XYZ("OpenStreetMap", {
     isBaseLayer: true,

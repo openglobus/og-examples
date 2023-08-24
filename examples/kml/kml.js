@@ -1,7 +1,9 @@
-import { KML } from '../../src/og/layer/KML.js';
-import { XYZ } from '../../src/og/layer/XYZ.js';
-import { Globe } from '../../src/og/Globe.js';
-import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+import {
+    KML,
+    Globe,
+    GlobusTerrain,
+    XYZ
+} from "../../dist/@openglobus/og.esm.js";
 
 let dieppeRouen, globus;
 

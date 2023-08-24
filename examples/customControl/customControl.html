@@ -24,12 +24,14 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Control } from '../../src/og/control/Control.js';
-        import { Vec3 } from '../../src/og/math/Vec3.js';
-        import { LonLat } from '../../src/og/LonLat.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            LonLat,
+            Vec3,
+            Control
+        } from "../../dist/@openglobus/og.esm.js";
 
         //Define custom control class
         class CustomControl extends Control {

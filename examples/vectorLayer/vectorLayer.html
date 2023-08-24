@@ -11,11 +11,13 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { Entity } from '../../src/og/entity/Entity.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import {
+            Globe,
+            Entity,
+            GlobusTerrain,
+            XYZ,
+            Vector
+        } from "../../dist/@openglobus/og.esm.js";
 
         var osm = new XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],

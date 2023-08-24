@@ -1,13 +1,15 @@
 'use strict';
 
-import { Entity } from '../../src/og/entity/Entity.js';
-import { EntityCollection } from '../../src/og/entity/EntityCollection.js';
-import { Globe } from '../../src/og/Globe.js';
-import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-import { LonLat } from '../../src/og/LonLat.js';
-import { Vec3 } from '../../src/og/math/Vec3.js';
-import { XYZ } from '../../src/og/layer/XYZ.js';
-import { Ellipsoid } from '../../src/og/ellipsoid/Ellipsoid.js';
+import {
+    Entity,
+    EntityCollection,
+    LonLat,
+    Vec3,
+    Globe,
+    GlobusTerrain,
+    XYZ,
+    Ellipsoid
+} from "../../dist/@openglobus/og.esm.js";
 
 function rnd(min, max) {
     return Math.random() * (max - min) + min;

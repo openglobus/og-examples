@@ -34,7 +34,7 @@
                 </caption>
                 <tr>
                     <td style="width:30px;">
-                        <input id="chkDef" type="radio" name="sun" checked/>
+                        <input id="chkDef" type="radio" name="sun" checked />
                     </td>
                     <td id="dateDef">12.12.2003</td>
                     <td id="timeDef">12:22:43</td>
@@ -102,11 +102,13 @@
 
     <script type="module">
 
-        import * as jd from '../../src/og/astro/jd.js';
-        import { Clock } from '../../src/og/Clock.js';
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import {
+            jd,
+            Clock,
+            Globe,
+            GlobusTerrain,
+            XYZ
+        } from "../../dist/@openglobus/og.esm.js";
 
         function getDateStr(date) {
             var d = date.getDate(),

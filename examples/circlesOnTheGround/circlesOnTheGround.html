@@ -12,13 +12,17 @@
 
         'use strict';
 
-        import { Entity } from '../../src/og/entity/Entity.js';
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { LonLat } from '../../src/og/LonLat.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { random } from '../../src/og/math.js';
+        import {
+            Entity,
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            CanvasTiles,
+            Vector,
+            math,
+            LonLat
+        } from "../../dist/@openglobus/og.esm.js";
+
 
         const osm = new XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
@@ -53,11 +57,11 @@
         function createCircles(outPathLonLat, outPathColors, num = 80) {
             let ell = globe.planet.ellipsoid;
             for (let i = 0; i < num; i++) {
-                let center = new LonLat(random(8.08, 8.31), random(46.7, 46.8));
-                let circle = createCircle(ell, center, random(100, 1000));
+                let center = new LonLat(math.random(8.08, 8.31), math.random(46.7, 46.8));
+                let circle = createCircle(ell, center, math.random(100, 1000));
                 outPathLonLat.push(circle);
 
-                let color = [random(), random(), random()];
+                let color = [math.random(), math.random(), math.random()];
                 outPathColors.push([color]);
             }
         }

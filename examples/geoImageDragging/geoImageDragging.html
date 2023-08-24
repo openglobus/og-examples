@@ -12,11 +12,13 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { GeoImage } from '../../src/og/layer/GeoImage.js';
-        import { GeoImageDragControl } from '../../src/og/control/GeoImageDragControl.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            GeoImage,
+            XYZ,
+            control
+        } from "../../dist/@openglobus/og.esm.js";
 
         let osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,
@@ -40,7 +42,7 @@
             "layers": [osm, img]
         });
 
-        globus.planet.addControl(new GeoImageDragControl());
+        globus.planet.addControl(new control.GeoImageDragControl());
 
         globus.planet.flyExtent(img.getExtent());
     </script>

@@ -1,9 +1,11 @@
-import { Globe } from "../../src/og/Globe.js";
-import { XYZ } from "../../src/og/layer/XYZ.js";
-import { Extent } from "../../src/og/Extent.js";
-import { LonLat } from "../../src/og/LonLat.js";
-import { GlobusTerrain } from "../../src/og/terrain/GlobusTerrain.js";
-import { DrawingSwitcher } from "../../src/og/control/DrawingSwitcher.js";
+import {
+    XYZ,
+    Globe,
+    Extent,
+    LonLat,
+    GlobusTerrain,
+    control
+} from "../../dist/@openglobus/og.esm.js";
 
 let osm = new XYZ("osm", {
     isBaseLayer: true,
@@ -31,4 +33,4 @@ var globus = new Globe({
 
 globus.planet.viewExtent(new Extent(new LonLat(158.31010, 54.45445), new LonLat(158.55687, 54.56659)));
 
-globus.planet.addControl(new DrawingSwitcher());
+globus.planet.addControl(new control.DrawingSwitcher());

@@ -1,18 +1,23 @@
 'use strict';
 
-import { Handler } from '../../src/og/webgl/Handler.js';
-import { Renderer } from '../../src/og/renderer/Renderer.js';
-import { SimpleNavigation } from '../../src/og/control/SimpleNavigation.js';
-import { Axes } from '../../src/og/scene/Axes.js';
-import { Vec3 } from '../../src/og/math/Vec3.js';
-import { RenderNode } from '../../src/og/scene/RenderNode.js';
-import { Entity } from '../../src/og/entity/Entity.js';
-import { EntityCollection } from '../../src/og/entity/EntityCollection.js';
+import {
+    Handler,
+    Renderer,
+    RenderNode,
+    EntityCollection,
+    Entity,
+    Extent,
+    LonLat,
+    GlobusTerrain,
+    scene,
+    control,
+    Vec3
+} from "../../dist/@openglobus/og.esm.js";
 
 let handler = new Handler("frame", { 'autoActivate': true });
 let renderer = new Renderer(handler, {
     'backgroundColor': new Vec3(0.5, 0.5, 0.5),
-    'controls': [new SimpleNavigation({
+    'controls': [new control.SimpleNavigation({
         name: "SimpleNav"
     })],
     'autoActivate': true
@@ -171,13 +176,12 @@ class MyScene extends RenderNode {
     }
 
     frame() {
-
     }
-};
+}
 
 let myScene = new MyScene();
 
-renderer.addNodes([new Axes(), myScene]);
+renderer.addNodes([new scene.Axes(), myScene]);
 
 window.Vec3 = Vec3;
 window.renderer = renderer;

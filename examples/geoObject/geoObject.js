@@ -1,12 +1,14 @@
 "use strict";
 
-import { Entity } from "../../src/og/entity/Entity.js";
-import { EntityCollection } from "../../src/og/entity/EntityCollection.js";
-import { Globe } from "../../src/og/Globe.js";
-import { XYZ } from "../../src/og/layer/XYZ.js";
-import { GlobusTerrain } from "../../src/og/terrain/GlobusTerrain.js";
-import * as utils from "../../src/og/utils/shared.js";
-import { Object3d } from "../../src/og/Object3d.js";
+import {
+    Entity,
+    EntityCollection,
+    Globe,
+    GlobusTerrain,
+    XYZ,
+    utils,
+    Object3d
+} from "../../dist/@openglobus/og.esm.js";
 
 let COUNT = 10,
     ENTITY = {},
@@ -14,7 +16,6 @@ let COUNT = 10,
         ['penguin', {
             countRation: 1,
             cb: (options) => {
-                options.geoObject.scale = 20;
                 return {
                     ...options,
                     lonlat: [rnd(-180, 180), rnd(-180, 180), 200000]
@@ -65,6 +66,7 @@ let globus = new Globe({
     ],
     terrain: new GlobusTerrain()
 });
+
 let colors = ["red", "orange", "yellow", "green", "lightblue", "darkblue", "purple"];
 
 let geoObjects = new EntityCollection({
@@ -75,13 +77,14 @@ let geoObjects = new EntityCollection({
 for (const [name, entity_opt] of ENTITY_OPTIONS) {
 
     const objs = await Object3d.loadObj(`./${name}.obj`);
+
     objs.forEach((object3d) => {
         const entities = [];
         object3d.src = './penguin.png'
         const defaultOptions = (i) => ({
             name: "sat-" + i,
             geoObject: {
-                scale: 1,
+                scale: 20,
                 instanced: true,
                 tag: name,
                 color: colors[i % 7],
@@ -91,7 +94,6 @@ for (const [name, entity_opt] of ENTITY_OPTIONS) {
                 'color': colors[i % 7]
             }
         });
-
 
         ENTITY[name] = (i) => {
             const o = defaultOptions(i);
@@ -104,6 +106,7 @@ for (const [name, entity_opt] of ENTITY_OPTIONS) {
         for (let i = 0; i < COUNT; i++) {
             entities.push(new Entity(ENTITY[name](i)));
         }
+
         geoObjects.addEntities(entities);
     });
 }
@@ -130,6 +133,7 @@ window.ENTITY_OPTIONS = ENTITY_OPTIONS;
 const types = [...ENTITY_OPTIONS.keys()].reduce((acc, name) => {
     return [...acc, ...new Array(ENTITY_OPTIONS.get(name).countRation).fill(name)];
 }, []);
+
 globus.planet.events.on("draw", () => {
     const entities = geoObjects._entities;
     if (entities.length > 0) {
@@ -139,7 +143,11 @@ globus.planet.events.on("draw", () => {
             }
         } else if (entities.length < COUNT) {
             while (entities.length < COUNT) {
-                geoObjects.add(new Entity(ENTITY[types[entities.length % (types.length)]](entities.length - 1)));
+                geoObjects.add(
+                    new Entity(
+                    ENTITY[types[entities.length % (types.length)]](entities.length - 1)
+                    )
+                    );
             }
         }
     }
@@ -167,3 +175,5 @@ globus.planet.events.on("draw", () => {
         }
     }
 });
+
+window.geoObjects = geoObjects;

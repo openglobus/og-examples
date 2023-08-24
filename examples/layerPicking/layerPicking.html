@@ -23,11 +23,13 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { Layer } from '../../src/og/layer/Layer.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { WMS } from '../../src/og/layer/WMS.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import {
+            Globe,
+            Layer,
+            WMS,
+            GlobusTerrain,
+            XYZ
+        } from "../../dist/@openglobus/og.esm.js";
 
         var osm = new XYZ("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
@@ -57,9 +59,11 @@
             opacity: 0.7,
             visibility: true,
             isBaseLayer: false,
-            url: "//openglobus.org:8080/geoserver/",
+            url: "http://openglobus.org:8080/geoserver/topp/wms",
             layers: "topp:states",
-            transparentColor: [1.0, 1.0, 1.0]
+            extra: {
+                transparent: true
+            }
         });
 
         var globus = new Globe({

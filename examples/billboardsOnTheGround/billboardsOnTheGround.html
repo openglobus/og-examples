@@ -11,18 +11,21 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { Vec3 } from '../../src/og/math/Vec3.js';
-        import { Entity } from '../../src/og/Entity/Entity.js';
-        import { wgs84 } from '../../src/og/ellipsoid/wgs84.js';
-        import { RADIANS } from '../../src/og/math.js';
-        import { LonLat } from '../../src/og/LonLat.js';
+        import {
+            Entity,
+            Vec2,
+            Vec3,
+            Globe,
+            wgs84,
+            Vector,
+            GlobusTerrain,
+            XYZ,
+            LonLat,
+            math
+        } from "../../dist/@openglobus/og.esm.js";
 
         let points = new Array();
-        
+
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
                 let coords = new LonLat(8.5 + i * 0.023, 46.3 + j * 0.023);
@@ -60,28 +63,19 @@
             "target": "globus",
             "name": "Earth",
             "terrain": new GlobusTerrain(),
-            "layers": [osm, pointLayer],
-            autoActivate: false
+            "layers": [osm, pointLayer]
         });
-
-        globus.planet.camera.set(
-            new Vec3(661450.7541234301, 4599837.003890677, 4373015.90391755),
-            new Vec3(659636.5271477876, 4594887.354101415, 4360134.899630442),
-            new Vec3(-0.021169661606197245, 0.9366073216983496, -0.3497407187739613)
-        ).update();
 
         //Rotate points around the center
         let center = new LonLat(8.5, 46.3);
-        let angle = 0.1 * RADIANS;
+        let angle = 0.1 * math.RADIANS;
         globus.planet.events.on("draw", function () {
-            //requestAnimationFrame(()=> {
-                pointLayer.each(function (e) {
-                    let c = e.getLonLat();
-                    let rotatedLon = Math.cos(angle) * (c.lon - center.lon) - Math.sin(angle) * (c.lat - center.lat) + center.lon,
-                            rotatedLat = Math.sin(angle) * (c.lon - center.lon) + Math.cos(angle) * (c.lat - center.lat) + center.lat;
-                    e.setLonLat(new LonLat(rotatedLon, rotatedLat));
-                });
-            //});
+            pointLayer.each(function (e) {
+                let c = e.getLonLat();
+                let rotatedLon = Math.cos(angle) * (c.lon - center.lon) - Math.sin(angle) * (c.lat - center.lat) + center.lon,
+                    rotatedLat = Math.sin(angle) * (c.lon - center.lon) + Math.cos(angle) * (c.lat - center.lat) + center.lat;
+                e.setLonLat(new LonLat(rotatedLon, rotatedLat));
+            });
         });
 
     </script>

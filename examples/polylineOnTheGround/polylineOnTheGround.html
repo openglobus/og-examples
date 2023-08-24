@@ -12,12 +12,14 @@
 
         'use strict';
 
-        import { Entity } from '../../src/og/entity/Entity.js';
-        import { Globe } from '../../src/og/Globe.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
-        import { LonLat } from '../../src/og/LonLat.js';
-        import { Vector } from '../../src/og/layer/Vector.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            LonLat,
+            Vector,
+            Entity
+        } from "../../dist/@openglobus/og.esm.js";
 
         function createGrid(center) {
             let grid = [];
@@ -72,7 +74,7 @@
             "layers": [osm, pointLayer]
         });
 
-	window.globe = globe;
+        window.globe = globe;
 
         let pickingObject = null;
         let startPos, endPos;
