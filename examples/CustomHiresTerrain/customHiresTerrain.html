@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+</head>
+
+<body style="margin:0;">
+    <div id="globus" style="width:100%;height:100%"></div>
+    <script type="module">
+        'use strict';
+
+        import {
+            Globe,
+            MapboxTerrain,
+            XYZ,
+            control
+        } from "../../dist/@openglobus/og.esm.js";
+
+        var highResTerrain = new MapboxTerrain("MyTerrain", {
+            maxZoom: 19,
+            //url:"//127.0.0.1/og/terrain/eu/{z}/{x}/{y}.png",
+            //url: "//terrain.openglobus.org/public/eu10/{z}/{x}/{y}.png",
+            url: "//terrain.openglobus.org/public/zion/{z}/{x}/{y}.png",
+            //equalizeVertices: false,
+            //url: "//terrain.openglobus.org/public/nz/{z}/{x}/{y}.png",
+            //url: "//127.0.0.1/terrain/andorra/dest/{z}/{x}/{y}.png",
+            //imageSize: 129,
+            plainGridSize: 256,
+            gridSizeByZoom: [64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 16, 16, 32, 32, 32, 64, 64, 64, 64, 32, 16, 8
+                //8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4
+            ]
+        });
+
+        let osm = new XYZ("OpenStreetMap", {
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        let globus = new Globe({
+            "target": "globus",
+            "name": "Mapbox Earth",
+            maxGridSize: 256,
+            "terrain": highResTerrain,
+            "layers": [osm]
+        });
+
+        globus.planet.addControl(new control.KeyboardNavigation());
+        globus.planet.addControl(new control.TimelineControl());
+        globus.planet.addControl(new control.Lighting());
+    </script>
+</body>
+
+</html>

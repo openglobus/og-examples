@@ -11,10 +11,12 @@
     <script type="module">
         'use strict';
 
-        import { Globe } from '../../src/og/Globe.js';
-        import { XYZ } from '../../src/og/layer/XYZ.js';
-        import { Popup } from '../../src/og/Popup.js';
-        import { GlobusTerrain } from '../../src/og/terrain/GlobusTerrain.js';
+        import {
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            Popup
+        } from "../../dist/@openglobus/og.esm.js";
 
         var osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,
