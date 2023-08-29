@@ -32,7 +32,7 @@ const router = createBrowserRouter(
     routes.map(({Element, ErrorBoundary, ...rest}) => {
         return {
             ...rest,
-            element: <div><Nav></Nav><Element/></div>,
+            element: <><Nav></Nav><Element/></>,
             ...(ErrorBoundary && {errorElement: <ErrorBoundary/>}),
         }
     })
