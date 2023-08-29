@@ -2,6 +2,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import "./App.css"
 import { TitleContext } from '/components/TitleContext';
 import { useContext } from 'react';
+import Nav from "./pages/index.jsx";
 
 const pages = import.meta.glob("./pages/**/*.jsx", {eager: true});
 
@@ -31,7 +32,7 @@ const router = createBrowserRouter(
     routes.map(({Element, ErrorBoundary, ...rest}) => {
         return {
             ...rest,
-            element: <Element/>,
+            element: <div><Nav></Nav><Element/></div>,
             ...(ErrorBoundary && {errorElement: <ErrorBoundary/>}),
         }
     })

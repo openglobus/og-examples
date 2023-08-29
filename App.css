@@ -1,3 +1,61 @@
 body {
     margin: 0;
 }
+
+:root {
+    --grayscale-50: rgb(253, 253, 253);
+    --grayscale-100: rgb(249, 249, 249);
+    --grayscale-200: rgb(243, 243, 243);
+    --grayscale-300: rgb(234, 234, 234);
+    --grayscale-400: rgb(221, 221, 221);
+    --grayscale-500: rgb(201, 201, 201);
+    --grayscale-600: rgb(172, 172, 172);
+    --grayscale-700: rgb(143, 143, 143);
+    --grayscale-800: rgb(115, 115, 115);
+    --grayscale-900: rgb(89, 89, 89);
+    --grayscale-1000: rgb(62, 62, 62);
+    --grayscale-1100: rgb(29, 29, 29);
+}
+body.dark {
+    --grayscale-1100: rgb(253, 253, 253);
+    --grayscale-1000: rgb(249, 249, 249);
+    --grayscale-900: rgb(243, 243, 243);
+    --grayscale-800: rgb(234, 234, 234);
+    --grayscale-700: rgb(221, 221, 221);
+    --grayscale-600: rgb(201, 201, 201);
+    --grayscale-500: rgb(172, 172, 172);
+    --grayscale-400: rgb(143, 143, 143);
+    --grayscale-300: rgb(115, 115, 115);
+    --grayscale-200: rgb(89, 89, 89);
+    --grayscale-100: rgb(62, 62, 62);
+    --grayscale-50: rgb(29, 29, 29);
+}
+/*#app {*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
+nav {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--grayscale-1100);
+    gap: 4px;
+    padding: 8px;
+}
+
+nav a:hover {
+    background-color: var(--grayscale-800);
+}
+nav a {
+    padding: 4px 8px;
+    color: var(--grayscale-100);
+    background-color: var(--grayscale-900);
+    text-decoration: none;
+    border-radius: 4px;
+}
+.sp-layout {
+    border: none;
+    border-radius: 0;
+}

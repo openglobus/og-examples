@@ -1,6 +1,6 @@
 import {routes} from "/App.jsx";
 
-export default function Index() {
+export default function Nav() {
 
     return (
         <nav>
