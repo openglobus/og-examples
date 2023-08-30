@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import * as path from "path";
 
 export default defineConfig({
+    base: './',
     plugins: [react()],
     server: {
         host: '127.0.0.1',
