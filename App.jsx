@@ -17,7 +17,6 @@ for (const path of Object.keys(pages)) {
         title = lower_title.charAt(0).toUpperCase() + lower_title.slice(1)
 
     const jsonData = routers_json.find((item) => item.path === `/${normalizedPathName.toLowerCase()}`)
-    console.log(jsonData)
         routes.push({
             path: fileName === "index" ? "/" : `/${normalizedPathName.toLowerCase()}`,
             title,
@@ -35,13 +34,16 @@ const router = createBrowserRouter(
             element: <><Nav></Nav><Element/></>,
             ...(ErrorBoundary && {errorElement: <ErrorBoundary/>}),
         }
-    })
+    }),
+    {
+        basename: import.meta.env.VITE_BASENAME || '/'
+    }
 );
 
 function App() {
 
     return (
-        <RouterProvider router={router}>
+        <RouterProvider router={router} basename={"/sandbox"}>
 
         </RouterProvider>
     )
