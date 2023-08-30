@@ -1,10 +1,12 @@
 [
   {
     "path": "/geo_object",
-    "title": "Geo object"
+    "title": "Geo object",
+    "description": "Super duper geo object example"
   },
   {
     "path": "/billboard",
-    "title": "Billboard"
+    "title": "Billboard1",
+    "description": "Super duper billboard example"
   }
 ]

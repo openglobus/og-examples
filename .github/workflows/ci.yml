@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - renew_examples
 
 permissions:
   contents: write
@@ -22,6 +23,12 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@master
 
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build examples
+        run: npm run build
+
       - name: Deploy to external repository
         uses: pavletto/github-action-push-to-another-repository@main
         env:
@@ -32,4 +39,4 @@ jobs:
           destination-repository-name: openglobus.github.io
           user-email: github-actions[bot]@users.noreply.github.com
           target-branch: master
-          target-directory: examples
+          target-directory: examples/dist

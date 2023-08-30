@@ -4,7 +4,6 @@ import './style.css';
 import {Globe, utils} from '@openglobus/og';
 import {GlobusTerrain} from '@openglobus/og/terrain';
 import {XYZ} from '@openglobus/og/layer';
-// import {GlobeContextProvider} from "./GlobusContext.jsx";
 let globus = null;
 
 const GlobeContext = createContext();

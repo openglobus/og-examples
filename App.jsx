@@ -1,9 +1,7 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import "./App.css"
-import { TitleContext } from '/components/TitleContext';
-import { useContext } from 'react';
-import Nav from "./pages/index.jsx";
-
+import Nav from "./components/Nav.jsx";
+import routers_json from "./routes.json"
 const pages = import.meta.glob("./pages/**/*.jsx", {eager: true});
 
 const routes = [];
@@ -17,16 +15,18 @@ for (const path of Object.keys(pages)) {
             : fileName.replace(/\/index/, ""),
         lower_title = normalizedPathName.replace('_', ' ').replace('/', ''),
         title = lower_title.charAt(0).toUpperCase() + lower_title.slice(1)
-    // const { title } = useContext(TitleContext);
-    routes.push({
-        path: fileName === "index" ? "/" : `/${normalizedPathName.toLowerCase()}`,
-         title,
-        Element: pages[path].default,
-        loader: pages[path]?.loader,
-        action: pages[path]?.action,
-        ErrorBoundary: pages[path]?.ErrorBoundary,
-    });
 
+    const jsonData = routers_json.find((item) => item.path === `/${normalizedPathName.toLowerCase()}`)
+    console.log(jsonData)
+        routes.push({
+            path: fileName === "index" ? "/" : `/${normalizedPathName.toLowerCase()}`,
+            title,
+            Element: pages[path].default,
+            loader: pages[path]?.loader,
+            action: pages[path]?.action,
+            ErrorBoundary: pages[path]?.ErrorBoundary,
+            ...jsonData
+        });
 }
 const router = createBrowserRouter(
     routes.map(({Element, ErrorBoundary, ...rest}) => {
