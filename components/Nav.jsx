@@ -6,7 +6,7 @@ export default function Nav() {
     console.log(pathname)
     return (
         <nav>
-            {routes.filter((route) => route.path !== '/' ).map((route, i) => <a key={i} className={pathname === route.path ? 'active' : ''} href={route.path}>{route.title}</a>)}
+            {routes.filter((route) => route.path !== '/' ).map((route, i) => <a key={i} className={pathname === route.path ? 'active' : ''} href={import.meta.env.VITE_BASENAME+route.path}>{route.title}</a>)}
         </nav>
     )
 }
