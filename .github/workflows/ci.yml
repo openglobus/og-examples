@@ -39,4 +39,4 @@ jobs:
           destination-repository-name: openglobus.github.io
           user-email: github-actions[bot]@users.noreply.github.com
           target-branch: master
-          target-directory: examples
+          target-directory: sandbox
