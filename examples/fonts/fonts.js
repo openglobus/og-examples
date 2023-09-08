@@ -17,9 +17,7 @@ import {
 let handler = new Handler("frame", { 'autoActivate': true });
 let renderer = new Renderer(handler, {
     'backgroundColor': new Vec3(0.5, 0.5, 0.5),
-    'controls': [new control.SimpleNavigation({
-        name: "SimpleNav"
-    })],
+    'controls': [new control.SimpleNavigation()],
     'autoActivate': true
 });
 
