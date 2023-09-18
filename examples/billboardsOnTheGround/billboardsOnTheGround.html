@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+</head>
+
+<body>
+    <div id="globus" style="width:100%;height:100%"></div>
+    <script type="module">
+        'use strict';
+
+        import {
+            Entity,
+            Vec2,
+            Vec3,
+            Globe,
+            wgs84,
+            Vector,
+            GlobusTerrain,
+            XYZ,
+            LonLat,
+            math
+        } from "../../dist/@openglobus/og.esm.js";
+
+        let points = new Array();
+
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                let coords = new LonLat(8.5 + i * 0.023, 46.3 + j * 0.023);
+                points.push(new Entity({
+                    'name': 'Blue Marker',
+                    'lonlat': coords,
+                    'billboard': {
+                        'src': 'marker.png',
+                        'size': [18, 32],
+                        'offset': [0, 16],
+                        'alignedAxis': wgs84.lonLatToCartesian(coords).normalize()
+                    }
+                }));
+            }
+        }
+
+        let pointLayer = new Vector("pointLayer", {
+            'clampToGround': true,
+            'entities': points,
+            'async': false,
+            'nodeCapacity': points.length
+        });
+
+        let osm = new XYZ("OpenStreetMap", {
+            specular: [0.0003, 0.00012, 0.00001],
+            shininess: 20,
+            diffuse: [0.89, 0.9, 0.83],
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        let globus = new Globe({
+            "target": "globus",
+            "name": "Earth",
+            "terrain": new GlobusTerrain(),
+            "layers": [osm, pointLayer]
+        });
+
+        //Rotate points around the center
+        let center = new LonLat(8.5, 46.3);
+        let angle = 0.1 * math.RADIANS;
+        globus.planet.events.on("draw", function () {
+            pointLayer.each(function (e) {
+                let c = e.getLonLat();
+                let rotatedLon = Math.cos(angle) * (c.lon - center.lon) - Math.sin(angle) * (c.lat - center.lat) + center.lon,
+                    rotatedLat = Math.sin(angle) * (c.lon - center.lon) + Math.cos(angle) * (c.lat - center.lat) + center.lat;
+                e.setLonLat(new LonLat(rotatedLon, rotatedLat));
+            });
+        });
+
+    </script>
+</body>
+
+</html>

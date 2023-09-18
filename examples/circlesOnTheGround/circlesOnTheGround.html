@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+</head>
+
+<body>
+    <div id="globus" style="width:100%;height:100%"></div>
+    <script type="module">
+
+        'use strict';
+
+        import {
+            Entity,
+            Globe,
+            GlobusTerrain,
+            XYZ,
+            CanvasTiles,
+            Vector,
+            math,
+            LonLat
+        } from "../../dist/@openglobus/og.esm.js";
+
+
+        const osm = new XYZ("OpenStreetMap", {
+            specular: [0.0003, 0.00012, 0.00001],
+            shininess: 20,
+            diffuse: [0.89, 0.9, 0.83],
+            isBaseLayer: true,
+            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+
+        const pointLayer = new Vector("points", {
+            'relativeToGround': true,
+            'visibility': true
+        });
+
+        const globe = new Globe({
+            "target": "globus",
+            "name": "Earth",
+            "terrain": new GlobusTerrain(),
+            "layers": [osm, pointLayer]
+        });
+
+        function createCircle(ellipsoid, center, radius = 300) {
+            let circleCoords = [];
+            for (let i = 0; i < 360; i += 5) {
+                circleCoords.push(ellipsoid.getGreatCircleDestination(center, i, radius));
+            }
+            return circleCoords;
+        };
+
+        function createCircles(outPathLonLat, outPathColors, num = 80) {
+            let ell = globe.planet.ellipsoid;
+            for (let i = 0; i < num; i++) {
+                let center = new LonLat(math.random(8.08, 8.31), math.random(46.7, 46.8));
+                let circle = createCircle(ell, center, math.random(100, 1000));
+                outPathLonLat.push(circle);
+
+                let color = [math.random(), math.random(), math.random()];
+                outPathColors.push([color]);
+            }
+        }
+
+        let pathLonLat = [],
+            pathColors = [];
+
+        createCircles(pathLonLat, pathColors);
+
+        const polylineEntity = new Entity({
+            'polyline': {
+                'pathLonLat': pathLonLat,
+                'pathColors': pathColors,
+                'thickness': 3.3,
+                'isClosed': true
+            }
+        });
+
+        pointLayer.addEntities([polylineEntity]);
+
+        globe.planet.viewExtentArr([8.08, 46.72, 8.31, 46.75]);
+
+    </script>
+</body>
+
+</html>
