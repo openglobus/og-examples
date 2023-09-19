@@ -7,9 +7,8 @@ import {
     Vec3,
     Globe,
     GlobusTerrain,
-    XYZ,
-    Ellipsoid
-} from "../../dist/@openglobus/og.esm.js";
+    XYZ
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 function rnd(min, max) {
     return Math.random() * (max - min) + min;
@@ -23,7 +22,7 @@ for (let i = 0; i < 5000; i++) {
         'name': 'sat-' + i,
         'lonlat': [rnd(-180, 180), rnd(-90, 90), rnd(100000, 5000000)],
         'billboard': {
-            'src': './carrot.png',
+            'src': './carrot2.png',
             'size': [24, 24],
             'color': colors[i % 7],
             'rotation': rnd(0, 360)
@@ -54,23 +53,20 @@ carrots.events.on("lclick", function (e) {
     e.pickingObject.billboard.remove();
 });
 
-let sat = new XYZ("MapQuest Satellite", {
-    shininess: 20,
-    specular: new Vec3(0.00048, 0.00037, 0.00035),
-    diffuse: new Vec3(0.88, 0.85, 0.8),
-    ambient: new Vec3(0.15, 0.1, 0.23),
+let osm = new XYZ("MapQuest Satellite", {
     isBaseLayer: true,
-    url: "//tileproxy.cloud.mapquest.com/tiles/1.0.0/sat/{z}/{x}/{y}.png",
+    url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     visibility: true,
-    attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"'
+    attribution: 'Data @ OpenStreetMap contributors, ODbL'
 });
 
 
 let globus = new Globe({
-    "target": "globus",
-    "name": "Earth",
-    "terrain": new GlobusTerrain(),
-    "layers": [sat]
+    target: "globus",
+    name: "Earth",
+    terrain: new GlobusTerrain(),
+    layers: [osm],
+    resourcesSrc: "../../external/og/lib/@openglobus/"
 });
 
 globus.planet.events.on("draw", () => {
