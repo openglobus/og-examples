@@ -12,7 +12,7 @@ import {
     scene,
     control,
     Vec3
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 let handler = new Handler("frame", { 'autoActivate': true });
 let renderer = new Renderer(handler, {

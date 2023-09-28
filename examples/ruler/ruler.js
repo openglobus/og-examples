@@ -3,7 +3,7 @@ import {
     GlobusTerrain,
     XYZ,
     control
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 
 let osm = new XYZ("osm-1", {

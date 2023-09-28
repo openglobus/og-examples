@@ -3,7 +3,7 @@ import {
     Globe,
     GlobusTerrain,
     XYZ
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 let dieppeRouen, globus;
 

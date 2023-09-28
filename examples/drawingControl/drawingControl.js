@@ -5,7 +5,7 @@ import {
     LonLat,
     GlobusTerrain,
     control
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 let osm = new XYZ("osm", {
     isBaseLayer: true,

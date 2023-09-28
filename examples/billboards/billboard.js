@@ -9,7 +9,7 @@ import {
     GlobusTerrain,
     XYZ,
     Ellipsoid
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 function rnd(min, max) {
     return Math.random() * (max - min) + min;

@@ -5,7 +5,7 @@ import {
     GlobusTerrain,
     XYZ,
     control
-} from "../../dist/@openglobus/og.esm.js";
+} from "../../lib/@openglobus/og.esm.js";
 
 
 var osm = new XYZ("OpenStreetMap", {
