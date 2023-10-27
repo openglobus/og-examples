@@ -1,0 +1,25 @@
+{
+  "name": "og-examples",
+  "version": "1.0.0",
+  "description": "Openglobus Examples",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "serve": "ws -p 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openglobus/og-examples.git"
+  },
+  "author": "Michael Gevlich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/openglobus/og-examples/issues"
+  },
+  "homepage": "https://github.com/openglobus/og-examples#readme",
+  "dependencies": {
+    "local-web-server": "^5.3.0"
+  }
+}
