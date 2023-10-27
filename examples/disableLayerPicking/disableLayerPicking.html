@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
     <style>
         #layerName {
             position: absolute;
@@ -28,7 +28,7 @@
             GlobusTerrain,
             XYZ,
             Vector,
-        } from "../../lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/@openglobus/og.esm.js";
 
         var sat = new XYZ("MapQuest Satellite", {
             shininess: 20,
@@ -79,10 +79,12 @@
         });
 
         var globus = new Globe({
-            "target": "globus",
-            "name": "Earth",
-            "terrain": new GlobusTerrain(),
-            "layers": [sat, osm, vec]
+            target: "globus",
+            name: "Earth",
+            terrain: new GlobusTerrain(),
+            layers: [sat, osm, vec],
+            resourcesSrc: "../../external/og/lib/@openglobus/res",
+            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
         });
 
         globus.planet.renderer.events.on("mousemove", function (e) {

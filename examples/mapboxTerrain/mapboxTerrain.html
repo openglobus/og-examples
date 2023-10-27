@@ -3,38 +3,40 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
 </head>
 
 <body style="margin:0;">
-    <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module">
-        'use strict';
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module">
+    'use strict';
 
-        import {
-            Globe,
-            MapboxTerrain,
-            XYZ,
-            control
-        } from "../../lib/@openglobus/og.esm.js";
+    import {
+        Globe,
+        MapboxTerrain,
+        XYZ,
+        control
+    } from "../../external/og/lib/@openglobus/og.esm.js";
 
-        let osm = new XYZ("OpenStreetMap", {
-            isBaseLayer: true,
-            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: 'Data @ OpenStreetMap contributors, ODbL'
-        });
+    let osm = new XYZ("OpenStreetMap", {
+        isBaseLayer: true,
+        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        visibility: true,
+        attribution: 'Data @ OpenStreetMap contributors, ODbL'
+    });
 
-        let globus = new Globe({
-            "target": "globus",
-            "name": "Mapbox Earth",
-            maxGridSize: 256,
-            "terrain": new MapboxTerrain(),
-            "layers": [osm]
-        });
+    let globus = new Globe({
+        target: "globus",
+        name: "Mapbox Earth",
+        maxGridSize: 256,
+        terrain: new MapboxTerrain(),
+        layers: [osm],
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+    });
 
-        globus.planet.addControl(new control.KeyboardNavigation());
-    </script>
+    globus.planet.addControl(new control.KeyboardNavigation());
+</script>
 </body>
 
 </html>

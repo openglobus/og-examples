@@ -5,7 +5,7 @@ import {
     GlobusTerrain,
     XYZ,
     control
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 
 var osm = new XYZ("OpenStreetMap", {
@@ -19,9 +19,9 @@ var globe = new Globe({
     target: "earth",
     name: "Earth",
     terrain: new GlobusTerrain(),
-    layers: [osm]
+    layers: [osm],
+    resourcesSrc: "../../external/og/lib/@openglobus/res",
+    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
 });
 
 globe.planet.addControl(new control.Lighting());
-
-window.globe = globe;

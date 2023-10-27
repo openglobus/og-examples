@@ -6,7 +6,7 @@ import {
     XYZ,
     LonLat,
     Vector
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 var osm = new XYZ("OpenStreetMap", {
     isBaseLayer: true,
@@ -55,7 +55,7 @@ let entityMoscow = new Entity({
 });
 
 //polygonOffsetUnits is needed to hide rays behind globe
-let rayLayer = new Vector("rays", { polygonOffsetUnits: 0 });
+let rayLayer = new Vector("rays", {polygonOffsetUnits: 0});
 
 //add entities containing the rays to the layer
 rayLayer.add(entityBochum);
@@ -68,7 +68,9 @@ var globus = new Globe({
     layers: [osm, rayLayer],
     sun: {
         active: true
-    }
+    },
+    resourcesSrc: "../../external/og/lib/@openglobus/res",
+    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
 });
 
 window.globus = globus;

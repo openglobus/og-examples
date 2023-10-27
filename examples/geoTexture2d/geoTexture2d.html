@@ -3,13 +3,13 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
 </head>
 
 <body>
-    <div id="globus" style="width:100%;height:100%"></div>
+<div id="globus" style="width:100%;height:100%"></div>
 
-    <script id="shader-vs" type="x-shader/x-vertes">
+<script id="shader-vs" type="x-shader/x-vertes">
         attribute vec2 aPos;
         //attribute vec2 aUV;
         varying vec2 vUV;
@@ -17,9 +17,11 @@
             gl_Position = vec4(aPos, 0.0, 1.0);
             vUV = aPos * 0.5 + 0.5;;
         }
-    </script>
 
-    <script id="shader-fs" type="x-shader/x-fragment">
+
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
         // 2D vector field visualization by Morgan McGuire, @morgan3d, http://casual-effects.com
         // Shadertoy source: https://www.shadertoy.com/view/4s23DG#
         precision highp float;
@@ -119,97 +121,101 @@
             vec4(0.0, 0.0, 0.0, 1.0);
             gl_FragColor = fragColor;
         }
-    </script>
 
-    <script type="module">
-        'use strict';
 
-        import {
-            Entity,
-            EntityCollection,
-            Globe,
-            GlobusTerrain,
-            XYZ,
-            GeoTexture2d,
-            Framebuffer,
-            Program
-        } from "../../lib/@openglobus/og.esm.js";
+</script>
 
-        let osm = new XYZ("OpenStreetMap", {
-            isBaseLayer: true,
-            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: 'Data @ OpenStreetMap contributors, ODbL'
-        });
+<script type="module">
+    'use strict';
 
-        let geoTex = new GeoTexture2d("Vector Field", {
-            corners: [[-2.3565396747912852, 51.75253410564987], [2.173417790597063, 50.95010370686831], [1.26786087508808, 49.01434061915433], [-3.153942423073776, 49.72627636180551]],
-            visibility: true,
-            isBaseLayer: false,
-            frameWidth: 1024,
-            frameHeight: 1024,
-            opacity: 1.0,
-            attribution: '<a href="//www.shadertoy.com/view/4s23DG">2D vector field visualization</a> <a href="//casual-effects.com">by Morgan McGuire</a>'
-        });
+    import {
+        Entity,
+        EntityCollection,
+        Globe,
+        GlobusTerrain,
+        XYZ,
+        GeoTexture2d,
+        Framebuffer,
+        Program
+    } from "../../external/og/lib/@openglobus/og.esm.js";
 
-        let globus = new Globe({
-            "target": "globus",
-            "name": "Earth",
-            "terrain": new GlobusTerrain(),
-            "layers": [osm, geoTex]
-        });
+    let osm = new XYZ("OpenStreetMap", {
+        isBaseLayer: true,
+        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        visibility: true,
+        attribution: 'Data @ OpenStreetMap contributors, ODbL'
+    });
 
-        let handler = globus.renderer.handler;
+    let geoTex = new GeoTexture2d("Vector Field", {
+        corners: [[-2.3565396747912852, 51.75253410564987], [2.173417790597063, 50.95010370686831], [1.26786087508808, 49.01434061915433], [-3.153942423073776, 49.72627636180551]],
+        visibility: true,
+        isBaseLayer: false,
+        frameWidth: 1024,
+        frameHeight: 1024,
+        opacity: 1.0,
+        attribution: '<a href="//www.shadertoy.com/view/4s23DG">2D vector field visualization</a> <a href="//casual-effects.com">by Morgan McGuire</a>'
+    });
 
-        //Framebuffer that we want to render.
-        let frameBuffer = new Framebuffer(handler, {
-            'width': 1024,
-            'height': 1024
-        });
+    let globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusTerrain(),
+        layers: [osm, geoTex],
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+    });
 
-        frameBuffer.init();
+    let handler = globus.renderer.handler;
 
-        //Bind framebuffer texture to the geoTexture2d layer.
-        geoTex.bindTexture(frameBuffer.textures[0]);
+    //Framebuffer that we want to render.
+    let frameBuffer = new Framebuffer(handler, {
+        'width': 1024,
+        'height': 1024
+    });
 
-        //Attach vector field shader.
-        handler.addProgram(new Program("vectorMap", {
-            uniforms: {
-                'iGlobalTime': 'float',
-                'iResolution': 'vec2'
-            },
-            attributes: {
-                'aPos': 'vec2'
-            },
-            vertexShader: document.getElementById("shader-vs").innerHTML,
-            fragmentShader: document.getElementById("shader-fs").innerHTML
-        }));
+    frameBuffer.init();
 
-        var animCounter = 0,
-            vertBuffer = handler.createArrayBuffer(new Float32Array([1, 1, -1, 1, 1, -1, -1, -1]), 2, 4);
+    //Bind framebuffer texture to the geoTexture2d layer.
+    geoTex.bindTexture(frameBuffer.textures[0]);
 
-        globus.renderer.events.on("draw", function (r) {
+    //Attach vector field shader.
+    handler.addProgram(new Program("vectorMap", {
+        uniforms: {
+            'iGlobalTime': 'float',
+            'iResolution': 'vec2'
+        },
+        attributes: {
+            'aPos': 'vec2'
+        },
+        vertexShader: document.getElementById("shader-vs").innerHTML,
+        fragmentShader: document.getElementById("shader-fs").innerHTML
+    }));
 
-            //Rendering vector field to geoTexture2d buffer
-            frameBuffer.activate();
-            let gl = r.handler.gl;
-            gl.clearColor(0.0, 0.0, 0.0, 0.0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    var animCounter = 0,
+        vertBuffer = handler.createArrayBuffer(new Float32Array([1, 1, -1, 1, 1, -1, -1, -1]), 2, 4);
 
-            //Actually a better way to replace this function to native gl.
-            r.handler.programs.vectorMap
-                .set({
-                    'aPos': vertBuffer,
-                    'iGlobalTime': animCounter += 0.03,
-                    'iResolution': [1024, 1024]
-                })
-                .drawArrays(r.handler.gl.TRIANGLE_STRIP, vertBuffer.numItems);
+    globus.renderer.events.on("draw", function (r) {
 
-            frameBuffer.deactivate();
-        });
+        //Rendering vector field to geoTexture2d buffer
+        frameBuffer.activate();
+        let gl = r.handler.gl;
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        globus.planet.flyExtent(geoTex.getExtent());
-    </script>
+        //Actually a better way to replace this function to native gl.
+        r.handler.programs.vectorMap
+            .set({
+                'aPos': vertBuffer,
+                'iGlobalTime': animCounter += 0.03,
+                'iResolution': [1024, 1024]
+            })
+            .drawArrays(r.handler.gl.TRIANGLE_STRIP, vertBuffer.numItems);
+
+        frameBuffer.deactivate();
+    });
+
+    globus.planet.flyExtent(geoTex.getExtent());
+</script>
 </body>
 
 </html>

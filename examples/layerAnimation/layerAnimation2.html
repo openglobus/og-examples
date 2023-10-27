@@ -3,7 +3,7 @@
 <head>
     <title>Attribution Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
     <style>
         .pl-pane {
             position: absolute;
@@ -44,7 +44,7 @@
         EmptyTerrain,
         GlobusTerrain,
         XYZ
-    } from "../../lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/@openglobus/og.esm.js";
 
     let globus = new Globe({
         target: "earth",
@@ -52,7 +52,9 @@
         terrain: new EmptyTerrain(),
         layers: [],
         useNightTexture: false,
-        useSpecularTexture: false
+        useSpecularTexture: false,
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
     });
 
     function getYearsLayers(yearsArr) {

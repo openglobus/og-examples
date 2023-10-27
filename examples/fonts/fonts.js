@@ -12,13 +12,17 @@ import {
     scene,
     control,
     Vec3
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
-let handler = new Handler("frame", { 'autoActivate': true });
-let renderer = new Renderer(handler, {
-    'backgroundColor': new Vec3(0.5, 0.5, 0.5),
-    'controls': [new control.SimpleNavigation()],
+let handler = new Handler("frame", {
     'autoActivate': true
+});
+
+let renderer = new Renderer(handler, {
+    backgroundColor: new Vec3(0.5, 0.5, 0.5),
+    controls: [new control.SimpleNavigation()],
+    autoActivate: true,
+    fontsSrc: "./fonts"
 });
 
 class MyScene extends RenderNode {
@@ -61,50 +65,50 @@ class MyScene extends RenderNode {
                     'label': {
                         'isRTL': true,
                         'text': "قطة",
-                        'color': "black",
+                        'color': "white",
                         'face': "NotoSansArabic-Regular",
-                        'outlineColor': "white",
+                        'outlineColor': "black",
                         'size': size
                     }
                 }),
-                // new Entity({
-                //     'cartesian': new Vec3(5, 40, 0),
-                //     'label': {
-                //         'text': "0.9 - Notable-Regular",
-                //         'color': "black",
-                //         'face': "Notable-Regular",
-                //         'outlineColor': "rgba(255, 255, 255, 0.9",
-                //         'size': size
-                //     }
-                // }), new Entity({
-                //     'cartesian': new Vec3(5, 50, 0),
-                //     'label': {
-                //         'text': "1.0 - MrDeHaviland-Regular",
-                //         'color': "black",
-                //         'face': "MrDeHaviland-Regular",
-                //         'outlineColor': "rgba(255, 255, 255, 1.0)",
-                //         'size': size
-                //     }
-                // })
-                // , new Entity({
-                //     'cartesian': new Vec3(5, 60, 0),
-                //     'label': {
-                //         'text': "Audiowide-Regular",
-                //         'color': "black",
-                //         'face': "Audiowide-Regular",
-                //         'outlineColor': "white",
-                //         'size': size
-                //     }
-                // }), new Entity({
-                //     'cartesian': new Vec3(5, 70, 0),
-                //     'label': {
-                //         'text': "ArchitectsDaughter-Regular",
-                //         'color': "black",
-                //         'face': "ArchitectsDaughter-Regular",
-                //         'outlineColor': "white",
-                //         'size': size
-                //     }
-                // }),
+                new Entity({
+                    'cartesian': new Vec3(5, 40, 0),
+                    'label': {
+                        'text': "0.9 - Notable-Regular",
+                        'color': "white",
+                        'face': "Notable-Regular",
+                        'outlineColor': "black",
+                        'size': size
+                    }
+                }), new Entity({
+                    'cartesian': new Vec3(5, 50, 0),
+                    'label': {
+                        'text': "1.0 - MrDeHaviland-Regular",
+                        'color': "white",
+                        'face': "MrDeHaviland-Regular",
+                        'outlineColor': "black",
+                        'size': size
+                    }
+                })
+                , new Entity({
+                    'cartesian': new Vec3(5, 60, 0),
+                    'label': {
+                        'text': "Audiowide-Regular",
+                        'color': "white",
+                        'face': "Audiowide-Regular",
+                        'outlineColor': "white",
+                        'size': size
+                    }
+                }), new Entity({
+                    'cartesian': new Vec3(5, 70, 0),
+                    'label': {
+                        'text': "ArchitectsDaughter-Regular",
+                        'color': "white",
+                        'face': "ArchitectsDaughter-Regular",
+                        'outlineColor': "black",
+                        'size': size
+                    }
+                }),
             ]
         });
     }
@@ -158,15 +162,16 @@ class MyScene extends RenderNode {
             this.renderer.controls.SimpleNav.activate();
         });
 
-        this.renderer.fontAtlas.loadFont("PressStart2P-Regular", "./fonts/", "PressStart2P-Regular.json");
-        this.renderer.fontAtlas.loadFont("VastShadow-Regular", "./fonts/", "VastShadow-Regular.json");
-        this.renderer.fontAtlas.loadFont("Sacramento-Regular", "./fonts/", "Sacramento-Regular.json");
-        this.renderer.fontAtlas.loadFont("Notable-Regular", "./fonts/", "Notable-Regular.json");
-        this.renderer.fontAtlas.loadFont("MrDeHaviland-Regular", "./fonts/", "MrDeHaviland-Regular.json");
-        this.renderer.fontAtlas.loadFont("Audiowide-Regular", "./fonts/", "Audiowide-Regular.json");
-        this.renderer.fontAtlas.loadFont("ArchitectsDaughter-Regular", "./fonts/", "ArchitectsDaughter-Regular.json");
-        this.renderer.fontAtlas.loadFont("NotoSansArabic-Regular", "./fonts/", "NotoSansArabic-Regular.json");
-        this.renderer.fontAtlas.loadFont("Segoe", "./fonts/", "segoeui.json");
+        // this.renderer.fontAtlas.loadFont("PressStart2P-Regular", "./fonts/", "PressStart2P-Regular.json");
+        // this.renderer.fontAtlas.loadFont("VastShadow-Regular", "./fonts/", "VastShadow-Regular.json");
+        // this.renderer.fontAtlas.loadFont("Sacramento-Regular", "./fonts/", "Sacramento-Regular.json");
+        // this.renderer.fontAtlas.loadFont("Notable-Regular", "./fonts/", "Notable-Regular.json");
+        // this.renderer.fontAtlas.loadFont("MrDeHaviland-Regular", "./fonts/", "MrDeHaviland-Regular.json");
+        // this.renderer.fontAtlas.loadFont("Audiowide-Regular", "./fonts/", "Audiowide-Regular.json");
+        // this.renderer.fontAtlas.loadFont("ArchitectsDaughter-Regular", "./fonts/", "ArchitectsDaughter-Regular.json");
+        // this.renderer.fontAtlas.loadFont("NotoSansArabic-Regular", "./fonts/", "NotoSansArabic-Regular.json");
+        // this.renderer.fontAtlas.loadFont("Segoe", "./fonts/", "segoeui.json");
+
         this.ec.addTo(this);
 
         this.renderer.activeCamera.eye.set(57, 36, 120);

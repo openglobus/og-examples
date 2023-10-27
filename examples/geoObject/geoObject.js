@@ -8,7 +8,7 @@ import {
     XYZ,
     utils,
     Object3d
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 let COUNT = 10,
     ENTITY = {},

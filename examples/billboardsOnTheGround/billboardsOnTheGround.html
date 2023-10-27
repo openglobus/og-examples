@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
 </head>
 
 <body>
@@ -22,7 +22,7 @@
             XYZ,
             LonLat,
             math
-        } from "../../lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/@openglobus/og.esm.js";
 
         let points = new Array();
 
@@ -60,10 +60,12 @@
         });
 
         let globus = new Globe({
-            "target": "globus",
-            "name": "Earth",
-            "terrain": new GlobusTerrain(),
-            "layers": [osm, pointLayer]
+            target: "globus",
+            name: "Earth",
+            terrain: new GlobusTerrain(),
+            layers: [osm, pointLayer],
+            resourcesSrc: "../../external/og/lib/@openglobus/res",
+            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
         });
 
         //Rotate points around the center

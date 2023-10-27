@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
 </head>
 
 <body>
@@ -17,11 +17,10 @@
             Globe,
             GlobusTerrain,
             XYZ,
-            CanvasTiles,
             Vector,
             math,
             LonLat
-        } from "../../lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/@openglobus/og.esm.js";
 
 
         const osm = new XYZ("OpenStreetMap", {
@@ -40,10 +39,12 @@
         });
 
         const globe = new Globe({
-            "target": "globus",
-            "name": "Earth",
-            "terrain": new GlobusTerrain(),
-            "layers": [osm, pointLayer]
+            target: "globus",
+            name: "Earth",
+            terrain: new GlobusTerrain(),
+            layers: [osm, pointLayer],
+            resourcesSrc: "../../external/og/lib/@openglobus/res",
+            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
         });
 
         function createCircle(ellipsoid, center, radius = 300) {

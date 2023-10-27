@@ -5,7 +5,7 @@ import {
     LonLat,
     GlobusTerrain,
     control
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 let osm = new XYZ("osm", {
     isBaseLayer: true,
@@ -28,7 +28,9 @@ var globus = new Globe({
     terrain: new GlobusTerrain("19", {
         maxZoom: 14
     }),
-    layers: [osm]
+    layers: [osm],
+    resourcesSrc: "../../external/og/lib/@openglobus/res",
+    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
 });
 
 globus.planet.viewExtent(new Extent(new LonLat(158.31010, 54.45445), new LonLat(158.55687, 54.56659)));
