@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
 </head>
 
 <body>
@@ -19,7 +19,7 @@
             Vector,
             GlobusTerrain,
             XYZ
-        } from "../../lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/@openglobus/og.esm.js";
 
         let pointLayer = new Vector("points", {
             'clampToGround': true,
@@ -72,17 +72,19 @@
         });
 
         let osm = new XYZ("OSM", {
-            'isBaseLayer': true,
-            'url': "//b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            'visibility': true,
-            'attribution': 'Data @ OpenStreetMap contributors, ODbL'
+            isBaseLayer: true,
+            url: "//b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
 
         let globe = new Globe({
-            "target": "earth",
-            "name": "Earth",
-            "terrain": new GlobusTerrain(),
-            "layers": [osm, pointLayer]
+            target: "earth",
+            name: "Earth",
+            terrain: new GlobusTerrain(),
+            layers: [osm, pointLayer],
+            resourcesSrc: "../../external/og/lib/@openglobus/res",
+            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
         });
 
         globe.planet.renderer.events.on("mousemove", function (e) {

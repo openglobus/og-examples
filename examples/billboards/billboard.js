@@ -9,7 +9,7 @@ import {
     GlobusTerrain,
     XYZ,
     Ellipsoid
-} from "../../lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/@openglobus/og.esm.js";
 
 function rnd(min, max) {
     return Math.random() * (max - min) + min;
@@ -67,10 +67,12 @@ let sat = new XYZ("MapQuest Satellite", {
 
 
 let globus = new Globe({
-    "target": "globus",
-    "name": "Earth",
-    "terrain": new GlobusTerrain(),
-    "layers": [sat]
+    target: "globus",
+    name: "Earth",
+    terrain: new GlobusTerrain(),
+    layers: [sat],
+    resourcesSrc: "../../external/og/lib/@openglobus/res",
+    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
 });
 
 globus.planet.events.on("draw", () => {
