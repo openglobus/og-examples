@@ -1,10 +1,10 @@
 import GlobusSandbox from "/components/globus/GlobusSandbox.tsx";
-import geo_object from './geo_object.ts?raw'
+import billboard from './billboard.ts?raw'
 
-export default function GeoObjectExample() {
+export default function BillboardExample() {
     return (
         <GlobusSandbox files={{
-            "index.ts": geo_object
+            "index.ts": billboard
         }}/>
     )
 }

@@ -1,4 +1,4 @@
-import globus from './globus.js';
+import globus from './globus.ts';
 import {Entity, EntityCollection, Object3d, utils} from "@openglobus/og";
 
 let COUNT = 10,

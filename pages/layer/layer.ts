@@ -1,6 +1,6 @@
 import { XYZ } from "@openglobus/og";
-import { $btnOSM, $btnSAT } from "./button.js";
-import globus from "./globus.js";
+import { $btnOSM, $btnSAT } from "./button.ts";
+import globus from "./globus.ts";
 
 $btnOSM.onclick = function () {
     osm.setVisibility(true);

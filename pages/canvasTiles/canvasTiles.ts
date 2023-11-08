@@ -1,5 +1,5 @@
 import {CanvasTiles, Extent, LonLat} from "@openglobus/og";
-import globus from "./globus.js";
+import globus from "./globus.ts";
 
 
 const tg = new CanvasTiles("Tile grid", {

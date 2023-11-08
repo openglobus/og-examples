@@ -1,8 +1,7 @@
 import '@openglobus/og/css/og.css';
 import './style.css';
-import { Globe, utils } from '@openglobus/og';
-import { GlobusTerrain } from '@openglobus/og/terrain';
-import { XYZ } from '@openglobus/og/layer';
+import {Globe, GlobusTerrain, utils, XYZ} from '@openglobus/og';
+import {Segment} from "@openglobus/og/lib/js/segment/Segment";
 
 const osm = new XYZ("OpenStreetMap", {
     isBaseLayer: true,
@@ -11,7 +10,7 @@ const osm = new XYZ("OpenStreetMap", {
     attribution: "Data @ OpenStreetMap contributors, ODbL"
 });
 
-function toQuadKey(x, y, z) {
+function toQuadKey(x: number, y: number, z: number) {
     var index = '';
     for (var i = z; i > 0; i--) {
         var b = 0;
@@ -30,17 +29,15 @@ const sat = new XYZ("sat", {
     visibility: true,
     attribution: `<a href="http://www.bing.com" target="_blank"><img title="Bing Imagery" src="https://sandcastle.cesium.com/CesiumUnminified/Assets/Images/bing_maps_credit.png" alt="Bing"></a> © 2021 Microsoft Corporation`,
     maxNativeZoom: 19,
-    defaultTextures: [{ color: "#001522" }, { color: "#E4E6F3" }],
+    defaultTextures: [{color: "#001522"}, {color: "#E4E6F3"}],
     shininess: 18,
     specular: [0.00063, 0.00055, 0.00032],
     ambient: "rgb(100,100,140)",
     diffuse: "rgb(450,450,450)",
     nightTextureCoefficient: 2.7,
-    urlRewrite: function (s, u) {
-        return utils.stringTemplate(u, {
-            's': this._getSubdomain(),
-            'quad': toQuadKey(s.tileX, s.tileY, s.tileZoom)
-        });
+    urlRewrite: function (s: Segment, u: string) {
+        // @ts-ignore
+        return utils.stringTemplate(u, {'s': this._getSubdomain(), 'quad': toQuadKey(s.tileX, s.tileY, s.tileZoom)});
     }
 });
 const globus = new Globe({

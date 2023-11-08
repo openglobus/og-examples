@@ -1,12 +1,12 @@
 import GlobusSandbox from "/components/globus/GlobusSandbox.jsx";
-import layer from './layer.js?raw'
-import button from './button.js?raw'
+import layer from './layer?raw'
+import button from './button.ts?raw'
 
 export default function LayerExample() {
     return (
         <GlobusSandbox files={{
-            "index.js": layer,
-            "button.js": button
+            "index.ts": layer,
+            "button.ts": button
         }}
         externalResources={[
         ]}/>

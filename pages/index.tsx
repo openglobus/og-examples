@@ -1,4 +1,4 @@
-import {routes} from "../App.jsx";
+import {routes} from "../App.tsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect   } from "react";
 

@@ -1,6 +1,6 @@
 import { layer } from "@openglobus/og";
-import globus from "./globus.js";
-import { $btn } from "./button.js";
+import globus from "./globus.ts";
+import { $btn } from "./button";
 
 const states = new layer.WMS("USA Population", {
     extent: [[-128, 24], [-66, 49]],

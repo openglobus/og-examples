@@ -1,7 +1,0 @@
-.button-container {
-    position: absolute;
-    display: flex;
-    gap: 4px;
-    z-index: 100;
-    padding: 16px;
-}

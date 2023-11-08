@@ -1,13 +1,20 @@
-import globus from './globus.js?raw'
+import globus from './globus.ts?raw'
 import style from './style.css?raw'
 import {Sandpack} from "@codesandbox/sandpack-react";
+import {SandpackThemeProp} from "@codesandbox/sandpack-react/types";
 
-export default function GlobusSandbox({files, externalResources, options, template}) {
+interface GlobusSandboxProps {
+    files: any,
+    externalResources?: string[],
+    options?: any,
+    template?: SandpackThemeProp
+}
+export default function GlobusSandbox({files, options, template} :GlobusSandboxProps) {
     return (
         <Sandpack
             customSetup={{
                 dependencies: {
-                    '@openglobus/og': '0.17.2',
+                    '@openglobus/og': '0.18.4',
                 },
             }}
             options={{
@@ -21,12 +28,11 @@ export default function GlobusSandbox({files, externalResources, options, templa
             }}
             files={{
                 "style.css": style,
-                "globus.js": globus,
+                "globus.ts": globus,
                 ...files
             }}
-            externalResources={externalResources}
             theme="dark"
-            template={template || "vanilla"}
+            template={template || "vanilla-ts"}
         />
     )
 }
