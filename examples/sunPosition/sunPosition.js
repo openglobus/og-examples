@@ -40,15 +40,6 @@ let sat = new XYZ("sat", {
     nightTextureCoefficient: 2.7
 });
 
-let st = new XYZ("swisstopo", {
-    url: "",
-    visibility: true,
-    isBaseLayer: false,
-    minNativeZoom: 0,
-    maxNativeZoom: 0,
-    attribution: `Digital Elevation swissALTI3D ©swisstopo`,
-});
-
 let osm = new XYZ("osm", {
     isBaseLayer: true,
     url: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -68,7 +59,7 @@ const globus = new Globe({
     target: "earth",
     name: "Earth",
     terrain: new GlobusTerrain(),
-    layers: [sat, st],
+    layers: [sat],
     atmosphereEnabled: true,
     resourcesSrc: "../../external/og/lib/@openglobus/res",
     fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
