@@ -1,3 +1,5 @@
+import './Editor.css';
+
 import {useState, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from './shared';
 

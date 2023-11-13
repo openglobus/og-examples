@@ -12,7 +12,7 @@ function List({examples, onClick}) {
     });
 
     return (
-        <div className="og-sandbox_examplesList">
+        <div className="og-sandbox_list">
             {examplesLinks}
         </div>
     )

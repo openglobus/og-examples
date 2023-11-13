@@ -1,4 +1,4 @@
-.og-sandbox_examplesList {
+.og-sandbox_list {
     width: 300px;
     height: 100%;
     overflow: auto;
@@ -7,13 +7,13 @@
     float: left;
 }
 
-.og-sandbox_examplesList a {
+.og-sandbox_list a {
     width: 100%;
     position: relative;
     display: inline-block;
 }
 
-.og-sandbox_examplesList a button {
+.og-sandbox_list a button {
     width: 100%;
     padding: 10px;
 }

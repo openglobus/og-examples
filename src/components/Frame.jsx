@@ -1,3 +1,5 @@
+import './Frame.css';
+
 import {useRef, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from "./shared";
 

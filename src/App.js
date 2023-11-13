@@ -8,7 +8,7 @@ import Editor from "./components/Editor";
 import Frame from "./components/Frame";
 import List from './components/List';
 import useExampleContext from "./hooks/useExampleContext";
-import {EXAMPLES_URL, composeCodeHtml, parseHtml} from './components/shared';
+import {EXAMPLES_URL} from './components/shared';
 
 
 const ExampleDetail = () => {
