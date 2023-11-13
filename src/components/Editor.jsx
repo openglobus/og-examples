@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from './shared';
 
-function ExampleEditor({onRun, onRaw, code}) {
+function Editor({onRun, onRaw, code}) {
 
     const [head, setHead] = useState('');
     const [body, setBody] = useState('');
@@ -44,4 +44,4 @@ function ExampleEditor({onRun, onRaw, code}) {
     )
 }
 
-export default ExampleEditor;
+export default Editor;

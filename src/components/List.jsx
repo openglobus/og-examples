@@ -1,7 +1,7 @@
-import "./ExamplesList.css";
+import "./List.css";
 import {NavLink} from 'react-router-dom';
 
-function ExamplesList({examples, onClick}) {
+function List({examples, onClick}) {
 
     const examplesLinks = examples.map((example) => {
         return (
@@ -18,4 +18,4 @@ function ExamplesList({examples, onClick}) {
     )
 }
 
-export default ExamplesList;
+export default List;

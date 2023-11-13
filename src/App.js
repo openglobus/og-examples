@@ -1,11 +1,12 @@
 import './App.css';
 
 import axios from "axios";
-import {useEffect, useRef, useState, useCallback} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {Route, Routes, useParams, BrowserRouter as Router} from 'react-router-dom';
 
-import ExampleEditor from "./components/ExampleEditor";
-import ExamplesList from './components/ExamplesList';
+import Editor from "./components/Editor";
+import Frame from "./components/Frame";
+import List from './components/List';
 import useExampleContext from "./hooks/useExampleContext";
 import {EXAMPLES_URL, composeCodeHtml, parseHtml} from './components/shared';
 
@@ -15,26 +16,13 @@ const ExampleDetail = () => {
 
     const {exampleHtml, loadExample, setExampleHtml} = useExampleContext();
 
-    const iframeRef = useRef();
-    const runCode = (html) => {
-        const htmlCode = composeCodeHtml(parseHtml(html));
-        const iframe = iframeRef.current;
-        iframe.srcdoc = htmlCode;
-    };
-
     useEffect(() => {
         let _id = id || 'baseLayers';
         loadExample(`${EXAMPLES_URL}/${_id}/${_id}.html`);
     }, [id]);
 
-    useEffect(() => {
-        const updatedHtml = composeCodeHtml(parseHtml(exampleHtml));
-        runCode(updatedHtml);
-    }, [exampleHtml]);
-
     const handleRun = (htmlCode) => {
         setExampleHtml(htmlCode);
-        runCode(htmlCode);
     }
 
     const handleRaw = (event) => {
@@ -44,15 +32,8 @@ const ExampleDetail = () => {
 
     return (<>
         <div className="og-examples__panel">
-            <ExampleEditor onRun={handleRun} onRaw={handleRaw} code={exampleHtml}/>
-            <div className="og-examples__frame">
-                <iframe
-                    title="HTML Runner"
-                    width="100%"
-                    height="100%"
-                    ref={iframeRef}
-                />
-            </div>
+            <Editor onRun={handleRun} onRaw={handleRaw} code={exampleHtml}/>
+            <Frame code={exampleHtml}/>
         </div>
     </>)
 };
@@ -77,7 +58,7 @@ function App() {
     }, [fetchData]);
 
     return (<Router>
-        <ExamplesList examples={examples} onClick={() => {
+        <List examples={examples} onClick={() => {
             refresh();
         }}/>
         <Routes>
