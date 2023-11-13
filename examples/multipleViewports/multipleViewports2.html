@@ -4,8 +4,7 @@
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" href="//openglobus.org/og.css" type="text/css"/>
-    <script src="//openglobus.org/og.umd.js"></script>
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
     <style>
         .coordinates {
             position: absolute;
@@ -58,7 +57,15 @@
 
 <input style="position:absolute; top:60px; left: 20px;" type="file" id="myFile">
 
-<script>
+    <script type="module" id="og-sandbox-script">
+
+    import {
+        Globe,
+        GlobusTerrain,
+        XYZ,
+        control,
+        MapboxTerrain
+    } from "../../external/og/lib/@openglobus/og.esm.js";
 
     const EXTENT = [109.49057, 49.95169, 113.99417, 51.81737];
 
@@ -70,15 +77,15 @@
         dst.update();
     }
 
-    let globusTerrain = new og.terrain.GlobusTerrain({
-        //geoidSrc: "./egm2008-1.pgm"
+    let globusTerrain = new GlobusTerrain({
+        geoidSrc: "./egm2008-1.pgm"
     });
 
-    let mapboxTerrain = new og.terrain.MapboxTerrain({
-        //geoidSrc: "./egm2008-1.pgm"
+    let mapboxTerrain = new MapboxTerrain({
+        geoidSrc: "./egm2008-1.pgm"
     });
 
-    var osm1 = new og.layer.XYZ("OpenStreetMap", {
+    var osm1 = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
@@ -93,17 +100,19 @@
         window.globus1.planet.setTerrain(mapboxTerrain);
     };
 
-    window.globus1 = new og.Globe({
-        "target": "globus1",
-        "name": "Earth One",
-        "terrain": globusTerrain,
-        "layers": [osm1],
-        "viewExtent": EXTENT,
+    window.globus1 = new Globe({
+        target: "globus1",
+        name: "Earth One",
+        terrain: globusTerrain,
+        layers: [osm1],
+        viewExtent: EXTENT,
         controls: [
-            new og.control.MouseNavigation(),
-            new og.control.EarthCoordinates({centerMode: true}),
-            new og.control.Sun()
-        ]
+            new control.MouseNavigation(),
+            new control.EarthCoordinates({centerMode: true}),
+            new control.Sun()
+        ],
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
     });
 
     window.globus1.renderer.events.on("draw", () => {
@@ -113,36 +122,35 @@
         );
     });
 
-    var osm2 = new og.layer.XYZ("OpenStreetMap", {
+    var osm2 = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
         attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
 
-    var highResTerrain = new og.terrain.MapboxTerrain(null, {
+    var highResTerrain = new MapboxTerrain(null, {
         maxZoom: 15,
         url: "//terrain.openglobus.org/public/bur/{z}/{x}/{y}.png",
-        //imageSize: 129,
-        //plainGridSize: 128,
         gridSizeByZoom: [
             64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 16, 16, 32, 64, 128, 128, 64, 32, 16, 8, 4
-            //8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4
         ],
         geoidSrc: "./egm2008-1.pgm"
     });
 
-    window.globus2 = new og.Globe({
-        "target": "globus2",
-        "name": "Earth Two",
-        "terrain": highResTerrain,
-        "layers": [osm2],
-        "viewExtent": EXTENT,
+    window.globus2 = new Globe({
+        target: "globus2",
+        name: "Earth Two",
+        terrain: highResTerrain,
+        layers: [osm2],
+        viewExtent: EXTENT,
         controls: [
-            new og.control.MouseNavigation(),
-            new og.control.EarthCoordinates({centerMode: true}),
-            new og.control.Sun()
-        ]
+            new control.MouseNavigation(),
+            new control.EarthCoordinates({centerMode: false}),
+            new control.Sun()
+        ],
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
     });
 
     window.globus2.renderer.events.on("draw", () => {
@@ -209,7 +217,7 @@
 
         var longitude = ((zone > 0) && (6 * zone - 183.0) || 3.0) - _a3;
 
-        return new og.LonLat(longitude, latitude);
+        return new LonLat(longitude, latitude);
     }
 
     let $elev = document.querySelector(".elev");
@@ -274,7 +282,6 @@
                                 }
                             }
                         });
-
                     })(x, y, elv);
                 }
             });

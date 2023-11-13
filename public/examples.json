@@ -1,0 +1,198 @@
+[
+  {
+    "label": "Base Layers",
+    "id": "baseLayers"
+  },
+  {
+    "label": "Billboards",
+    "id": "billboards"
+  },
+  {
+    "label": "Billboards/Labels Dragging",
+    "id": "billboardsDragging"
+  },
+  {
+    "label": "Ground Billboards",
+    "id": "billboardsOnTheGround"
+  },
+  {
+    "label": "BIL Terrain",
+    "id": "bilTerrain"
+  },
+  {
+    "label": "Fly Camera",
+    "id": "cameraFly"
+  },
+  {
+    "label": "CanvasTiles Layer",
+    "id": "canvasTiles"
+  },
+  {
+    "label": "Ground Circles-Polylines",
+    "id": "circlesOnTheGround"
+  },
+  {
+    "label": "Clocks",
+    "id": "clocks"
+  },
+  {
+    "label": "Custom Plugin(Control)",
+    "id": "customControl"
+  },
+  {
+    "label": "Custom High Resolution Terrain Provider",
+    "id": "CustomHiresTerrain"
+  },
+  {
+    "label": "Custom Scene",
+    "id": "customScene"
+  },
+  {
+    "label": "Drawing geometry on the ground",
+    "id": "drawingControl"
+  },
+  {
+    "label": "Elevation Profile",
+    "id": "elevationProfile"
+  },
+  {
+    "label": "Ellipsoid(wgs84) Terrain Provider",
+    "id": "emptyTerrain"
+  },
+  {
+    "label": "Fonts and Labels",
+    "id": "fonts"
+  },
+  {
+    "label": "Geoid Model",
+    "id": "geoidModel"
+  },
+  {
+    "label": "GeoImage Layer",
+    "id": "geoImage"
+  },
+  {
+    "label": "GeoImage Dragging",
+    "id": "geoImageDragging"
+  },
+  {
+    "label": "Instanced Geo Objects",
+    "id": "geoObject"
+  },
+  {
+    "label": "GeoTexture2d(Framebuffer) Layer",
+    "id": "geoTexture2d"
+  },
+  {
+    "label": "Ground Video Layer",
+    "id": "geoVideo"
+  },
+  {
+    "label": "Height Factor",
+    "id": "heightFactor"
+  },
+  {
+    "label": "KML Layer",
+    "id": "kml"
+  },
+  {
+    "label": "Layer Animation Control",
+    "id": "layerAnimation"
+  },
+  {
+    "label": "Layer Fading Opacity",
+    "id": "layerFadingOpacity"
+  },
+  {
+    "label": "Layer Height above Ellipsoid",
+    "id": "layerHeight"
+  },
+  {
+    "label": "Layer Opacity",
+    "id": "layerOpacity"
+  },
+  {
+    "label": "Layer Picking",
+    "id": "layerPicking"
+  },
+  {
+    "label": "layer Switcher Control",
+    "id": "layerSwitcher"
+  },
+  {
+    "label": "Layer Z-Index",
+    "id": "layerZIndex"
+  },
+  {
+    "label": "Lighting Control",
+    "id": "lighting"
+  },
+  {
+    "label": "Mapbox Terrain Provider",
+    "id": "mapboxTerrain"
+  },
+  {
+    "label": "Show marker on time",
+    "id": "markerOnTimer"
+  },
+  {
+    "label": "Mars",
+    "id": "mars"
+  },
+  {
+    "label": "Multiple Globuses",
+    "id": "multipleViewports"
+  },
+  {
+    "label": "Popup",
+    "id": "pointPopup"
+  },
+  {
+    "label": "Ground Polyline(clampToGround)",
+    "id": "polylineOnTheGround"
+  },
+  {
+    "label": "Polyline Entities",
+    "id": "polylines"
+  },
+  {
+    "label": "Ray Entities",
+    "id": "rays"
+  },
+  {
+    "label": "Ground Ruler Control",
+    "id": "ruler"
+  },
+  {
+    "label": "Sky Box",
+    "id": "skyBox"
+  },
+  {
+    "label": "Strip Entities",
+    "id": "strip"
+  },
+  {
+    "label": "Sun Activity",
+    "id": "sunActivity"
+  },
+  {
+    "label": "Sun Position",
+    "id": "sunPosition"
+  },
+  {
+    "label": "Terrain Provider Switching",
+    "id": "terrainSwitch"
+  },
+  {
+    "label": "User Interface",
+    "id": "userInterface"
+  },
+  {
+    "label": "Vector Layer",
+    "id": "vectorLayer"
+  },
+  {
+    "label": "WMS Layer",
+    "id": "wms"
+  }
+]
