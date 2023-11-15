@@ -1,9 +1,14 @@
 import './Editor.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {useState, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from './shared';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+
+import Button from 'react-bootstrap/Button'
 function Editor({onRun, onRaw, code}) {
 
     const [head, setHead] = useState('');
@@ -36,59 +41,70 @@ function Editor({onRun, onRaw, code}) {
 
     return (
         <div className="og-examples__editor">
+
             <div className="og-examples__toolbar">
-                <button className="og-examples__run" onClick={handleRun}>Run</button>
-                <button className="og-examples__raw" onClick={onRaw}>Raw</button>
+                <Button onClick={handleRun}>Run</Button>
+                <Button variant="link" onClick={onRaw}>Link</Button>
             </div>
 
-            <div className="og-examples__code">
-                <CodeEditor
-                    value={head}
-                    language="html"
-                    placeholder="<head>...</head>"
-                    onChange={handleHeadChange}
-                    padding={15}
-                    style={{
-                        fontSize: 12,
-                        backgroundColor: "#f5f5f5",
-                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                    }}
-                />
-            </div>
+            <Tabs
+                defaultActiveKey="script"
+                id="uncontrolled-tab-example"
+                className="mb-3"
+            >
+                <Tab eventKey="html"  title="Head">
+                    <div className="og-examples__code">
+                        <CodeEditor
+                            value={head}
+                            language="html"
+                            placeholder="<head>...</head>"
+                            onChange={handleHeadChange}
+                            padding={15}
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#f5f5f5",
+                                fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                            }}
+                        />
+                    </div>
+                </Tab>
 
-            <div className="og-examples__code">
-                <CodeEditor
-                    value={body}
-                    language="html"
-                    placeholder="<body>...</body>"
-                    onChange={handleBodyChange}
-                    padding={15}
-                    style={{
-                        fontSize: 12,
-                        backgroundColor: "#f5f5f5",
-                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                    }}
-                />
-            </div>
+                <Tab eventKey="body"  title="HTML">
+                    <div className="og-examples__code">
+                        <CodeEditor
+                            value={body}
+                            language="html"
+                            placeholder="<body>...</body>"
+                            onChange={handleBodyChange}
+                            padding={15}
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#f5f5f5",
+                                fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                            }}
+                        />
+                    </div>
+                </Tab>
 
-            <div className="og-examples__code">
-                <CodeEditor
-                    value={script}
-                    language="js"
-                    placeholder="<script>...</script>"
-                    onChange={handleScriptChange}
-                    padding={15}
-                    style={{
-                        fontSize: 12,
-                        backgroundColor: "#f5f5f5",
-                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                    }}
-                />
-            </div>
+                <Tab eventKey="script" title="Script">
+                    <div className="og-examples__code">
+                        <CodeEditor
+                            value={script}
+                            language="js"
+                            placeholder="<script>...</script>"
+                            onChange={handleScriptChange}
+                            padding={15}
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#f5f5f5",
+                                fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                            }}
+                        />
+                    </div>
+                </Tab>
 
-            {/*<textarea className="og-examples__code" value={head} onChange={handleHeadChange}></textarea>*/}
-            {/*<textarea className="og-examples__code" value={body} onChange={handleBodyChange}></textarea>*/}
-            {/*<textarea className="og-examples__code" value={script} onChange={handleScriptChange}></textarea>*/}
+            </Tabs>
+
         </div>
     )
 }

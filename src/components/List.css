@@ -14,6 +14,9 @@
 }
 
 .og-sandbox_list a button {
-    width: 100%;
-    padding: 10px;
+    width: calc(100% - 2px);
+    padding: 12px;
+    border: none;
+    margin: 1px;
+    cursor: pointer;
 }

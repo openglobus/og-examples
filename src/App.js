@@ -18,7 +18,7 @@ const ExampleDetail = () => {
 
     const {exampleHtml, loadExample, setExampleHtml} = useExampleContext();
 
-    const [sizes, setSizes] = useState([100, '30%', 'auto']);
+    const [sizes, setSizes] = useState(['auto', 'auto']);
 
     // Fixing mouse pointer evetns when dragging panels
     const [drag, setDrag] = useState(false);
@@ -57,7 +57,7 @@ const ExampleDetail = () => {
                     <Pane>
                         <Editor onRun={handleRun} onRaw={handleRaw} code={exampleHtml}/>
                     </Pane>
-                    <Frame code={exampleHtml} style={{"pointer-events": drag && "none" || ""}}/>
+                    <Frame code={exampleHtml} style={{"pointer-events": drag ? "none" : ""}}/>
                 </SplitPane>
             </div>
         </>
