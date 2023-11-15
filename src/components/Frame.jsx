@@ -3,7 +3,7 @@ import './Frame.css';
 import {useRef, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from "./shared";
 
-function Frame({code, style, id}) {
+function Frame({examplesUrl, code, style, id}) {
 
     const iframeRef = useRef();
 
@@ -12,7 +12,7 @@ function Frame({code, style, id}) {
     }, [code])
 
     const runCode = (html) => {
-        const htmlCode = composeCodeHtml({id, ...parseHtml(html)});
+        const htmlCode = composeCodeHtml({examplesUrl, id, ...parseHtml(html)});
         const iframe = iframeRef.current;
         iframe.srcdoc = htmlCode;
     };

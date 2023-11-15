@@ -1,11 +1,10 @@
-export const EXAMPLES_URL = "//localhost:8080/examples";
 export const SANDBOX_SCRIPT = "og-sandbox-script";
 
-export function composeCodeHtml({head, body, script, id = ""}) {
+export function composeCodeHtml({examplesUrl, head, body, script, id = ""}) {
     return `<!DOCTYPE html>
                 <html>
                   <head>
-                    <base href="${EXAMPLES_URL}/${id}/">
+                    <base href="${examplesUrl}/${id}/">
                     ${head}
                   </head>
                   <body style="width: 100%; height: 100%; position: absolute; margin: 0; padding: 0;">

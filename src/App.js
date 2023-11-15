@@ -13,7 +13,8 @@ import {EXAMPLES_URL} from './components/shared';
 import SplitPane, {Pane} from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
 
-const ExampleDetail = () => {
+const ExampleDetail = ({examplesUrl}) => {
+
     const {id} = useParams();
 
     const {exampleHtml, loadExample, setExampleHtml} = useExampleContext();
@@ -25,8 +26,10 @@ const ExampleDetail = () => {
 
     useEffect(() => {
         let _id = id || 'baseLayers';
-        loadExample(`${EXAMPLES_URL}/${_id}/${_id}.html`, _id);
-    }, [id]);
+        if (examplesUrl.length) {
+            loadExample(`${examplesUrl}/${_id}/${_id}.html`, _id);
+        }
+    }, [id, examplesUrl]);
 
     const handleRun = (htmlCode) => {
         setExampleHtml(htmlCode);
@@ -34,7 +37,7 @@ const ExampleDetail = () => {
 
     const handleRaw = (event) => {
         event.preventDefault();
-        window.open(`${EXAMPLES_URL}/${id}/${id}.html`, '_blank');
+        window.open(`${examplesUrl}/${id}/${id}.html`, '_blank');
     }
 
     const handleDragStart = function () {
@@ -55,9 +58,11 @@ const ExampleDetail = () => {
                     onDragEnd={handleDragEnd}
                 >
                     <Pane>
-                        <Editor onRun={handleRun} onRaw={handleRaw} code={exampleHtml} id={id}/>
+                        <Editor examplesUrl={examplesUrl} onRun={handleRun} onRaw={handleRaw} code={exampleHtml}
+                                id={id}/>
                     </Pane>
-                    <Frame code={exampleHtml} id={id} style={{"pointer-events": drag ? "none" : ""}}/>
+                    <Frame examplesUrl={examplesUrl} code={exampleHtml} id={id}
+                           style={{"pointer-events": drag ? "none" : ""}}/>
                 </SplitPane>
             </div>
         </>
@@ -69,6 +74,7 @@ function App() {
     const {refresh} = useExampleContext();
 
     const [examples, setExamples] = useState([]);
+    const [examplesUrl, setExamplesUrl] = useState('');
 
     const fetchData = useCallback(async () => {
         try {
@@ -79,17 +85,30 @@ function App() {
         }
     }, []);
 
+    const fetchConfig = useCallback(async () => {
+        const response = await axios.get('//localhost:3000/config.json');
+        let url = "//localhost:8080/examples";
+        if (response.data && response.data.url) {
+            url = response.data.url;
+        }
+        setExamplesUrl(url);
+    }, []);
+
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    useEffect(() => {
+        fetchConfig();
+    }, [fetchConfig]);
 
     return (<Router>
         <List examples={examples} onClick={() => {
             refresh();
         }}/>
         <Routes>
-            <Route path="/" element={<ExampleDetail/>}/>
-            <Route path="/examples/:id" element={<ExampleDetail/>}/>
+            <Route path="/" element={<ExampleDetail examplesUrl={examplesUrl}/>}/>
+            <Route path="/examples/:id" element={<ExampleDetail examplesUrl={examplesUrl}/>}/>
         </Routes>
     </Router>);
 }

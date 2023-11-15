@@ -9,7 +9,8 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import Button from 'react-bootstrap/Button';
-function Editor({onRun, onRaw, code, id}) {
+
+function Editor({examplesUrl, onRun, onRaw, code, id}) {
 
     const [head, setHead] = useState('');
     const [body, setBody] = useState('');
@@ -36,7 +37,7 @@ function Editor({onRun, onRaw, code, id}) {
 
     const handleRun = (event) => {
         event.preventDefault();
-        onRun(composeCodeHtml({head, body, script, id}));
+        onRun(composeCodeHtml({examplesUrl, head, body, script, id}));
     }
 
     return (
@@ -52,7 +53,7 @@ function Editor({onRun, onRaw, code, id}) {
                 id="uncontrolled-tab-example"
                 className="mb-3"
             >
-                <Tab eventKey="html"  title="Head">
+                <Tab eventKey="html" title="Head">
                     <div className="og-examples__code">
                         <CodeEditor
                             value={head}
@@ -69,7 +70,7 @@ function Editor({onRun, onRaw, code, id}) {
                     </div>
                 </Tab>
 
-                <Tab eventKey="body"  title="HTML">
+                <Tab eventKey="body" title="HTML">
                     <div className="og-examples__code">
                         <CodeEditor
                             value={body}
