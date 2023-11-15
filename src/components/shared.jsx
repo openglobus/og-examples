@@ -5,7 +5,7 @@ export function composeCodeHtml({head, body, script}) {
     return `<!DOCTYPE html>
                 <html>
                   <head>
-                    <base href="${EXAMPLES_URL}">
+                    <base href="${EXAMPLES_URL}/billboardsDragging/">
                     ${head}
                   </head>
                   <body style="width: 100%; height: 100%; position: absolute; margin: 0; padding: 0;">
