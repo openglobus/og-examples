@@ -93,6 +93,7 @@
                 //Load texture                
                 this.neheTexture = null;
                 var image = new Image();
+		image.crossOrigin = "Anonymous";
                 var that = this;
                 image.onload = function () {
                     that.neheTexture = that.renderer.handler.createTexture_mm(this);
