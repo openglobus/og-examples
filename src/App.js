@@ -18,7 +18,7 @@ const ExampleDetail = () => {
 
     const {exampleHtml, loadExample, setExampleHtml} = useExampleContext();
 
-    const [sizes, setSizes] = useState(['auto', 'auto']);
+    const [sizes, setSizes] = useState(['44%', 'auto']);
 
     // Fixing mouse pointer evetns when dragging panels
     const [drag, setDrag] = useState(false);
@@ -34,7 +34,7 @@ const ExampleDetail = () => {
 
     const handleRaw = (event) => {
         event.preventDefault();
-        console.log(`Open: ${EXAMPLES_URL}/${id}/${id}.html`);
+        window.open(`${EXAMPLES_URL}/${id}/${id}.html`, '_blank');
     }
 
     const handleDragStart = function () {

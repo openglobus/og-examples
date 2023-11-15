@@ -1,12 +1,13 @@
 import "./List.css";
 import {NavLink} from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 function List({examples, onClick}) {
 
     const examplesLinks = examples.map((example) => {
         return (
             <NavLink to={`examples/${example.id}`} key={example.id}>
-                <button onClick={onClick}>{example.label}</button>
+                <Button variant="light" onClick={onClick}>{example.label}</Button>
             </NavLink>
         )
     });

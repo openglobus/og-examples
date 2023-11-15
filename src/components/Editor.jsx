@@ -8,7 +8,7 @@ import CodeEditor from '@uiw/react-textarea-code-editor';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 function Editor({onRun, onRaw, code}) {
 
     const [head, setHead] = useState('');
