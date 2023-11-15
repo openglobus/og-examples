@@ -9,7 +9,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import Button from 'react-bootstrap/Button';
-function Editor({onRun, onRaw, code}) {
+function Editor({onRun, onRaw, code, id}) {
 
     const [head, setHead] = useState('');
     const [body, setBody] = useState('');
@@ -36,7 +36,7 @@ function Editor({onRun, onRaw, code}) {
 
     const handleRun = (event) => {
         event.preventDefault();
-        onRun(composeCodeHtml({head, body, script}));
+        onRun(composeCodeHtml({head, body, script, id}));
     }
 
     return (

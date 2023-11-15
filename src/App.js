@@ -25,7 +25,7 @@ const ExampleDetail = () => {
 
     useEffect(() => {
         let _id = id || 'baseLayers';
-        loadExample(`${EXAMPLES_URL}/${_id}/${_id}.html`);
+        loadExample(`${EXAMPLES_URL}/${_id}/${_id}.html`, _id);
     }, [id]);
 
     const handleRun = (htmlCode) => {
@@ -55,9 +55,9 @@ const ExampleDetail = () => {
                     onDragEnd={handleDragEnd}
                 >
                     <Pane>
-                        <Editor onRun={handleRun} onRaw={handleRaw} code={exampleHtml}/>
+                        <Editor onRun={handleRun} onRaw={handleRaw} code={exampleHtml} id={id}/>
                     </Pane>
-                    <Frame code={exampleHtml} style={{"pointer-events": drag ? "none" : ""}}/>
+                    <Frame code={exampleHtml} id={id} style={{"pointer-events": drag ? "none" : ""}}/>
                 </SplitPane>
             </div>
         </>
