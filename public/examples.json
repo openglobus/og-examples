@@ -184,10 +184,6 @@
     "id": "terrainSwitch"
   },
   {
-    "label": "User Interface",
-    "id": "userInterface"
-  },
-  {
     "label": "Vector Layer",
     "id": "vectorLayer"
   },
