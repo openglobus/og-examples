@@ -3,7 +3,7 @@ import './Frame.css';
 import {useRef, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from "./shared";
 
-function Frame({code}) {
+function Frame({code, style}) {
 
     const iframeRef = useRef();
 
@@ -18,7 +18,7 @@ function Frame({code}) {
     };
 
     return (
-        <div className="og-examples__frame">
+        <div className="og-examples__frame" style={style}>
             <iframe
                 title="HTML Runner"
                 width="100%"
