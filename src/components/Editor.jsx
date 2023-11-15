@@ -2,6 +2,7 @@ import './Editor.css';
 
 import {useState, useEffect} from "react";
 import {composeCodeHtml, parseHtml} from './shared';
+import CodeEditor from '@uiw/react-textarea-code-editor';
 
 function Editor({onRun, onRaw, code}) {
 
@@ -39,9 +40,55 @@ function Editor({onRun, onRaw, code}) {
                 <button className="og-examples__run" onClick={handleRun}>Run</button>
                 <button className="og-examples__raw" onClick={onRaw}>Raw</button>
             </div>
-            <textarea className="og-examples__code" value={head} onChange={handleHeadChange}></textarea>
-            <textarea className="og-examples__code" value={body} onChange={handleBodyChange}></textarea>
-            <textarea className="og-examples__code" value={script} onChange={handleScriptChange}></textarea>
+
+            <div className="og-examples__code">
+                <CodeEditor
+                    value={head}
+                    language="html"
+                    placeholder="<head>...</head>"
+                    onChange={handleHeadChange}
+                    padding={15}
+                    style={{
+                        fontSize: 12,
+                        backgroundColor: "#f5f5f5",
+                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                    }}
+                />
+            </div>
+
+            <div className="og-examples__code">
+                <CodeEditor
+                    value={body}
+                    language="html"
+                    placeholder="<body>...</body>"
+                    onChange={handleBodyChange}
+                    padding={15}
+                    style={{
+                        fontSize: 12,
+                        backgroundColor: "#f5f5f5",
+                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                    }}
+                />
+            </div>
+
+            <div className="og-examples__code">
+                <CodeEditor
+                    value={script}
+                    language="js"
+                    placeholder="<script>...</script>"
+                    onChange={handleScriptChange}
+                    padding={15}
+                    style={{
+                        fontSize: 12,
+                        backgroundColor: "#f5f5f5",
+                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                    }}
+                />
+            </div>
+
+            {/*<textarea className="og-examples__code" value={head} onChange={handleHeadChange}></textarea>*/}
+            {/*<textarea className="og-examples__code" value={body} onChange={handleBodyChange}></textarea>*/}
+            {/*<textarea className="og-examples__code" value={script} onChange={handleScriptChange}></textarea>*/}
         </div>
     )
 }
