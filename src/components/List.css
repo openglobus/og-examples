@@ -1,0 +1,22 @@
+.og-sandbox_list {
+    width: 300px;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    position: relative;
+    float: left;
+}
+
+.og-sandbox_list a {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.og-sandbox_list a button {
+    width: calc(100% - 2px);
+    padding: 12px;
+    border: none;
+    margin: 1px;
+    cursor: pointer;
+}
