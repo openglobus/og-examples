@@ -8,9 +8,14 @@ function Provider({children}) {
     const [exampleHtml, setExample] = useState("");
     const [url, setUrl] = useState("");
 
+    const fetchHtml = async (url) => {
+        let response = await fetch(url);
+        return response.text();
+    }
+
     const refresh = async () => {
-        const response = await axios.get(url, {responseType: 'text'});
-        setExample(response.data);
+        let text = await fetchHtml(url);
+        setExample(text);
     }
 
     const setExampleHtml = (htmlStr) => {
@@ -19,8 +24,8 @@ function Provider({children}) {
 
     const loadExample = async (url) => {
         setUrl(url);
-        const response = await axios.get(url, {responseType: 'text'});
-        setExample(response.data);
+        let text = await fetchHtml(url);
+        setExample(text);
     }
 
     const valueToShare = {

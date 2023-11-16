@@ -8,7 +8,6 @@ import Editor from "./components/Editor";
 import Frame from "./components/Frame";
 import List from './components/List';
 import useExampleContext from "./hooks/useExampleContext";
-import {EXAMPLES_URL} from './components/shared';
 
 import SplitPane, {Pane} from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
@@ -62,7 +61,7 @@ const ExampleDetail = ({examplesUrl}) => {
                                 id={id}/>
                     </Pane>
                     <Frame examplesUrl={examplesUrl} code={exampleHtml} id={id}
-                           style={{"pointer-events": drag ? "none" : ""}}/>
+                           style={{"pointerEvents": drag ? "none" : ""}}/>
                 </SplitPane>
             </div>
         </>
@@ -78,7 +77,7 @@ function App() {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get('//localhost:3000/examples.json');
+            const response = await axios.get(`${window.location.origin}/examples.json`);
             setExamples(response.data);
         } catch (error) {
             console.error('Error fetching examples:', error);
@@ -86,12 +85,8 @@ function App() {
     }, []);
 
     const fetchConfig = useCallback(async () => {
-        const response = await axios.get('//localhost:3000/config.json');
-        let url = "//localhost:8080/examples";
-        if (response.data && response.data.url) {
-            url = response.data.url;
-        }
-        setExamplesUrl(url);
+        const response = await axios.get(`${window.location.origin}/config.json`);
+        setExamplesUrl(response.data.url);
     }, []);
 
     useEffect(() => {
