@@ -36,7 +36,8 @@ const ExampleDetail = ({examplesUrl}) => {
 
     const handleRaw = (event) => {
         event.preventDefault();
-        window.open(`${examplesUrl}/${id}/${id}.html`, '_blank');
+        let _id = id || 'baseLayers';
+        window.open(`${examplesUrl}/${_id}/${_id}.html`, '_blank');
     }
 
     const handleDragStart = function () {
