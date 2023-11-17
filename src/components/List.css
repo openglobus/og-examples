@@ -13,6 +13,11 @@
     display: inline-block;
 }
 
+.og-sandbox_list a.active button {
+    background-color: #0d6efd;
+    color: white;
+}
+
 .og-sandbox_list a button {
     width: calc(100% - 2px);
     padding: 12px;
