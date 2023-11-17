@@ -1,9 +1,13 @@
 export const SANDBOX_SCRIPT = "og-sandbox-script";
 
-export function composeCodeHtml({examplesUrl, head, body, script, id = ""}) {
+export function timeHash() {
+    return (+new Date).toString(36).slice(-8);
+}
+
+export function composeCodeHtml({examplesUrl = "", head, body, script, id = ""}) {
     return `<!DOCTYPE html>
                 <html>
-                  <head>
+                  <head class="${timeHash()}">
                     <base href="${examplesUrl}/${id}/">
                     ${head}
                   </head>

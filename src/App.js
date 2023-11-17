@@ -7,6 +7,7 @@ import {Route, Routes, useParams, BrowserRouter as Router} from 'react-router-do
 import Editor from "./components/Editor";
 import Frame from "./components/Frame";
 import List from './components/List';
+import {composeCodeHtml, parseHtml} from "./components/shared";
 import useExampleContext from "./hooks/useExampleContext";
 
 import SplitPane, {Pane} from 'split-pane-react';

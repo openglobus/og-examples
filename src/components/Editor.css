@@ -6,9 +6,9 @@
 }
 
 .og-examples__toolbar {
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: relative;
+    float: right;
+    margin-top: 1px;
 }
 
 .og-examples__code {

@@ -1,5 +1,6 @@
 import axios from "axios";
-import {createContext, useState} from 'react';
+import {createContext, useState, useEffect} from 'react';
+import {composeCodeHtml, parseHtml} from "../components/shared";
 
 const ExampleContext = createContext();
 
@@ -15,17 +16,18 @@ function Provider({children}) {
 
     const refresh = async () => {
         let text = await fetchHtml(url);
-        setExample(text);
-    }
-
-    const setExampleHtml = (htmlStr) => {
-        setExample(htmlStr);
+        const htmlCode = composeCodeHtml({...parseHtml(text)});
+        setExample(htmlCode);
     }
 
     const loadExample = async (url) => {
         setUrl(url);
         let text = await fetchHtml(url);
         setExample(text);
+    }
+
+    const setExampleHtml = (htmlStr) => {
+        setExample(htmlStr);
     }
 
     const valueToShare = {

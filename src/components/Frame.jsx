@@ -1,6 +1,7 @@
 import './Frame.css';
 
 import {useRef, useEffect} from "react";
+import useExampleContext from "../hooks/useExampleContext";
 import {composeCodeHtml, parseHtml} from "./shared";
 
 function Frame({examplesUrl, code, style, id}) {
@@ -9,7 +10,7 @@ function Frame({examplesUrl, code, style, id}) {
 
     useEffect(() => {
         runCode(code);
-    }, [code])
+    }, [code]);
 
     const runCode = (html) => {
         const htmlCode = composeCodeHtml({examplesUrl, id, ...parseHtml(html)});
