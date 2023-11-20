@@ -144,6 +144,10 @@
     "id": "multipleViewports"
   },
   {
+    "label": "Shared Globuses Navigation",
+    "id": "sharedGlobusesNavigation"
+  },
+  {
     "label": "Popup",
     "id": "pointPopup"
   },
@@ -154,6 +158,10 @@
   {
     "label": "Polyline Entities",
     "id": "polylines"
+  },
+  {
+    "label": "Polyline Color Animation",
+    "id": "polylinesColorAnimation"
   },
   {
     "label": "Ray Entities",

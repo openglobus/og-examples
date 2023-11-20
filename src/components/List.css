@@ -1,3 +1,13 @@
+.og-sandbox_examples {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.og-sandbox_examples .mb-3 {
+    padding: 0 18px 0px 14px;
+}
+
 .og-sandbox_list {
     width: 300px;
     height: 100%;

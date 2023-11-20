@@ -3,6 +3,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
+    padding-top: 16px;
 }
 
 .og-examples__toolbar {
