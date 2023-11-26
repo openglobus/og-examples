@@ -23,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "ws -p 8080"
+    "serve": "ws -p 8080",
+    "build:og": "cd ./external/og && npm run build",
+    "dev:og": "cd ./external/og && npm run dev"
   },
   "eslintConfig": {
     "extends": [

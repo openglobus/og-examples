@@ -46,7 +46,7 @@ let sat = new XYZ("sat", {
     isBaseLayer: true,
     maxNativeZoom: 19,
     defaultTextures: [{ color: "#001522" }, { color: "#E4E6F3" }],
-    attribution: `<div style="transform: scale(0.8); margin-top:-2px;"><a href="http://www.bing.com" target="_blank"><img style="position: relative; top: 2px;" title="Bing Imagery" src="https://sandcastle.cesium.com/CesiumUnminified/Assets/Images/bing_maps_credit.png"></a> © 2021 Microsoft Corporation</div>`,
+    attribution: `<div style="transform: scale(0.8); margin-top:-2px;"><a href="http://www.bing.com" target="_blank"><img style="position: relative; top: 2px;" title="Bing Imagery" src="https://sandbox.openglobus.org/bing_maps_credit.png"></a> © 2021 Microsoft Corporation</div>`,
     urlRewrite: function (s, u) {
         return utils.stringTemplate(u, {
             's': this._getSubdomain(),
@@ -69,23 +69,9 @@ let st = new XYZ("swisstopo", {
     attribution: `Digital Elevation swissALTI3D ©swisstopo`,
 });
 
-let osm = new XYZ("osm", {
-    isBaseLayer: true,
-    url: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    visibility: true,
-    attribution: 'Data @ OpenStreetMap contributors, ODbL',
-    maxNativeZoom: 19,
-    defaultTextures: [{ color: "#AAD3DF" }, { color: "#F2EFE9" }],
-    isSRGB: false,
-    shininess: 18, //specular: "rgb(0.16575, 0.14152, 0.06375)",
-    specular: [0.00063, 0.00055, 0.00032],
-    ambient: [0.2, 0.2, 0.3],
-    diffuse: [0.9, 0.9, 0.7],
-});
-
 var highResTerrain = new MapboxTerrain(null, {
     maxZoom: 17,
-    url: "//terrain.openglobus.org/public/eu10/{z}/{x}/{y}.png",
+    url: "https://terrain.openglobus.org/public/eu10/{z}/{x}/{y}.png",
     plainGridSize: 128,
     gridSizeByZoom: [
         64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 16, 16, 32, 32, 32, 64, 64, 64, 64, 32, 16, 8
