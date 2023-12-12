@@ -100,8 +100,10 @@ function App() {
     }, [fetchConfig]);
 
     return (<Router>
-        <List examples={examples} onClick={() => {
-            refresh();
+        <List examples={examples} onClick={(id) => {
+            if (window.location.pathname.endsWith(id)) {
+                refresh();
+            }
         }}/>
         <Routes>
             <Route path="/" element={<ExampleDetail examplesUrl={examplesUrl}/>}/>
