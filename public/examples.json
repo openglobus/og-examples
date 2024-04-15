@@ -100,6 +100,10 @@
     "id": "layerAnimation"
   },
   {
+    "label": "Earth Animation Example",
+    "id": "earthAnimation"
+  },
+  {
     "label": "Layer Fading Opacity",
     "id": "layerFadingOpacity"
   },

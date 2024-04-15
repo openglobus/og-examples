@@ -37,13 +37,9 @@
 
     import {
         control,
-        jd,
-        Clock,
         Globe,
         GeoImage,
-        EmptyTerrain,
-        GlobusTerrain,
-        XYZ
+        EmptyTerrain
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
     let globus = new Globe({
@@ -81,7 +77,6 @@
         repeat: true
     });
 
-    //globus.planet.addControl(new control.LayerSwitcher());
     globus.planet.addControl(la);
 
     let $slider = document.querySelector(".pl-slider"),
