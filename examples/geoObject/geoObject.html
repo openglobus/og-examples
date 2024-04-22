@@ -4,7 +4,7 @@
     <title>GeoObject example</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
         Vector,
         utils,
         Popup
-    } from "../../lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/@openglobus/og.esm.js";
 
     let osm = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
@@ -79,8 +79,7 @@
         e.pickingObject.geoObject.setColor(1, 0, 0);
     });
     traffic.events.on("lclick", function (e) {
-    });
-    traffic.events.on("touchstart", function (e) {
+        //@todo
     });
 
     let globus = new Globe({
