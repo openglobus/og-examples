@@ -20,10 +20,9 @@
         Globe,
         GlobusTerrain,
         XYZ,
-        MapboxTerrain,
+        RgbTerrain,
         EmptyTerrain,
-        BilTerrain,
-        control
+        BilTerrain
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
     document.getElementById("btnEmpty").onclick = function () {
@@ -44,7 +43,7 @@
 
     let emptyTerrain = new EmptyTerrain(),
         globusTerrain = new GlobusTerrain(),
-        mapboxTerrain = new MapboxTerrain(),
+        mapboxTerrain = new RgbTerrain(),
         bilTerrain = new BilTerrain({
             url: "//openglobus.org/geoserver/og/",
             layers: "og:n44_e009_1arc_v3",

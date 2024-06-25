@@ -24,7 +24,7 @@
             GlobusTerrain,
             XYZ,
             GeoImage,
-            MapboxTerrain,
+            RgbTerrain,
             control,
             utils
         } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -158,7 +158,7 @@
             zIndex: 300
         });
 
-        let terrains = [new GlobusTerrain("OpenGlobus Terrain"), new MapboxTerrain("MapBox Terrain")]
+        let terrains = [new GlobusTerrain("OpenGlobus Terrain"), new RgbTerrain("MapBox Terrain")]
 
         let globus = new Globe({
             target: "globus",
@@ -166,7 +166,8 @@
             terrain: terrains,
             layers: [osm, sat, states, colorado, vector, fractal],
             resourcesSrc: "../../external/og/lib/@openglobus/res",
-            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+            fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
+            atmosphereEnabled: true
         });
 
         globus.planet.addControl(new control.LayerSwitcher());

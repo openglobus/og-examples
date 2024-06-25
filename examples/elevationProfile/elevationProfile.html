@@ -18,13 +18,10 @@
     <script type="module" id="og-sandbox-script">
 import {
     Globe,
-    GlobusTerrain,
-    EmptyTerrain,
-    MapboxTerrain,
+    RgbTerrain,
     XYZ,
     control,
-    utils,
-    LonLat
+    utils
 } from "../../external/og/lib/@openglobus/og.esm.js";
 
 
@@ -69,8 +66,8 @@ let st = new XYZ("swisstopo", {
     attribution: `Digital Elevation swissALTI3D ©swisstopo`,
 });
 
-var highResTerrain = new MapboxTerrain(null, {
-    maxZoom: 17,
+var highResTerrain = new RgbTerrain(null, {
+    maxZoom: 12,
     url: "https://terrain.openglobus.org/public/eu10/{z}/{x}/{y}.png",
     plainGridSize: 128,
     gridSizeByZoom: [

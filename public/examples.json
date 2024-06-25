@@ -16,10 +16,6 @@
     "id": "billboardsOnTheGround"
   },
   {
-    "label": "BIL Terrain",
-    "id": "bilTerrain"
-  },
-  {
     "label": "Fly Camera",
     "id": "cameraFly"
   },

@@ -13,7 +13,7 @@
 
     import {
         Globe,
-        MapboxTerrain,
+        RgbTerrain,
         XYZ,
         control
     } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -29,7 +29,7 @@
         target: "globus",
         name: "Mapbox Earth",
         maxGridSize: 256,
-        terrain: new MapboxTerrain(),
+        terrain: new RgbTerrain(),
         layers: [osm],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
