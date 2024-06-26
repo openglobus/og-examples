@@ -21,19 +21,17 @@
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
 
-    const osm = new XYZ("OSM", {
-        'isBaseLayer': true,
+    const sat = new XYZ("Sat", {
+        isBaseLayer: true,
         url: "https://terrain.openglobus.org/public/mars/sat/{z}/{x}/{y}.png",
-        'visibility': true,
         maxNativeZoom: 8,
     });
 
     var highResTerrain = new RgbTerrain(null, {
         geoid: null,
-        maxNativeZoom: 6,
         maxZoom: 6,
         url: "https://terrain.openglobus.org/public/mars/elv/{z}/{x}/{y}.png",
-        heightFactor: 5
+        heightFactor: 7
     });
 
     window.globe = new Globe({
@@ -41,7 +39,7 @@
         quadTreeStrategyPrototype: quadTreeStrategyType.mars,
         target: "globus",
         terrain: highResTerrain,
-        layers: [osm],
+        layers: [sat],
         sun: {
             active: false
         },
