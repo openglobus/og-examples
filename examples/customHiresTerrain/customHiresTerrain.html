@@ -8,19 +8,19 @@
 
 <body style="margin:0;">
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
         Globe,
-        MapboxTerrain,
+        RgbTerrain,
         XYZ,
         control
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    var highResTerrain = new MapboxTerrain("MyTerrain", {
+    var highResTerrain = new RgbTerrain("MyTerrain", {
         maxZoom: 19,
-        url: "//terrain.openglobus.org/public/zion/{z}/{x}/{y}.png",
+        url: "https://{s}.terrain.openglobus.org/public/zion/{z}/{x}/{y}.png",
         //plainGridSize: 256,
         gridSizeByZoom: [64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 16, 16, 32, 32, 32, 64, 64, 64, 64, 32, 16, 8]
         //gridSizeByZoom: [64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 64, 128, 128, 128, 128, 128, 128, 64, 64, 32, 16, 8]
@@ -28,14 +28,14 @@
 
     let osm = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
         attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
 
     let globus = new Globe({
         target: "globus",
-        name: "Mapbox Earth",
+        name: "Zion Valley",
         //maxGridSize: 256,
         terrain: highResTerrain,
         layers: [osm],

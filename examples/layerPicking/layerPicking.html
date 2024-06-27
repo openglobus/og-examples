@@ -20,7 +20,7 @@
 <body>
 <div id="layerName"></div>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
@@ -28,7 +28,8 @@
         Layer,
         WMS,
         GlobusTerrain,
-        XYZ
+        XYZ,
+        Bing
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
     var osm = new XYZ("OpenStreetMap", {
@@ -42,16 +43,10 @@
         attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
 
-    var sat = new XYZ("MapQuest Satellite", {
-        shininess: 20,
+    var sat = new Bing(null, {
         extent: [[-106, 29], [-71, 52]],
-        specular: [0.00048, 0.00037, 0.00035],
-        diffuse: [0.88, 0.85, 0.8],
-        ambient: [0.15, 0.1, 0.23],
         isBaseLayer: false,
-        url: "//tileproxy.cloud.mapquest.com/tiles/1.0.0/sat/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"'
+        visibility: true
     });
 
     var states = new WMS("USA Population", {

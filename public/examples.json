@@ -4,6 +4,10 @@
     "id": "baseLayers"
   },
   {
+    "label": "JAXA World Terrain with Gebco Bathymetry",
+    "id": "worldTerrain"
+  },
+  {
     "label": "Billboards",
     "id": "billboards"
   },
@@ -36,7 +40,7 @@
     "id": "clocks"
   },
   {
-    "label": "Custom Plugin(Control)",
+    "label": "Custom Plugin (open with the link)",
     "id": "customControl"
   },
   {

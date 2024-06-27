@@ -6,36 +6,27 @@
     <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
 </head>
 
-<body style="margin:0;">
+<body>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
-    'use strict';
+<script type="module" id="og-sandbox-script">
 
     import {
         Globe,
-        RgbTerrain,
-        XYZ,
-        control
+        GlobusRgbTerrain,
+        OpenStreetMap
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    let osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
 
     let globus = new Globe({
         target: "globus",
-        name: "Mapbox Earth",
-        maxGridSize: 256,
-        terrain: new RgbTerrain(),
-        layers: [osm],
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(null, {heightFactor: 1.3}),
+        layers: [new OpenStreetMap()],
+        atmosphereEnabled: false,
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
     });
 
-    globus.planet.addControl(new control.KeyboardNavigation());
 </script>
 </body>
 

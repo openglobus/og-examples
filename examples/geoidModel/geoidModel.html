@@ -8,7 +8,7 @@
 
 <body style="margin:0;">
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
@@ -16,27 +16,20 @@
         GlobusTerrain,
         EmptyTerrain,
         XYZ,
-        Geoid
+        Geoid,
+        OpenStreetMap
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
     class GeoidTerrain extends GlobusTerrain {
         constructor(name, options) {
-            super(name, options);
-
-            options = options || {};
-
+            super(name, options = {});
             this.equalizeVertices = true;
-
             this.equalizeNormals = false;
-
             this.minZoom = options.minZoom != undefined ? options.minZoom : 1;
-
             this.maxZoom = options.maxZoom != undefined ? options.maxZoom : 11;
-
             this.gridSizeByZoom = options.gridSizeByZoom || [
                 64, 32, 32, 16, 16, 16, 8, 16, 16, 16, 16, 16, 32, 16, 32, 16, 32, 16, 32, 16, 8, 4
             ];
-
             this.plainGridSize = 32;
         }
 
@@ -49,24 +42,12 @@
 
         isBlur(segment) {
             false;
-            //if (segment.tileZoom >= 18) {
-            //    return true;
-            //}
-            //return false;
         }
     }
 
-
-    let osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
     document.getElementById("globus").innerHTML = "Loading geoid...";
 
-    Geoid.loadModel("//openglobus.org/geoid/egm84-30.pgm")
+    Geoid.loadModel("https://openglobus.org/geoid/egm84-30.pgm")
         .then((m) => {
 
             document.getElementById("globus").innerHTML = "";
@@ -81,12 +62,12 @@
                 terrain: new GeoidTerrain("egm96-15.pgm", {
                     geoid: geoid
                 }),
-                maxAltitude: 3500000,
-                layers: [osm],
+                layers: [new OpenStreetMap()],
                 resourcesSrc: "../../external/og/lib/@openglobus/res",
                 fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
             });
             globe.planet.setHeightFactor(7000);
+            globe.planet.setLodSize(150, 150);
         });
 
 </script>

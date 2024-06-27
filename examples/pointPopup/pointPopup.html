@@ -9,7 +9,7 @@
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
@@ -43,6 +43,8 @@
 
     globe.planet.renderer.events.on("lclick", (e) => {
         let lonLat = globe.planet.getLonLatFromPixelTerrain(e);
+
+        if (!lonLat) return;
 
         globe.planet.terrain.getHeightAsync(lonLat, (h) => {
             myPopup.setContent(`lon = ${lonLat.lon.toFixed(5)}<br/>lat = ${lonLat.lat.toFixed(5)}<br/>height(msl) = ${Math.round(h)} m`);
