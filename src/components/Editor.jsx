@@ -56,14 +56,15 @@ function Editor({examplesUrl, onRun, onRaw, code, id}) {
                 <Tab eventKey="html" title="Head">
                     <div className="og-examples__code">
                         <CodeEditor
+                            data-color-mode="dark"
                             value={head}
                             language="html"
                             placeholder="<head>...</head>"
                             onChange={handleHeadChange}
                             padding={15}
                             style={{
-                                fontSize: 12,
-                                backgroundColor: "#f5f5f5",
+                                fontSize: 14,
+                                //backgroundColor: "#f5f5f5",
                                 fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                             }}
                         />
@@ -73,14 +74,15 @@ function Editor({examplesUrl, onRun, onRaw, code, id}) {
                 <Tab eventKey="body" title="HTML">
                     <div className="og-examples__code">
                         <CodeEditor
+                            data-color-mode="dark"
                             value={body}
                             language="html"
                             placeholder="<body>...</body>"
                             onChange={handleBodyChange}
                             padding={15}
                             style={{
-                                fontSize: 12,
-                                backgroundColor: "#f5f5f5",
+                                fontSize: 14,
+                                //backgroundColor: "#f5f5f5",
                                 fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                             }}
                         />
@@ -90,14 +92,15 @@ function Editor({examplesUrl, onRun, onRaw, code, id}) {
                 <Tab eventKey="script" title="Script">
                     <div className="og-examples__code">
                         <CodeEditor
+                            data-color-mode="dark"
                             value={script}
                             language="js"
                             placeholder="<script>...</script>"
                             onChange={handleScriptChange}
                             padding={15}
                             style={{
-                                fontSize: 12,
-                                backgroundColor: "#f5f5f5",
+                                fontSize: 14,
+                                //backgroundColor: "#f5f5f5",
                                 fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                             }}
                         />
