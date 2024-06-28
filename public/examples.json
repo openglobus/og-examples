@@ -206,5 +206,9 @@
   {
     "label": "WMS Layer",
     "id": "wms"
+  },
+  {
+    "label": "EPSG4326 Globe",
+    "id": "epsg4326"
   }
 ]
