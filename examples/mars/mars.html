@@ -34,7 +34,7 @@
         geoid: null,
         maxZoom: 6,
         url: "https://{s}.terrain.openglobus.org/public/mars/elv/{z}/{x}/{y}.png",
-        heightFactor: 7
+        heightFactor: 5
     });
 
     let globe = new Globe({
@@ -48,6 +48,9 @@
     });
 
     globe.planet.addControls([new control.DebugInfo()]);
+
+    globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(183, 133, 135)";
+    globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(41, 41, 41)";
 
 </script>
 </body>
