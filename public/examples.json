@@ -84,6 +84,10 @@
     "id": "geoObject"
   },
   {
+    "label": "GeoObject Pitch Yaw Roll",
+    "id": "pitchYawRoll"
+  },
+  {
     "label": "GeoTexture2d(Framebuffer) Layer",
     "id": "geoTexture2d"
   },
