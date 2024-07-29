@@ -214,5 +214,9 @@
   {
     "label": "EPSG4326 Globe",
     "id": "epsg4326"
+  },
+  {
+    "label": "Lines And Circles",
+    "id": "linesCircles"
   }
 ]

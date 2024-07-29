@@ -15,7 +15,7 @@
     import {
         Globe,
         GlobusTerrain,
-        XYZ,
+        OpenStreetMap,
         LonLat,
         Vector,
         Entity
@@ -60,12 +60,7 @@
         'async': false
     });
 
-    const osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
+    const osm = new OpenStreetMap();
 
     const globe = new Globe({
         target: "globus",

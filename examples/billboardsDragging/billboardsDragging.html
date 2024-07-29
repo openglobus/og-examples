@@ -18,7 +18,7 @@
             Globe,
             Vector,
             GlobusTerrain,
-            XYZ
+            OpenStreetMap
         } from "../../external/og/lib/@openglobus/og.esm.js";
 
         let pointLayer = new Vector("points", {
@@ -71,12 +71,7 @@
             pickingObject = null;
         });
 
-        let osm = new XYZ("OSM", {
-            isBaseLayer: true,
-            url: "//b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: 'Data @ OpenStreetMap contributors, ODbL'
-        });
+        let osm = new OpenStreetMap();
 
         let globe = new Globe({
             target: "earth",

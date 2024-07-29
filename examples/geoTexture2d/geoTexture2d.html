@@ -129,22 +129,15 @@
     'use strict';
 
     import {
-        Entity,
-        EntityCollection,
         Globe,
         GlobusTerrain,
-        XYZ,
+        OpenStreetMap,
         GeoTexture2d,
         Framebuffer,
         Program
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    let osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
+    let osm = new OpenStreetMap();
 
     let geoTex = new GeoTexture2d("Vector Field", {
         corners: [[-2.3565396747912852, 51.75253410564987], [2.173417790597063, 50.95010370686831], [1.26786087508808, 49.01434061915433], [-3.153942423073776, 49.72627636180551]],

@@ -1,0 +1,158 @@
+<html>
+
+<head>
+    <title>GeoObject example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="earth" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Entity,
+        Globe,
+        EmptyTerrain,
+        Bing,
+        Object3d,
+        LonLat,
+        Vector,
+        math,
+    } from "../../external/og/lib/@openglobus/og.esm.js";
+
+    // Coordinates to show on the map
+    let coords = [
+        [42.86, 10.385],
+        [8.74, 40.39],
+        [15.23, 21.62],
+        [4.77, 13.36]
+    ];
+
+    const pointerSphere = Object3d.createCylinder(1, 1, 0.1, 16, 16);
+
+
+    let poi = new Vector("LinesCircles", {
+        pickingScale: 1,
+        pickingEnabled: true,
+        scaleByDistance: [1.0, math.MAX32, 1.0],
+        relativeToGround: false,
+        useLighting: false,
+        //polygonOffsetUnits: 0
+    });
+
+    poi.events.on("mouseleave", function (e) {
+        e.pickingObject.geoObject.setColor(1, 0, 0);
+    });
+
+    poi.events.on("mouseenter", function (e) {
+        e.pickingObject.geoObject.setColor(0, 1, 0);
+    });
+
+    poi.events.on("lclick", function (e) {
+        console.log(e.pickingObject);
+    });
+
+    let pathEntity = new Entity({
+        polyline: {
+            thickness: 15,
+            color: "red",
+            pathLonLat: []
+        }
+    })
+
+    let path = new Vector("Path", {
+        pickingEnabled: false,
+        relativeToGround: false,
+        entities: [pathEntity],
+        //polygonOffsetUnits: 0,
+    });
+
+    let globus = new Globe({
+        target: "earth",
+        name: "Earth",
+        layers: [new Bing(), poi, path],
+        terrain: new EmptyTerrain(),
+        atmosphereEnabled: true,
+        //viewExtent: [5.5738505, 34.7405496, 19.7275206, 57.2669803]
+    });
+
+    let poiArr = [];
+    let pathArr = [];
+
+    for (let i = 0; i < coords.length; i++) {
+
+        let ci = coords[i];
+
+        if (i < coords.length - 1) {
+            pathArr.push(getPath(globus.planet.ellipsoid, new LonLat(coords[i][0], coords[i][1]), new LonLat(coords[i + 1][0], coords[i + 1][1])).path);
+        }
+
+        poiArr.push(new Entity({
+            lonlat: new LonLat(ci[0], ci[1], 0),
+            geoObject: {
+                color: "red",
+                scale: 0.015,
+                instanced: true,
+                tag: `pointerSphere`,
+                object3d: pointerSphere
+            },
+            properties: {
+                name: "First"
+            }
+        }));
+    }
+
+    poi.setEntities(poiArr);
+
+    pathEntity.polyline.setPath3v(pathArr);
+
+    function getPath(ell, start, end) {
+        const POINTS_NUMBER = 70;
+        const HEIGHT_DENOM = 17;
+        const P25 = 0.25;
+        const P75 = 0.75;
+
+        let {distance, initialAzimuth} = ell.inverse(start, end);
+
+        let p25 = ell.getGreatCircleDestination(start, initialAzimuth, distance * P25),
+            p75 = ell.getGreatCircleDestination(start, initialAzimuth, distance * P75);
+
+        start.height = 0;
+        end.height = 0;
+        let h = distance / HEIGHT_DENOM;
+        p25.height = h;
+        p75.height = h;
+
+        let startCart = ell.lonLatToCartesian(start),
+            endCart = ell.lonLatToCartesian(end),
+            p25Cart = ell.lonLatToCartesian(p25),
+            p75Cart = ell.lonLatToCartesian(p75);
+
+        let path = [],
+            colors = [];
+
+        let color = [math.random(0, 2), math.random(0, 2), math.random(0, 2)];
+
+        for (let i = 0; i <= POINTS_NUMBER; i++) {
+            let cn = math.bezier3v(i / POINTS_NUMBER, startCart, p25Cart, p75Cart, endCart);
+            // bugfix with polylines on the edge
+            if (i === 0 || i === POINTS_NUMBER) {
+                path.push(cn);
+            }
+            path.push(cn);
+            colors.push([color[0], color[1], color[2], 0.1]);
+        }
+
+        return {
+            path: path,
+            colors: colors
+        };
+    }
+
+</script>
+</body>
+
+</html>

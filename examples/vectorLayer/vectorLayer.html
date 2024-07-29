@@ -15,19 +15,11 @@
         Globe,
         Entity,
         GlobusTerrain,
-        XYZ,
+        OpenStreetMap,
         Vector
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    var osm = new XYZ("OpenStreetMap", {
-        specular: [0.0003, 0.00012, 0.00001],
-        shininess: 20,
-        diffuse: [0.89, 0.9, 0.83],
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
+    var osm = new OpenStreetMap();
 
     var globus = new Globe({
         target: "globus",

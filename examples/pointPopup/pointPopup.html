@@ -15,16 +15,11 @@
     import {
         Globe,
         GlobusTerrain,
-        XYZ,
+        OpenStreetMap,
         Popup
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    var osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
+    var osm = new OpenStreetMap();
 
     var globe = new Globe({
         target: "globus",
