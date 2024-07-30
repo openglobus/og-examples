@@ -218,5 +218,9 @@
   {
     "label": "Lines And Circles",
     "id": "linesCircles"
+  },
+  {
+    "label": "CO2",
+    "id": "co2"
   }
 ]

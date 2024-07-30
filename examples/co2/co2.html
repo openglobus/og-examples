@@ -1,0 +1,91 @@
+﻿<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<div style="position:absolute;padding:10px;left:0;top:0;">
+</div>
+<script type="module" id="og-sandbox-script">
+
+    'use strict';
+
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        Bing,
+        GeoVideo,
+        control
+    } from "../../external/og/lib/@openglobus/og.esm.js";
+
+    const FULL_EXTENT = [[-180, 90], [180, 90], [180, -90], [-180, -90]];
+
+    let sat = new Bing();
+
+    let ff = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_FF_quality_ScienceOnASphere_2048p30.mp4", {
+        src: "SOS_TaggedCO2_4-1-2024a_co2_FF_quality_ScienceOnASphere_2048p30.mp4",
+        corners: FULL_EXTENT,
+        visibility: true,
+        isBaseLayer: true,
+        attribution: 'NASA',
+        opacity: 1.0,
+        fullExtent: true
+    });
+
+    let nee = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_NEE_quality_ScienceOnASphere_2048p30.mp4", {
+        src: "SOS_TaggedCO2_4-1-2024a_co2_NEE_quality_ScienceOnASphere_2048p30.mp4",
+        corners: FULL_EXTENT,
+        visibility: true,
+        isBaseLayer: true,
+        attribution: 'NASA',
+        opacity: 1.0,
+        fullExtent: true
+    });
+
+    let ocn = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_OCN_quality_ScienceOnASphere_2048p30.mp4", {
+        src: "SOS_TaggedCO2_4-1-2024a_co2_OCN_quality_ScienceOnASphere_2048p30.mp4",
+        corners: FULL_EXTENT,
+        visibility: true,
+        isBaseLayer: true,
+        attribution: 'NASA',
+        opacity: 1.0,
+        fullExtent: true
+    });
+
+    let foursources = new GeoVideo("SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4", {
+        src: "SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4",
+        corners: FULL_EXTENT,
+        visibility: true,
+        isBaseLayer: true,
+        attribution: 'NASA',
+        opacity: 1.0,
+        fullExtent: true
+    });
+
+    let globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(null, {heightFactor: 7.1}),
+        layers: [sat, ff, nee, ocn, foursources],
+        atmosphereEnabled: false,
+        transitionOpacityEnabled: false,
+        resourcesSrc: "../../external/og/lib/@openglobus/res",
+        fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
+        sun: {
+            active: false
+        }
+    });
+
+    globus.planet.addControl(new control.LayerSwitcher());
+    globus.planet.addControl(new control.Lighting());
+
+    globus.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(100, 100, 100)";
+    globus.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
+</script>
+</body>
+
+</html>
