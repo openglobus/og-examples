@@ -21,9 +21,6 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        XYZ,
-        Bing,
-        GeoImage,
         GeoVideo,
         Layer
     } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -39,11 +36,11 @@
     });
 
     let foursources = new GeoVideo("SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4", {
-        src: "SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4",
+        src: "https://www.openglobus.org/SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4",
         corners: [[-180, 90], [180, 90], [180, -90], [-180, -90]],
-        visibility: false,
-        isBaseLayer: false,
-        attribution: 'NASA',
+        visibility: true,
+        isBaseLayer: true,
+        attribution: 'Four Sources',
         opacity: 1.0,
         fullExtent: true
     });
@@ -52,7 +49,7 @@
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(null, {heightFactor: 7.1}),
-        layers: [attr, background, ff, nee, bb, ocn, foursources],
+        layers: [attr, foursources],
         atmosphereEnabled: false,
         transitionOpacityEnabled: false,
         resourcesSrc: "../../external/og/lib/@openglobus/res",
