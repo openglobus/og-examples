@@ -14,53 +14,35 @@
 
     'use strict';
 
+    //
+    // Videos from https://svs.gsfc.nasa.gov/5273/
+    //
+
     import {
         Globe,
         GlobusRgbTerrain,
+        XYZ,
         Bing,
+        GeoImage,
         GeoVideo,
-        control
+        Layer
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    const FULL_EXTENT = [[-180, 90], [180, 90], [180, -90], [-180, -90]];
-
-    let sat = new Bing();
-
-    let ff = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_FF_quality_ScienceOnASphere_2048p30.mp4", {
-        src: "SOS_TaggedCO2_4-1-2024a_co2_FF_quality_ScienceOnASphere_2048p30.mp4",
-        corners: FULL_EXTENT,
+    let attr = new Layer("", {
+        attribution: `2021 - <a href="https://svs.gsfc.nasa.gov/5273/">Atmospheric Carbon Dioxide Visualization</a>>`,
+        url: "",
         visibility: true,
-        isBaseLayer: true,
-        attribution: 'NASA',
-        opacity: 1.0,
-        fullExtent: true
-    });
-
-    let nee = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_NEE_quality_ScienceOnASphere_2048p30.mp4", {
-        src: "SOS_TaggedCO2_4-1-2024a_co2_NEE_quality_ScienceOnASphere_2048p30.mp4",
-        corners: FULL_EXTENT,
-        visibility: true,
-        isBaseLayer: true,
-        attribution: 'NASA',
-        opacity: 1.0,
-        fullExtent: true
-    });
-
-    let ocn = new GeoVideo("SOS_TaggedCO2_4-1-2024a_co2_OCN_quality_ScienceOnASphere_2048p30.mp4", {
-        src: "SOS_TaggedCO2_4-1-2024a_co2_OCN_quality_ScienceOnASphere_2048p30.mp4",
-        corners: FULL_EXTENT,
-        visibility: true,
-        isBaseLayer: true,
-        attribution: 'NASA',
-        opacity: 1.0,
-        fullExtent: true
+        isBaseLayer: false,
+        minNativeZoom: 0,
+        maxNativeZoom: 0,
+        hideInLayerSwitcher: true
     });
 
     let foursources = new GeoVideo("SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4", {
         src: "SOS_TaggedCO2_10-6-2023a_co2_foursources_quality_ScienceOnASphere_2048p30.mp4",
-        corners: FULL_EXTENT,
-        visibility: true,
-        isBaseLayer: true,
+        corners: [[-180, 90], [180, 90], [180, -90], [-180, -90]],
+        visibility: false,
+        isBaseLayer: false,
         attribution: 'NASA',
         opacity: 1.0,
         fullExtent: true
@@ -70,7 +52,7 @@
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(null, {heightFactor: 7.1}),
-        layers: [sat, ff, nee, ocn, foursources],
+        layers: [attr, background, ff, nee, bb, ocn, foursources],
         atmosphereEnabled: false,
         transitionOpacityEnabled: false,
         resourcesSrc: "../../external/og/lib/@openglobus/res",
@@ -79,9 +61,6 @@
             active: false
         }
     });
-
-    globus.planet.addControl(new control.LayerSwitcher());
-    globus.planet.addControl(new control.Lighting());
 
     globus.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(100, 100, 100)";
     globus.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
