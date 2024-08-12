@@ -15,7 +15,7 @@
         import {
             Entity,
             Globe,
-            GlobusTerrain,
+            GlobusRgbTerrain,
             XYZ,
             Vector,
             math,
@@ -41,7 +41,7 @@
         const globe = new Globe({
             target: "globus",
             name: "Earth",
-            terrain: new GlobusTerrain(),
+            terrain: new GlobusRgbTerrain(),
             layers: [osm, pointLayer],
             resourcesSrc: "../../external/og/lib/@openglobus/res",
             fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

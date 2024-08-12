@@ -17,7 +17,7 @@ import {
     Globe,
     Extent,
     LonLat,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     control
 } from "../../external/og/lib/@openglobus/og.esm.js";
 
@@ -39,7 +39,7 @@ var globus = new Globe({
     target: "earth",
     name: "Earth",
     maxAltitude: 15000000,
-    terrain: new GlobusTerrain("19", {
+    terrain: new GlobusRgbTerrain("19", {
         maxZoom: 14
     }),
     layers: [osm],

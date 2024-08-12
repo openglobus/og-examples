@@ -12,7 +12,7 @@
 
 import {
     Globe,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     XYZ,
     SkyBox
 } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -29,7 +29,7 @@ var globus = new Globe({
     target: "globus",
     skybox: SkyBox.createDefault('../../res/'),
     name: "Earth",
-    terrain: new GlobusTerrain(),
+    terrain: new GlobusRgbTerrain(),
     layers: [osm],
     sun: {
         active: true

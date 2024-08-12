@@ -14,7 +14,7 @@ Grab the corners and drag!
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         GeoImage,
         XYZ,
         control
@@ -38,7 +38,7 @@ Grab the corners and drag!
     let globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, img],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

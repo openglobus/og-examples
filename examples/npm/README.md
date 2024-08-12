@@ -20,7 +20,7 @@ After installing, you can import components of globus in the following way (full
 webpack > 5 (use exports from package.json)
 ```javascript
 import { Globe, Entity } from '@openglobus/og';
-import { GlobusTerrain } from '@openglobus/og/terrain';
+import { GlobusRgbTerrain } from '@openglobus/og/terrain';
 import { XYZ, Vector } from '@openglobus/og/layer';
 ```
 webpack < 5 (from common globus namespace):
@@ -29,7 +29,7 @@ import { Globe, Entity, terrain, layer } from '@openglobus/og';
 //...
 const layer = new layer.XYZ();
 //...
-const layer = new terrrain.GlobusTerrain();
+const layer = new terrrain.GlobusRgbTerrain();
 
 ```
 

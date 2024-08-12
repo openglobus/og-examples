@@ -18,7 +18,7 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         Bing,
         GeoVideo,
     } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -60,7 +60,7 @@
     let globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [sat, imergac, lv],
         atmosphereEnabled: true,
         resourcesSrc: "../../external/og/lib/@openglobus/res",

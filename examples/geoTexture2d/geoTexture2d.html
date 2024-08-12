@@ -130,7 +130,7 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         OpenStreetMap,
         GeoTexture2d,
         Framebuffer,
@@ -152,7 +152,7 @@
     let globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, geoTex],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

@@ -50,7 +50,7 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         OpenStreetMap,
         Bing,
         control
@@ -69,7 +69,7 @@
     window.globus1 = new Globe({
         target: "globus1",
         name: "Earth One",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [new OpenStreetMap()],
         viewExtent: EXTENT,
         controls: [

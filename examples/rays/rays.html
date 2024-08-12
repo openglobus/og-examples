@@ -11,7 +11,7 @@ import {
     wgs84,
     Globe,
     Entity,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     XYZ,
     LonLat,
     Vector
@@ -73,7 +73,7 @@ rayLayer.add(entityMoscow);
 var globus = new Globe({
     target: "globus",
     name: "Earth",
-    terrain: new GlobusTerrain(),
+    terrain: new GlobusRgbTerrain(),
     layers: [osm, rayLayer],
     sun: {
         active: true

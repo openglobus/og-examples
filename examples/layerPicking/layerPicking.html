@@ -27,7 +27,7 @@
         Globe,
         Layer,
         WMS,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         XYZ,
         Bing
     } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -64,7 +64,7 @@
     var globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, sat, states],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

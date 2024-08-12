@@ -16,7 +16,7 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         XYZ,
         utils,
         OpenStreetMap,
@@ -38,7 +38,7 @@
     let globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, sat],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

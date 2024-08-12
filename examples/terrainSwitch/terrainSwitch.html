@@ -18,7 +18,7 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         OpenStreetMap,
         GlobusRgbTerrain,
         EmptyTerrain,
@@ -31,7 +31,7 @@
     };
 
     document.getElementById("btnGlobus").onclick = function () {
-        globus.planet.setTerrain(globusTerrain);
+        globus.planet.setTerrain(GlobusRgbTerrain);
     };
 
     document.getElementById("btnMapbox").onclick = function () {
@@ -43,7 +43,7 @@
     };
 
     let emptyTerrain = new EmptyTerrain(),
-        globusTerrain = new GlobusTerrain(),
+        GlobusRgbTerrain = new GlobusRgbTerrain(),
         highResTerrain = new GlobusRgbTerrain(),
         bilTerrain = new BilTerrain({
             url: "//openglobus.org/geoserver/og/",

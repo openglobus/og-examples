@@ -12,7 +12,7 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         XYZ,
         WMS,
         control
@@ -40,7 +40,7 @@
     var globus = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, ne],
         viewExtent: [-74.26124, 40.67448, -73.77663, 40.78772],
         resourcesSrc: "../../external/og/lib/@openglobus/res",

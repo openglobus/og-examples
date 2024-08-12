@@ -16,7 +16,7 @@
     <script type="module" id="og-sandbox-script">
 import {
     Globe,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     OpenStreetMap,
     control
 } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -26,7 +26,7 @@ let osm = new OpenStreetMap();
 var globus = new Globe({
     target: "earth",
     name: "Earth",
-    terrain: new GlobusTerrain(),
+    terrain: new GlobusRgbTerrain(),
     layers: [osm],
     resourcesSrc: "../../external/og/lib/@openglobus/res",
     fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

@@ -15,7 +15,7 @@
     import {
         Entity,
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         Bing,
         Object3d,
         LonLat,
@@ -46,7 +46,7 @@
         target: "earth",
         name: "Earth",
         layers: [new Bing(), traffic],
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         atmosphereEnabled: true,
         frustums: [[20000, 20000000]], // Performance tweak in case we don't need to use close up views
         minAltitude: 20000,

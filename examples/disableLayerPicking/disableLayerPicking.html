@@ -25,7 +25,7 @@
 
         import {
             Globe,
-            GlobusTerrain,
+            GlobusRgbTerrain,
             XYZ,
             Vector,
         } from "../../external/og/lib/@openglobus/og.esm.js";
@@ -81,7 +81,7 @@
         var globus = new Globe({
             target: "globus",
             name: "Earth",
-            terrain: new GlobusTerrain(),
+            terrain: new GlobusRgbTerrain(),
             layers: [sat, osm, vec],
             resourcesSrc: "../../external/og/lib/@openglobus/res",
             fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

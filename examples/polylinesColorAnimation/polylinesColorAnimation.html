@@ -14,7 +14,7 @@
     import {
         math,
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         Bing,
         LonLat,
         Vector,
@@ -128,7 +128,7 @@
         name: "Earth",
         layers: [sat, collection],
         atmosphereEnabled: true,
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
         sun: {

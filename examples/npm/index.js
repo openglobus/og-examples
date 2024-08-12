@@ -1,5 +1,5 @@
 import { Globe, Entity } from '@openglobus/og';
-import { GlobusTerrain } from '@openglobus/og/terrain';
+import { GlobusRgbTerrain } from '@openglobus/og/terrain';
 import { XYZ, Vector } from '@openglobus/og/layer';
 
 var osm = new XYZ("OpenStreetMap", {
@@ -12,7 +12,7 @@ var osm = new XYZ("OpenStreetMap", {
 var globus = new Globe({
     target: "globus",
     name: "Earth",
-    terrain: new GlobusTerrain(),
+    terrain: new GlobusRgbTerrain(),
     layers: [osm],
     autoActivated: true
 });

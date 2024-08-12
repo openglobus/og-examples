@@ -13,14 +13,14 @@
 
     import {
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         EmptyTerrain,
         XYZ,
         Geoid,
         OpenStreetMap
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    class GeoidTerrain extends GlobusTerrain {
+    class GeoidTerrain extends GlobusRgbTerrain {
         constructor(name, options) {
             super(name, options = {});
             this.equalizeVertices = true;

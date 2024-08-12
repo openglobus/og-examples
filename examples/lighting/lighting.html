@@ -15,7 +15,7 @@
 
 import {
     Globe,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     OpenStreetMap,
     control,
     Bing
@@ -29,7 +29,7 @@ let sat = new Bing();
 var globe = new Globe({
     target: "earth",
     name: "Earth",
-    terrain: new GlobusTerrain(),
+    terrain: new GlobusRgbTerrain(),
     layers: [osm, sat],
     resourcesSrc: "../../external/og/lib/@openglobus/res",
     fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

@@ -107,7 +107,7 @@
         jd,
         Clock,
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         XYZ
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
@@ -140,7 +140,7 @@
         target: "globus",
         name: "Earth",
         layers: [osm],
-        terrain: new GlobusTerrain("OpenGlobus"),
+        terrain: new GlobusRgbTerrain("OpenGlobus"),
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
     });

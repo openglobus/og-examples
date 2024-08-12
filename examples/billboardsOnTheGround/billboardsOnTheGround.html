@@ -16,7 +16,7 @@
             Globe,
             wgs84,
             Vector,
-            GlobusTerrain,
+            GlobusRgbTerrain,
             OpenStreetMap,
             LonLat,
             math
@@ -52,7 +52,7 @@
         let globus = new Globe({
             target: "globus",
             name: "Earth",
-            terrain: new GlobusTerrain(),
+            terrain: new GlobusRgbTerrain(),
             layers: [osm, pointLayer],
             resourcesSrc: "../../external/og/lib/@openglobus/res",
             fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

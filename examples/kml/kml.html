@@ -19,7 +19,7 @@
 import {
     KML,
     Globe,
-    GlobusTerrain,
+    GlobusRgbTerrain,
     XYZ
 } from "../../external/og/lib/@openglobus/og.esm.js";
 
@@ -45,7 +45,7 @@ document.getElementById('viewExtent').onclick = () => {
 
     globus = new Globe({
         target: 'globus',
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm],
         resourcesSrc: "../../external/og/lib/@openglobus/res",
         fontsSrc: "../../external/og/lib/@openglobus/res/fonts"

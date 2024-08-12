@@ -14,7 +14,7 @@
         Vector,
         Entity,
         Globe,
-        GlobusTerrain,
+        GlobusRgbTerrain,
         XYZ
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
@@ -58,7 +58,7 @@
     let globe = new Globe({
         name: "Earth",
         target: "earth",
-        terrain: new GlobusTerrain(),
+        terrain: new GlobusRgbTerrain(),
         layers: [osm, townLabels, townMarkers],
         sun: {
             active: false
