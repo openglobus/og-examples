@@ -23,31 +23,46 @@
         moon
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
-    const sat = new XYZ("Mars-Viking", {
+    const sat = new XYZ("moon", {
         isBaseLayer: true,
-        //'url': "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDIM/MapServer/tile/{z}/{y}/{x}?blankTile=false",
-        url: "https://terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
-        'visibility': true,
+        url: "https://{s}.terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
+        visibility: true,
         maxNativeZoom: 10,
     });
 
-    var highResTerrain = new RgbTerrain("Moon", {
-        geoidSrc: null,
-        maxZoom: 7,
-        maxNativeZoom: 7,
-        url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png"
+    const appoloSat = new XYZ("APPOLO_SAT", {
+        isBaseLayer: false,
+        url: "https://{s}.terrain.openglobus.org/moon/sat_appolo/{z}/{x}/{y}.png",
+        visibility: true,
+        maxNativeZoom: 12,
+        extent: [[30.4294, 19.9771], [30.9162, 20.3639]]
     });
 
-    let globe = new Globe({
+    var highResTerrain = new RgbTerrain(null, {
+        geoidSrc: null,
+        maxZoom: 7,
+        //maxNativeZoom: 7,
+        url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png",
+        heightFactor: 1
+    });
+
+    window.globe = new Globe({
         ellipsoid: moon,
-        name: "moon",
+        name: "mars",
         quadTreeStrategyPrototype: quadTreeStrategyType.equi,
         target: "globus",
         terrain: highResTerrain,
-        layers: [sat],
+        layers: [sat, appoloSat],
         nightTextureSrc: null,
-        specularTextureSrc: null
+        specularTextureSrc: null,
+        atmosphereEnabled: false
     });
+
+    globe.planet.addControl(new control.ToggleWireframe());
+    globe.planet.addControl(new control.DebugInfo());
+    globe.planet.addControl(new control.Lighting());
+    globe.planet.addControl(new control.LayerSwitcher());
+    globe.planet.addControl(new control.ElevationProfileControl());
 
     globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
     globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
