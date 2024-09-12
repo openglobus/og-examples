@@ -28,12 +28,13 @@
         //'url': "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDIM/MapServer/tile/{z}/{y}/{x}?blankTile=false",
         url: "https://terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
         'visibility': true,
-        maxNativeZoom: 8,
+        maxNativeZoom: 10,
     });
 
     var highResTerrain = new RgbTerrain("Moon", {
         geoidSrc: null,
-        maxZoom: 12,
+        maxZoom: 7,
+        maxNativeZoom: 7,
         url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png"
     });
 

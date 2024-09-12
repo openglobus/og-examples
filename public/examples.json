@@ -152,6 +152,10 @@
     "id": "mars"
   },
   {
+    "label": "Moon",
+    "id": "moon"
+  },
+  {
     "label": "Multiple Globuses",
     "id": "multipleViewports"
   },
