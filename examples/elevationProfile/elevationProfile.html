@@ -37,19 +37,10 @@
         attribution: `Digital Elevation swissALTI3D ©swisstopo`,
     });
 
-    var highResTerrain = new RgbTerrain(null, {
-        maxZoom: 17,
-        url: "https://{s}.terrain.openglobus.org/all/{z}/{x}/{y}.png",
-        plainGridSize: 128,
-        gridSizeByZoom: [
-            64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 16, 16, 32, 32, 32, 64, 64, 64, 64, 32, 16, 8
-        ]
-    });
-
     const globus = new Globe({
         target: "earth",
         name: "Earth",
-        terrain: highResTerrain,
+        terrain: new GlobusRgbTerrain(),
         layers: [new Bing(), st],
         atmosphereEnabled: true,
         resourcesSrc: "../../external/og/lib/@openglobus/res",
