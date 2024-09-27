@@ -20,18 +20,12 @@
         Globe,
         GlobusRgbTerrain,
         OpenStreetMap,
-        GlobusRgbTerrain,
         EmptyTerrain,
-        BilTerrain,
-        control
+        BilTerrain
     } from "../../external/og/lib/@openglobus/og.esm.js";
 
     document.getElementById("btnEmpty").onclick = function () {
         globus.planet.setTerrain(emptyTerrain);
-    };
-
-    document.getElementById("btnGlobus").onclick = function () {
-        globus.planet.setTerrain(GlobusRgbTerrain);
     };
 
     document.getElementById("btnMapbox").onclick = function () {
@@ -43,7 +37,6 @@
     };
 
     let emptyTerrain = new EmptyTerrain(),
-        GlobusRgbTerrain = new GlobusRgbTerrain(),
         highResTerrain = new GlobusRgbTerrain(),
         bilTerrain = new BilTerrain({
             url: "//openglobus.org/geoserver/og/",
