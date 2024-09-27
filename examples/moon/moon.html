@@ -100,6 +100,7 @@
         name: "mars",
         quadTreeStrategyPrototype: quadTreeStrategyType.equi,
         target: "globus",
+        maxAltitude: 5841727,
         terrain: highResTerrain,
         layers: [sat, sat2, appoloSat, mountains, craters, maria, vallis, lacus],
         nightTextureSrc: null,
@@ -116,6 +117,9 @@
     globe.planet.addControl(new control.TimelineControl());
     globe.planet.addControl(new control.LayerSwitcher());
     globe.planet.addControl(new control.ElevationProfileControl());
+    globe.planet.addControl(new control.RulerSwitcher({
+        ignoreTerrain: false
+    }));
 
     globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
     globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
@@ -123,94 +127,94 @@
 
     fetch("./mountains.json").then((r) => r.json()).then((data) => {
         let entities = data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties["Feature Name"],
-                0,
-                0,
-                30 + 3,
-                "Ephesis-Regular",
-                30,
-                true,
-                /*"rgb(144,245,455)"*/
-                "rgb(355,355,355)")
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties["Feature Name"],
+            0,
+            0,
+            30 + 3,
+            "Ephesis-Regular",
+            30,
+            true,
+            /*"rgb(144,245,455)"*/
+            "rgb(355,355,355)")
         );
         mountains.setEntities(entities);
     });
 
     fetch("./craters.json").then((r) => r.json()).then((data) => {
         let entities = data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                `${f.properties.name} ${f.properties.diameter} km`,
-                0,
-                0.12,
-                0,
-                "Karla-Medium",
-                16,
-                false,
-                "rgba(255,165,48,1.0)")
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            `${f.properties.name} ${f.properties.diameter} km`,
+            0,
+            0.12,
+            0,
+            "Karla-Medium",
+            16,
+            false,
+            "rgba(255,165,48,1.0)")
         );
         craters.setEntities(entities);
     });
 
     fetch("./lacus.json").then((r) => r.json()).then((data) => {
         let entities = data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties.name,
-                0,
-                0,
-                26 + 3,
-                "Karla-Light",
-                26,
-                false,
-                "rgba(155,155,355,0.85)",
-                15000)
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties.name,
+            0,
+            0,
+            26 + 3,
+            "Karla-Light",
+            26,
+            false,
+            "rgba(155,155,355,0.85)",
+            15000)
         );
         lacus.setEntities(entities);
     });
 
     fetch("./mare.json").then((r) => r.json()).then((data) => {
         let entities = data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties.description.toUpperCase(),
-                0.2,
-                0,
-                35 + 3,
-                "Karla-Light",
-                35,
-                false,
-                "rgba(155,155,355,0.65)",
-                15000)
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties.description.toUpperCase(),
+            0.2,
+            0,
+            35 + 3,
+            "Karla-Light",
+            35,
+            false,
+            "rgba(155,155,355,0.65)",
+            15000)
         );
         maria.setEntities(entities);
     });
 
     fetch("./vallis.json").then((r) => r.json()).then((data) => {
         let entities = data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties.name,
-                0,
-                0,
-                21 + 3,
-                "Karla-Italic",
-                21,
-                false,
-                "rgba(255,196,137,1.0)",
-                12000)
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties.name,
+            0,
+            0,
+            21 + 3,
+            "Karla-Italic",
+            21,
+            false,
+            "rgba(255,196,137,1.0)",
+            12000)
         );
         vallis.setEntities(entities);
     });
 
     function createLabelEntity(
-            lonlat,
-            text,
-            letterSpacing = 0,
-            outline = 0,
-            offsetY = 0,
-            fontFace = "Ephesis-Regular",
-            fontSize = 21,
-            showSpin = true,
-            color = "white",
-            forceHeight
+        lonlat,
+        text,
+        letterSpacing = 0,
+        outline = 0,
+        offsetY = 0,
+        fontFace = "Ephesis-Regular",
+        fontSize = 21,
+        showSpin = true,
+        color = "white",
+        forceHeight
     ) {
         const ell = globe.planet.ellipsoid;
 
