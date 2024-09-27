@@ -188,10 +188,6 @@
     "id": "ruler"
   },
   {
-    "label": "Sky Box",
-    "id": "skyBox"
-  },
-  {
     "label": "Strip Entities",
     "id": "strip"
   },
