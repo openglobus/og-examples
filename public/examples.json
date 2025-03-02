@@ -20,10 +20,6 @@
     "id": "billboardsOnTheGround"
   },
   {
-    "label": "BIL Terrain",
-    "id": "bilTerrain"
-  },
-  {
     "label": "Fly Camera",
     "id": "cameraFly"
   },
@@ -122,10 +118,6 @@
   {
     "label": "Layer Opacity",
     "id": "layerOpacity"
-  },
-  {
-    "label": "Layer Picking",
-    "id": "layerPicking"
   },
   {
     "label": "layer Switcher Control",

@@ -2,6 +2,7 @@
     padding-top: 20px;
     display: flex;
     flex-direction: column;
+    background-color: var(--black);
 }
 
 .og-sandbox_examples .mb-3 {
@@ -24,8 +25,8 @@
 }
 
 .og-sandbox_list a.active button {
-    background-color: #0d6efd;
-    color: white;
+    background-color: var(--blue);
+    color: #c8d1d9;
 }
 
 .og-sandbox_list a button {
@@ -34,4 +35,6 @@
     border: none;
     margin: 1px;
     cursor: pointer;
+    background-color: #151515;
+    color: #c8d1d9;
 }

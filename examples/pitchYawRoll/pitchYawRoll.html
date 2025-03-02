@@ -62,19 +62,19 @@
 
     function setPitch(a) {
         myObjects.each((e) => {
-            e.geoObject.setPitch(a)
+            e.setPitch(a)
         });
     }
 
     function setYaw(a) {
         myObjects.each((e) => {
-            e.geoObject.setYaw(a);
+            e.setYaw(a);
         });
     }
 
     function setRoll(a) {
         myObjects.each((e) => {
-            e.geoObject.setRoll(a);
+            e.setRoll(a);
         });
     }
 
@@ -85,26 +85,27 @@
         const planeObj3d = await Object3d.loadObj('./airplane.obj');
 
         document.querySelector(".gpitch").addEventListener("input", (e) => {
-            setPitch(Number(e.target.value));
+            setPitch(Number(e.target.value) * Math.PI / 180);
         });
         document.querySelector(".gyaw").addEventListener("input", (e) => {
-            setYaw(Number(e.target.value));
+            setYaw(Number(e.target.value) * Math.PI / 180);
         });
         document.querySelector(".groll").addEventListener("input", (e) => {
-            setRoll(Number(e.target.value));
+            setRoll(Number(e.target.value) * Math.PI / 180);
         });
 
-        for (let i = -90; i <= 90; i += 5) {
-            for (let j = -180; j < 180; j += 10) {
+        for (let i = -90; i <= 90; i += 10) {
+            for (let j = -180; j < 180; j += 20) {
                 myObjects.add(new Entity({
-                    lonlat: [j, i, 200000], geoObject: {
+                    lonlat: [j, i, 200000],
+                    scale: 5.0,
+                    yaw: 0,
+                    pitch: 0,
+                    geoObject: {
                         color: "green",
-                        scale: 5.0,
                         instanced: true,
                         tag: "plane",
                         object3d: planeObj3d[0],
-                        yaw: 0,
-                        pitch: 0
                     }
                 }));
             }

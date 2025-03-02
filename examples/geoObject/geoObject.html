@@ -89,18 +89,18 @@
             .then(data => {
                 let entities = [];
                 let f = data.states;
-                for (let i = 0; i < f.length; i++) {
+                for (let i = 0; i < 2000; i++) {
                     let fi = f[i];
                     if (Math.abs(fi[STATE_INDEX.longitude]) > 0.1 && Math.abs(fi[STATE_INDEX.latitude]) > 0.1) {
                         entities.push(new Entity({
                             lonlat: new LonLat(fi[STATE_INDEX.longitude], fi[STATE_INDEX.latitude], fi[STATE_INDEX.baro_altitude]),
+                            yaw: fi[STATE_INDEX.true_track] * Math.PI / 180,
+                            pitch: 0,
+                            scale: 0.2,
                             geoObject: {
-                                scale: 0.2,
                                 instanced: true,
                                 tag: `category:${fi[STATE_INDEX.category]}`,
                                 object3d: airplaneObj[0],
-                                yaw: fi[STATE_INDEX.true_track],
-                                pitch: 0
                             },
                             properties: {
                                 'icao24': fi[STATE_INDEX.icao24],

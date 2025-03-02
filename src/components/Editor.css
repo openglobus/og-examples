@@ -4,6 +4,7 @@
     overflow: hidden;
     position: relative;
     padding-top: 16px;
+    background-color: var(--black);
 }
 
 .og-examples__toolbar {
@@ -19,4 +20,9 @@
     margin: 0;
     position: absolute;
     overflow: auto;
+    background-color: var(--black);
+}
+
+.og-examples__code .w-tc-editor {
+    background-color: var(--black) !important;
 }
