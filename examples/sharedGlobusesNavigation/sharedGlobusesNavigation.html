@@ -4,7 +4,7 @@
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
     <style>
         .coordinates {
             position: absolute;
@@ -53,7 +53,7 @@
         OpenStreetMap,
         Bing,
         control
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     const EXTENT = [109.49057, 49.95169, 113.99417, 51.81737];
 
@@ -76,8 +76,8 @@
             new control.EarthCoordinates({centerMode: true}),
             new control.Sun()
         ],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     window.globus1.renderer.events.on("draw", () => {
@@ -99,8 +99,8 @@
             new control.EarthCoordinates({centerMode: false}),
             new control.Sun()
         ],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     window.globus2.renderer.events.on("draw", () => {

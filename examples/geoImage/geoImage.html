@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 
 <body>
@@ -17,7 +17,7 @@
             GeoImage,
             XYZ,
             LonLat
-        } from "../../external/og/lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/og.es.js";
 
         let osm = new XYZ("OpenStreetMap", {
             isBaseLayer: true,
@@ -40,8 +40,8 @@
             name: "Earth",
             terrain: new GlobusRgbTerrain(),
             layers: [osm, img],
-            resourcesSrc: "../../external/og/lib/@openglobus/res",
-            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+            resourcesSrc: "../../external/og/lib/res",
+            fontsSrc: "../../external/og/lib/res/fonts"
         });
 
         globus.planet.flyLonLat(new LonLat(37.34, -3.07, 19500));

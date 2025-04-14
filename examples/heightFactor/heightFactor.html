@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -37,7 +37,7 @@
         Globe,
         GlobusRgbTerrain,
         XYZ
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     document.getElementById("heightFactor").onchange = function () {
         globus.planet.setHeightFactor(parseFloat(this.value));
@@ -59,8 +59,8 @@
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
         layers: [osm],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globus.planet.viewExtentArr([-10, 35, 54, 40]);

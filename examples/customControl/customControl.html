@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 <style>
     input {
@@ -31,7 +31,7 @@
             LonLat,
             Vec3,
             Control
-        } from "../../external/og/lib/@openglobus/og.esm.js";
+        } from "../../external/og/lib/og.es.js";
 
         //Define custom control class
         class CustomControl extends Control {
@@ -110,8 +110,8 @@
             name: "Earth",
             terrain: new GlobusRgbTerrain(),
             layers: [osm],
-            resourcesSrc: "../../external/og/lib/@openglobus/res",
-            fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+            resourcesSrc: "../../external/og/lib/res",
+            fontsSrc: "../../external/og/lib/res/fonts"
         });
 
         globus.planet.addControl(new CustomControl());

@@ -4,7 +4,7 @@
     <title>OpenStreetMap Base Layer</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
     <style>
         body {
             padding: 0;
@@ -19,14 +19,10 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        EmptyTerrain,
-        RgbTerrain,
         Bing,
         control,
         XYZ,
-        utils,
-        LonLat
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     let st = new XYZ("swisstopo", {
         url: "",
@@ -43,8 +39,8 @@
         terrain: new GlobusRgbTerrain(),
         layers: [new Bing(), st],
         atmosphereEnabled: true,
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts",
         viewExtent: [8.077, 46.69, 8.77, 46.83]
     });
 

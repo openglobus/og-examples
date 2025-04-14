@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./drawingControl.js" type="module"></script>
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 
 <body>
@@ -19,7 +19,7 @@ import {
     LonLat,
     GlobusRgbTerrain,
     control
-} from "../../external/og/lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/og.es.js";
 
 let osm = new XYZ("osm", {
     isBaseLayer: true,
@@ -43,8 +43,8 @@ var globus = new Globe({
         maxZoom: 14
     }),
     layers: [osm],
-    resourcesSrc: "../../external/og/lib/@openglobus/res",
-    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+    resourcesSrc: "../../external/og/lib/res",
+    fontsSrc: "../../external/og/lib/res/fonts"
 });
 
 globus.planet.viewExtent(new Extent(new LonLat(158.31010, 54.45445), new LonLat(158.55687, 54.56659)));

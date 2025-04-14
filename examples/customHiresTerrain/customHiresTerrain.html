@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body style="margin:0;">
@@ -16,7 +16,7 @@
         RgbTerrain,
         XYZ,
         control
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     var highResTerrain = new RgbTerrain("MyTerrain", {
         maxZoom: 19,
@@ -39,8 +39,8 @@
         //maxGridSize: 256,
         terrain: highResTerrain,
         layers: [osm],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts",
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts",
         viewExtent: [-113.2697019, 37.1551107, -112.1484175, 37.3981816]
     });
 

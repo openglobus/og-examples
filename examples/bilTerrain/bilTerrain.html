@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body style="margin:0;">
@@ -16,7 +16,7 @@
         BilTerrain,
         Globe,
         XYZ,
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     let osm = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
@@ -36,8 +36,8 @@
         }),
         viewExtent: [7.86, 44.24, 11.29, 45.0],
         layers: [osm],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globus.renderer.addControl(new control.KeyboardNavigation());

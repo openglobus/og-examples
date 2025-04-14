@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
     <style>
         #layerName {
             position: absolute;
@@ -30,7 +30,7 @@
         GlobusRgbTerrain,
         XYZ,
         Bing
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     var osm = new XYZ("OpenStreetMap", {
         specular: [0.0003, 0.00012, 0.00001],
@@ -66,8 +66,8 @@
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
         layers: [osm, sat, states],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globus.planet.renderer.events.on("mousemove", function (e) {

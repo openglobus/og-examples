@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -17,7 +17,7 @@
         XYZ,
         GeoImage,
         Bing
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     var maxZIndex = 0;
 
@@ -72,8 +72,8 @@
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
         layers: [osm, sat, img],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globus.planet.viewExtent(osm.getExtent());

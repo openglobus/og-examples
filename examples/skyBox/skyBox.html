@@ -3,7 +3,7 @@
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="./skyBox.js"></script>
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 <body>
     <div id="globus" style="width:100%;height:100%"></div>
@@ -15,7 +15,7 @@ import {
     GlobusRgbTerrain,
     XYZ,
     SkyBox
-} from "../../external/og/lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/og.es.js";
 
 var osm = new XYZ("OpenStreetMap", {
     isBaseLayer: true,
@@ -34,8 +34,8 @@ var globus = new Globe({
     sun: {
         active: true
     },
-    resourcesSrc: "../../external/og/lib/@openglobus/res",
-    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+    resourcesSrc: "../../external/og/lib/res",
+    fontsSrc: "../../external/og/lib/res/fonts"
 });
 
 </script>

@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./ruler.js" type="module"></script>
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
     <style>
     </style>
 </head>
@@ -19,7 +19,7 @@ import {
     GlobusRgbTerrain,
     OpenStreetMap,
     control
-} from "../../external/og/lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/og.es.js";
 
 let osm = new OpenStreetMap();
 
@@ -28,8 +28,8 @@ var globus = new Globe({
     name: "Earth",
     terrain: new GlobusRgbTerrain(),
     layers: [osm],
-    resourcesSrc: "../../external/og/lib/@openglobus/res",
-    fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+    resourcesSrc: "../../external/og/lib/res",
+    fontsSrc: "../../external/og/lib/res/fonts"
 });
 
 let ruler = new control.RulerSwitcher({

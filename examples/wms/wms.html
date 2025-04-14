@@ -2,7 +2,7 @@
 
 <head>
     <title>OpenGlobus - Earth planet</title>
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
         XYZ,
         WMS,
         control
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     var osm = new XYZ("OpenStreetMap", {
         isBaseLayer: true,
@@ -43,8 +43,8 @@
         terrain: new GlobusRgbTerrain(),
         layers: [osm, ne],
         viewExtent: [-74.26124, 40.67448, -73.77663, 40.78772],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
 </script>

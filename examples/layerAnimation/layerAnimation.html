@@ -3,7 +3,7 @@
 <head>
     <title>Attribution Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
     <style>
         .pl-pane {
             position: absolute;
@@ -41,7 +41,7 @@
         OpenStreetMap,
         CanvasTiles,
         control
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     let osm1 = new OpenStreetMap();
 
@@ -50,8 +50,8 @@
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
         layers: [osm1],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     function createCanvasTilesLayer(id) {

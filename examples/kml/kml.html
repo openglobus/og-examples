@@ -4,7 +4,7 @@
     <title>Kml Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="./kml.js"></script>
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 
 <body style="margin: 0">
@@ -21,7 +21,7 @@ import {
     Globe,
     GlobusRgbTerrain,
     XYZ
-} from "../../external/og/lib/@openglobus/og.esm.js";
+} from "../../external/og/lib/og.es.js";
 
 let dieppeRouen, globus;
 
@@ -47,8 +47,8 @@ document.getElementById('viewExtent').onclick = () => {
         target: 'globus',
         terrain: new GlobusRgbTerrain(),
         layers: [osm],
-        resourcesSrc: "../../external/og/lib/@openglobus/res",
-        fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globus.planet.addLayer(dieppeRouen);

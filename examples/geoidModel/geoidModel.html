@@ -3,7 +3,7 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/@openglobus/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body style="margin:0;">
@@ -18,7 +18,7 @@
         XYZ,
         Geoid,
         OpenStreetMap
-    } from "../../external/og/lib/@openglobus/og.esm.js";
+    } from "../../external/og/lib/og.es.js";
 
     class GeoidTerrain extends GlobusRgbTerrain {
         constructor(name, options) {
@@ -63,8 +63,8 @@
                     geoid: geoid
                 }),
                 layers: [new OpenStreetMap()],
-                resourcesSrc: "../../external/og/lib/@openglobus/res",
-                fontsSrc: "../../external/og/lib/@openglobus/res/fonts"
+                resourcesSrc: "../../external/og/lib/res",
+                fontsSrc: "../../external/og/lib/res/fonts"
             });
             globe.planet.setHeightFactor(7000);
             globe.planet.setLodSize(150, 150);
