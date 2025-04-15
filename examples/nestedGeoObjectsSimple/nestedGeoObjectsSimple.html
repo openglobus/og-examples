@@ -91,14 +91,13 @@
             parentEntity.appendChild(childEntity);
 
             let collection = new EntityCollection({
-                //scaleByDistance: [1, 1, 1],
-                //useLighting: true,
                 entities: [parentEntity]
             });
 
             collection.addTo(this);
 
-            this.renderer.activeCamera.eye.set(0, 0, 10);
+            this.renderer.activeCamera.set(new Vec3(-4, 11, 13), new Vec3(1, 0, 0));
+
             this.renderer.activeCamera.update();
         }
     }
