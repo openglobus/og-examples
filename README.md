@@ -1,15 +1,13 @@
 
-## Run examples from openglobus.org
+## Localhost
 
-1) ```npm install```
-2) ```npm run start```
-
-## Run examples locally
-
-1) Update openglobus submodule: ```git submodule update --progress --init --recursive --force --remote```
+Update submodule and build OpenGlobus library:
+1) ```git submodule update --progress --init --recursive --force --remote```
 2) ```cd ./external/og```
 3) ```npm install```
-4) ```npm run build```
-5) Change in the ./build/config.json url to <b>//localhost:8080/examples</b>
-6) ```npm run server```
-7) ```npm run start```
+4) ```npm run build``` or ```npm run build:og```
+
+Optionally: Change in the `./build/config.json` url to `//localhost:8080/examples`
+
+5) ```npm run serve```
+6) ```npm run start```
