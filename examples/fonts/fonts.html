@@ -56,12 +56,7 @@
         scene
     } from "../../external/og/lib/og.es.js";
 
-    let handler = new Handler("frame", {
-        'autoActivate': true
-    });
-
-    let renderer = new Renderer(handler, {
-        backgroundColor: new Vec3(0.5, 0.5, 0.5),
+    let renderer = new Renderer("frame", {
         controls: [new control.SimpleNavigation()],
         autoActivate: true,
         fontsSrc: "./fonts"
@@ -76,79 +71,75 @@
             document.querySelector("#valSize").innerText = size;
 
             this.ec = new EntityCollection({
-                'labelMaxLetters': 33,
-                'entities': [
+                scaleByDistance: [1000000000, 1000000000, 1000000000],
+                labelMaxLetters: 33,
+                entities: [
                     new Entity({
-                        'cartesian': new Vec3(0, 0, 0),
-                        'label': {
-                            'isRTL': true,
-                            'text': "סיודד ריאל",
-                            'color': "white",
-                            //'face': "NotoSansArabic-Regular",
-                            //'face': "Arabic",
-                            'face': "Segoe",
-                            //align: "center",
-                            'outlineColor': "black",
-                            'size': size
+                        cartesian: new Vec3(0, 0, 0),
+                        label: {
+                            text: "Arial - Default Font",
+                            color: "white",
+                            outlineColor: "black",
+                            size: size
                         }
                     }), new Entity({
-                        'cartesian': new Vec3(0, 20, 0),
-                        'label': {
-                            'text': "0.5 - VastShadow-Regular",
-                            'color': "white",
-                            'face': "VastShadow-Regular",
-                            'outlineColor': "black",
-                            //align: "center",
-                            'size': size
+                        cartesian: new Vec3(0, 20, 0),
+                        label: {
+                            text: "0.5 - VastShadow-Regular",
+                            color: "rgba(455,455,0,1.0)",
+                            face: "VastShadow-Regular",
+                            outlineColor: "black",
+                            align: "center",
+                            size: size
                         }
                     }),
                     new Entity({
-                        'cartesian': new Vec3(0, 40, 0),
-                        'label': {
-                            'isRTL': true,
-                            'text': "قطة",
-                            'color': "white",
-                            'face': "NotoSansArabic-Regular",
-                            'outlineColor': "black",
-                            'size': size
+                        cartesian: new Vec3(0, 40, 0),
+                        label: {
+                            isRTL: true,
+                            text: "يولد",
+                            color: "white",
+                            face: "NotoSansArabic-Regular",
+                            outlineColor: "black",
+                            size: size
                         }
                     }),
                     new Entity({
-                        'cartesian': new Vec3(5, 40, 0),
-                        'label': {
-                            'text': "0.9 - Notable-Regular",
-                            'color': "white",
-                            'face': "Notable-Regular",
-                            'outlineColor': "black",
-                            'size': size
+                        cartesian: new Vec3(5, 40, 0),
+                        label: {
+                            text: "0.9 - Notable-Regular",
+                            color: "white",
+                            face: "Notable-Regular",
+                            outlineColor: "rgba(300,0,0,0.7)",
+                            size: size
                         }
                     }), new Entity({
-                        'cartesian': new Vec3(5, 50, 0),
-                        'label': {
-                            'text': "1.0 - MrDeHaviland-Regular",
-                            'color': "white",
-                            'face': "MrDeHaviland-Regular",
-                            'outlineColor': "black",
-                            'size': size
+                        cartesian: new Vec3(5, 50, 0),
+                        label: {
+                            text: "1.0 - MrDeHaviland-Regular",
+                            color: "white",
+                            face: "MrDeHaviland-Regular",
+                            outlineColor: "black",
+                            size: size
                         }
                     })
                     , new Entity({
-                        'cartesian': new Vec3(5, 60, 0),
-                        'label': {
-                            'text': "Audiowide-Regular",
-                            'color': "white",
-                            'face': "Audiowide-Regular",
-                            'outlineColor': "white",
-                            'size': size
+                        cartesian: new Vec3(5, 60, 0),
+                        label: {
+                            text: "Audiowide-Regular",
+                            color: "green",
+                            face: "Audiowide-Regular",
+                            outlineColor: "white",
+                            size: size
                         }
                     }), new Entity({
-                        'cartesian': new Vec3(5, 70, 0),
-                        'label': {
-                            'text': "ArchitectsDaughter-Regular",
-                            'color': "white",
-                            'face': "ArchitectsDaughter-Regular",
-                            'outlineColor': "black",
-                            'size': size
+                        cartesian: new Vec3(5, 70, 0),
+                        label: {
+                            text: "ArchitectsDaughter-Regular",
+                            color: "white",
+                            face: "ArchitectsDaughter-Regular",
+                            outlineColor: "black",
+                            size: size
                         }
                     }),
                 ]
@@ -216,16 +207,19 @@
 
             this.ec.addTo(this);
 
-            this.renderer.activeCamera.eye.set(57, 36, 120);
+            this.renderer.activeCamera.eye.set(17, 36, 220);
             this.renderer.activeCamera.update();
-        }
-
-        frame() {
         }
     }
 
-    let myScene = new MyScene();
-    renderer.addNodes([new scene.Axes(), myScene]);
+    let myScene = new MyScene()
+    renderer.addNodes([
+        new scene.Axes(),
+        myScene
+    ]);
+
+    window.myScene = myScene;
+    window.renderer = renderer;
 
 </script>
 

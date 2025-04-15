@@ -15,7 +15,8 @@
         Entity,
         Globe,
         GlobusRgbTerrain,
-        XYZ
+        XYZ,
+        control
     } from "../../external/og/lib/og.es.js";
 
     let osm = new XYZ("OSM", {
@@ -68,7 +69,7 @@
     });
 
     //View at Germany
-    globe.planet.viewExtentArr([-0.895, 47.51, 21.84, 51.65]);
+    globe.planet.viewExtentArr([8.389217264662717, 50.129333035050855, 11.016863349016512, 50.66288338364864]);
 
     //Load points
     fetch("DE.json.txt", {
@@ -114,6 +115,8 @@
             townLabels.setEntities(labels);
             townMarkers.setEntities(markers);
         });
+
+    globe.planet.addControl(new control.DebugInfo());
 
 </script>
 </body>
