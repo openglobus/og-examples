@@ -214,5 +214,9 @@
   {
     "label": "CO2",
     "id": "co2"
+  },
+  {
+    "label": "Nested GeoObjects Simple",
+    "id": "nestedGeoObjectsSimple"
   }
 ]
