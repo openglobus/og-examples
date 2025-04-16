@@ -218,5 +218,9 @@
   {
     "label": "Nested GeoObjects Simple",
     "id": "nestedGeoObjectsSimple"
+  },
+  {
+    "label": "Nested GeoObjects",
+    "id": "nestedGeoObjectsPlanet"
   }
 ]

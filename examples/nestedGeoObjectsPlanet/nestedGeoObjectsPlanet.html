@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="earth" style="width:100%;height:100%"></div>
+<div id="l0" class="defaultText" style="color:black"></div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {
+        Globe,
+        Vector,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        Object3d,
+        Vec3,
+        Entity,
+        control,
+        LonLat
+    } from "../../external/og/lib/og.es.js";
+
+    let objLayer = new Vector("Obj.Layer", {
+        scaleByDistance: [1, 1, 1]
+    });
+
+    let globe = new Globe({
+        target: "earth",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap(), objLayer],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globe.planet.addControl(new control.GeoObjectEditor());
+
+    const base = Object3d.createCube(0.4, 2, 0.4).translate(new Vec3(0, 1, 0));
+    const view = Object3d.createFrustum(3, 2, 1);
+    const view2 = Object3d.createFrustum(3, 2, 1);
+
+    let parentEntity = new Entity({
+        lonlat: [-105.61780003, 39.6152408, 4052],
+        independentPicking: true,
+        geoObject: {
+            scale: 1,
+            instanced: true,
+            tag: `base`,
+            object3d: base,
+        }
+    });
+
+    let childEntity = new Entity({
+        cartesian: new Vec3(0, 1, 0),
+        independentPicking: true,
+        relativePosition: true,
+        geoObject: {
+            instanced: true,
+            tag: `view`,
+            object3d: view,
+        }
+    });
+
+    let childChildEntity = new Entity({
+        cartesian: new Vec3(0, 3, -1),
+        independentPicking: true,
+        relativePosition: true,
+        geoObject: {
+            instanced: true,
+            tag: `view`,
+            object3d: view2,
+        }
+    });
+
+    childEntity.appendChild(childChildEntity);
+    parentEntity.appendChild(childEntity);
+
+    objLayer.add(parentEntity);
+
+    globe.planet.camera.setLonLat(
+        new LonLat(-105.61780003, 39.6152408, 5000),
+        new LonLat(-105.61755075007221, 39.615116213295195, 4070.632676927836) // look point
+    );
+
+</script>
+</body>
+
+</html>
