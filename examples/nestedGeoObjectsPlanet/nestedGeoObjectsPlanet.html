@@ -17,6 +17,7 @@
         Vector,
         GlobusRgbTerrain,
         OpenStreetMap,
+        Bing,
         Object3d,
         Vec3,
         Entity,
@@ -25,28 +26,48 @@
     } from "../../external/og/lib/og.es.js";
 
     let objLayer = new Vector("Obj.Layer", {
-        scaleByDistance: [1, 1, 1]
+        scaleByDistance: [50, 50000, 1]
     });
 
     let globe = new Globe({
         target: "earth",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [new OpenStreetMap(), objLayer],
+        layers: [new OpenStreetMap(), new Bing(), objLayer],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
-    globe.planet.addControl(new control.GeoObjectEditor());
+    globe.planet.addControls([
+        new control.GeoObjectEditor(),
+        new control.LayerSwitcher()
+    ]);
 
-    const base = Object3d.createCube(0.4, 2, 0.4).translate(new Vec3(0, 1, 0));
-    const view = Object3d.createFrustum(3, 2, 1);
-    const view2 = Object3d.createFrustum(3, 2, 1);
+    const base = Object3d.createCube(0.4, 2, 0.4)
+        .translate(new Vec3(0, 1, 0))
+        .setMaterial({
+            ambient: "#802727",
+            diffuse: "#ff5252",
+        });
+
+    const view = Object3d.createFrustum(3, 2, 1)
+        .setMaterial({
+            ambient: "#28552b",
+            diffuse: "#1cdd23",
+        });
+    const view2 = Object3d.createFrustum(3, 2, 1)
+        .setMaterial({
+            ambient: "#5f2563",
+            diffuse: "#ef00ff",
+        });
+
+    const pos = new LonLat(-105.6173319876, 39.615583413, 4057.9466);
 
     let parentEntity = new Entity({
-        lonlat: [-105.61780003, 39.6152408, 4052],
+        lonlat: pos,
         independentPicking: true,
         geoObject: {
+            color: "red",
             scale: 1,
             instanced: true,
             tag: `base`,
@@ -59,6 +80,7 @@
         independentPicking: true,
         relativePosition: true,
         geoObject: {
+            color: "green",
             instanced: true,
             tag: `view`,
             object3d: view,
@@ -70,8 +92,9 @@
         independentPicking: true,
         relativePosition: true,
         geoObject: {
+            color: "black",
             instanced: true,
-            tag: `view`,
+            tag: `view2`,
             object3d: view2,
         }
     });
@@ -80,10 +103,10 @@
     parentEntity.appendChild(childEntity);
 
     objLayer.add(parentEntity);
-
+    
     globe.planet.camera.setLonLat(
-        new LonLat(-105.6164668612784, 39.61587609192231, 4126),
-        new LonLat(-105.61780003, 39.6152408, 4052), // look point
+        new LonLat(-105.61717175714179, 39.61567256262465, 4064.033358156039),
+        pos, // look point
     );
 
 </script>
