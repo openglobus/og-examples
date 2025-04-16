@@ -67,8 +67,6 @@
         lonlat: pos,
         independentPicking: true,
         geoObject: {
-            color: "red",
-            scale: 1,
             instanced: true,
             tag: `base`,
             object3d: base,
@@ -80,7 +78,6 @@
         independentPicking: true,
         relativePosition: true,
         geoObject: {
-            color: "green",
             instanced: true,
             tag: `view`,
             object3d: view,
@@ -92,7 +89,6 @@
         independentPicking: true,
         relativePosition: true,
         geoObject: {
-            color: "black",
             instanced: true,
             tag: `view2`,
             object3d: view2,
@@ -103,7 +99,7 @@
     parentEntity.appendChild(childEntity);
 
     objLayer.add(parentEntity);
-    
+
     globe.planet.camera.setLonLat(
         new LonLat(-105.61717175714179, 39.61567256262465, 4064.033358156039),
         pos, // look point
