@@ -43,19 +43,20 @@
         new control.LayerSwitcher()
     ]);
 
-    const base = Object3d.createCube(0.4, 2, 0.4)
+    const baseObj = Object3d.createCube(0.4, 2, 0.4)
         .translate(new Vec3(0, 1, 0))
         .setMaterial({
             ambient: "#802727",
             diffuse: "#ff5252",
         });
 
-    const view = Object3d.createFrustum(3, 2, 1)
+    const viewObj = Object3d.createFrustum(3, 2, 1)
         .setMaterial({
             ambient: "#28552b",
             diffuse: "#1cdd23",
         });
-    const view2 = Object3d.createFrustum(3, 2, 1)
+
+    const viewObj2 = Object3d.createFrustum(3, 2, 1)
         .setMaterial({
             ambient: "#5f2563",
             diffuse: "#ef00ff",
@@ -68,8 +69,8 @@
         independentPicking: true,
         geoObject: {
             instanced: true,
-            tag: `base`,
-            object3d: base,
+            tag: `baseObj`,
+            object3d: baseObj,
         }
     });
 
@@ -79,8 +80,8 @@
         relativePosition: true,
         geoObject: {
             instanced: true,
-            tag: `view`,
-            object3d: view,
+            tag: `baseObj`,
+            object3d: baseObj,
         }
     });
 
@@ -90,8 +91,8 @@
         relativePosition: true,
         geoObject: {
             instanced: true,
-            tag: `view2`,
-            object3d: view2,
+            tag: `baseObj2`,
+            object3d: baseObj2,
         }
     });
 
