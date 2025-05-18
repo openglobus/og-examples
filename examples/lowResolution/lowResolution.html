@@ -31,6 +31,11 @@
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
+    globus.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.Lighting()
+    ]);
+
     globus.planet.setLodSize(306, 512);
     globus.planet.renderer.handler.pixelRatio = 0.87;
 
