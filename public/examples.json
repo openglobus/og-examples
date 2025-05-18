@@ -222,5 +222,9 @@
   {
     "label": "Nested GeoObjects",
     "id": "nestedGeoObjectsPlanet"
+  },
+  {
+    "label": "Lower Resoloution",
+    "id": "lowResolution"
   }
 ]

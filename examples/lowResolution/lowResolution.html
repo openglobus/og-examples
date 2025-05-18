@@ -1,0 +1,40 @@
+﻿<html>
+
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        Bing,
+        control
+    } from "../../external/og/lib/og.es.js";
+
+    let osm = new OpenStreetMap();
+
+    let sat = new Bing()
+
+    let globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [osm, sat],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globus.planet.planet.setLodSize(306, 512);
+    globus.planet.renderer.handler.pixelRatio = 0.87;
+
+</script>
+</body>
+
+</html>
