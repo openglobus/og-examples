@@ -1,21 +1,26 @@
 import "./List.css";
 import {useState} from "react";
-import {NavLink} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 function List({examples, onClick}) {
-
+    const navigate = useNavigate();
     const [filter, setFilter] = useState('');
 
     const examplesLinks = examples.filter((example) => {
         return filter.length === 0 || example.label.toLowerCase().includes(filter.toLowerCase());
     }).map((example) => {
         return (
-            <NavLink to={`examples/${example.id}`} key={example.id}>
-                <Button variant="light" onClick={() => {
-                    onClick(example.id);
-                }}>{example.label}</Button>
+            <NavLink to={`/examples/${example.id}`} key={example.id}>
+                <Button 
+                    variant="light" 
+                    onClick={() => {
+                        onClick(example.id);
+                    }}
+                >
+                    {example.label}
+                </Button>
             </NavLink>
         )
     });
