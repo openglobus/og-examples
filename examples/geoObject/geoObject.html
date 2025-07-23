@@ -91,12 +91,12 @@
                     let fi = f[i];
                     if (Math.abs(fi[STATE_INDEX.longitude]) > 0.1 && Math.abs(fi[STATE_INDEX.latitude]) > 0.1) {
                         entities.push(new Entity({
-                            lonlat: new LonLat(fi[STATE_INDEX.longitude], fi[STATE_INDEX.latitude], fi[STATE_INDEX.baro_altitude]),
+                            lonlat: new LonLat(fi[STATE_INDEX.longitude], fi[STATE_INDEX.latitude], fi[STATE_INDEX.baro_altitude] + 10000),
                             yaw: fi[STATE_INDEX.true_track] * Math.PI / 180,
                             pitch: 0,
                             scale: 0.2,
                             geoObject: {
-                                instanced: true,
+                                color: "white",
                                 tag: `category:${fi[STATE_INDEX.category]}`,
                                 object3d: airplaneObj[0],
                             },
@@ -121,7 +121,7 @@
             let ei = entities[i];
             let dir = ei.geoObject.getDirection();
             let currPos = ei.getCartesian();
-            let newPos = currPos.add(dir.scaleTo(ei.properties.velocity * 2));
+            let newPos = currPos.add(dir.scaleTo(ei.properties.velocity * 0.3));
             ei.setCartesian3v(newPos);
         }
     });
