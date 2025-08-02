@@ -226,5 +226,9 @@
   {
     "label": "Lower Resoloution",
     "id": "lowResolution"
+  },
+  {
+    "label": "Curiosity",
+    "id": "curiosity"
   }
 ]
