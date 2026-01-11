@@ -230,5 +230,9 @@
   {
     "label": "Curiosity",
     "id": "curiosity"
+  },
+  {
+    "label": "Orthographic Projection",
+    "id": "orthographic"
   }
 ]
