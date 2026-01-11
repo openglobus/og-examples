@@ -1,0 +1,60 @@
+﻿<html>
+<head>
+    <title>OpenGlobus - Earth planet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="./skyBox.js"></script>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<div style="position:absolute;left:0;top:0;margin:10px;z-index:1000;background:rgba(255,255,255,0.8);padding:10px;border-radius:5px;">
+    <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="free" id="radioNavFree" checked> Free</label>
+    <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="lockNorth" id="radioNavLockNorth"> Lock North</label>
+    <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="adaptive" id="radioNavAdaptive"> Adaptive</label>
+</div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+    } from "../../external/og/lib/og.es.js";
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts",
+        navigation: {
+            mode: "free"
+        }
+    });
+
+    const radioNavFree = document.getElementById("radioNavFree");
+    const radioNavLockNorth = document.getElementById("radioNavLockNorth");
+    const radioNavAdaptive = document.getElementById("radioNavAdaptive");
+
+    radioNavFree.onchange = function () {
+        if (radioNavFree.checked) {
+            globus.navigation.setMode("free");
+        }
+    };
+
+    radioNavLockNorth.onchange = function () {
+        if (radioNavLockNorth.checked) {
+            globus.navigation.setMode("lockNorth");
+        }
+    };
+
+    radioNavAdaptive.onchange = function () {
+        if (radioNavAdaptive.checked) {
+            globus.navigation.setMode("adaptive");
+        }
+    };
+
+</script>
+</body>
+</html>

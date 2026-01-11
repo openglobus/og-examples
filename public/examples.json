@@ -234,5 +234,9 @@
   {
     "label": "Orthographic Projection",
     "id": "orthographic"
+  },
+  {
+    "label": "Navigation Modes",
+    "id": "navigationMode"
   }
 ]
