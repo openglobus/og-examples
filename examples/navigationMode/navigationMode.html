@@ -11,6 +11,9 @@
     <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="free" id="radioNavFree" checked> Free</label>
     <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="lockNorth" id="radioNavLockNorth"> Lock North</label>
     <label style="display:block;margin:5px 0;cursor:pointer;"><input type="radio" name="navMode" value="adaptive" id="radioNavAdaptive"> Adaptive</label>
+    <hr style="margin:10px 0;border:0;border-top:1px solid #ccc;">
+    <label style="display:block;margin:5px 0;cursor:pointer;"><input type="checkbox" id="checkboxDisableTilt"> Disable Tilt</label>
+    <label style="display:block;margin:5px 0;cursor:pointer;"><input type="checkbox" id="checkboxDisableRotation"> Disable Rotation</label>
 </div>
 <script type="module" id="og-sandbox-script">
     'use strict';
@@ -53,6 +56,17 @@
         if (radioNavAdaptive.checked) {
             globus.navigation.setMode("adaptive");
         }
+    };
+
+    const checkboxDisableTilt = document.getElementById("checkboxDisableTilt");
+    const checkboxDisableRotation = document.getElementById("checkboxDisableRotation");
+
+    checkboxDisableTilt.onchange = function () {
+        globus.navigation.disableTilt = checkboxDisableTilt.checked;
+    };
+
+    checkboxDisableRotation.onchange = function () {
+        globus.navigation.disableRotation = checkboxDisableRotation.checked;
     };
 
 </script>
