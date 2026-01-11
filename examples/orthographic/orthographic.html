@@ -15,22 +15,14 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        XYZ
+        OpenStreetMap,
     } from "../../external/og/lib/og.es.js";
-
-    var osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
 
     var globus = new Globe({
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm],
+        layers: [new OpenStreetMap()],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts",
         navigation: {
