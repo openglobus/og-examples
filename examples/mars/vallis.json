@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-147.3, -5.54] }, "properties": { "name": "Abus Vallis", "length_km": 58.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [162.5, -18.21] }, "properties": { "name": "Al-Qahira Vallis", "length_km": 555.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-54.0, -9.1] }, "properties": { "name": "Allegheny Vallis", "length_km": 200.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [55.9, 37.78] }, "properties": { "name": "Anio Valles", "length_km": 36.5 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [135.0, 34.79] }, "properties": { "name": "Apsus Vallis", "length_km": 120.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-32.3, -20.59] }, "properties": { "name": "Arda Valles", "length_km": 186.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-25.8, 10.29] }, "properties": { "name": "Ares Vallis", "length_km": 1700.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [72.5, 13.95] }, "properties": { "name": "Arnus Vallis", "length_km": 280.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-149.7, -4.35] }, "properties": { "name": "Asopus Vallis", "length_km": 33.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [155.0, 8.5] }, "properties": { "name": "Athabasca Valles", "length_km": 285.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [60.1, 30.12] }, "properties": { "name": "Auqakuh Vallis", "length_km": 312.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [70.1, -55.7] }, "properties": { "name": "Axius Valles", "length_km": 349.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [18.9, -6.23] }, "properties": { "name": "Brazos Valles", "length_km": 458.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-153.5, -66.77] }, "properties": { "name": "Chico Valles", "length_km": 450.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [87.9, -38.38] }, "properties": { "name": "Dao Vallis", "length_km": 816.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [38.7, 19.1] }, "properties": { "name": "Indus Vallis", "length_km": 307.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-65.0, 24.36] }, "properties": { "name": "Kasei Valles", "length_km": 1780.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-59.2, -13.75] }, "properties": { "name": "Valles Marineris", "length_km": 3769.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-42.0, -28.13] }, "properties": { "name": "Nirgal Vallis", "length_km": 496.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-49.0, 4.85] }, "properties": { "name": "Nanedi Valles", "length_km": 508.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [137.23, -4.21] }, "properties": { "name": "Peace Vallis", "length_km": 35.24 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-176.7, 22.37] }, "properties": { "name": "Mawrth Vallis", "length_km": 636.0 } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-34.5, 0.16] }, "properties": { "name": "Zarqa Valles", "length_km": 490.0 } }
+  ]
+}
+

@@ -1,0 +1,106 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [55.58, -13.96] },
+      "properties": { "name": "Huygens", "diameter_km": 467.25 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [16.79, -2.69] },
+      "properties": { "name": "Schiaparelli", "diameter_km": 458.52 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-167.15, 38.1] },
+      "properties": { "name": "Unnamed #3", "diameter_km": 376.35 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [3.19, -36.63] },
+      "properties": { "name": "Greeley", "diameter_km": 457.45 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [32.11, 22.59] },
+      "properties": { "name": "Cassini", "diameter_km": 408.23 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [60.84, 21.59] },
+      "properties": { "name": "Antoniadi", "diameter_km": 400.95 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-3.83, -20.99] },
+      "properties": { "name": "Dollfus", "diameter_km": 363.08 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-76.89, -59.01] },
+      "properties": { "name": "Unnamed #8", "diameter_km": 341.1 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [35.91, 12.92] },
+      "properties": { "name": "Tikhonravov", "diameter_km": 343.7 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [53.24, 23.39] },
+      "properties": { "name": "Unnamed #10", "diameter_km": 340.12 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [28.86, -0.99] },
+      "properties": { "name": "Unnamed #11", "diameter_km": 325.8 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-158.06, -40.52] },
+      "properties": { "name": "Newton", "diameter_km": 299.94 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-83.89, -59.53] },
+      "properties": { "name": "Unnamed #13", "diameter_km": 301.99 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-32.12, -24.47] },
+      "properties": { "name": "Unnamed #14", "diameter_km": 300.36 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [171.09, -13.67] },
+      "properties": { "name": "de Vaucouleurs", "diameter_km": 302.27 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-168.82, -48.88] },
+      "properties": { "name": "Copernicus", "diameter_km": 301.83 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-109.57, -52.55] },
+      "properties": { "name": "Unnamed #17", "diameter_km": 326.77 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.89, -14.15] },
+      "properties": { "name": "Herschel", "diameter_km": 297.92 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [55.99, -1.89] },
+      "properties": { "name": "Schroeter", "diameter_km": 291.59 }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-141.43, -29.73] },
+      "properties": { "name": "Koval'sky", "diameter_km": 296.67 }
+    }
+  ]
+}
+
