@@ -238,5 +238,9 @@
   {
     "label": "Navigation Modes",
     "id": "navigationMode"
+  },
+  {
+    "label": "WindFarm Instanced Onjects Animation",
+    "id": "windFarm"
   }
 ]
