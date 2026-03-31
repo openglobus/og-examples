@@ -188,11 +188,13 @@
             });
 
             document.querySelector("#text").addEventListener("focus", () => {
-                this.renderer.controls.SimpleNav.deactivate();
+                const nav = this.renderer.controls.SimpleNavigation || this.renderer.controls.SimpleNav;
+                nav?.deactivate();
             });
 
             document.querySelector("#text").addEventListener("blur", () => {
-                this.renderer.controls.SimpleNav.activate();
+                const nav = this.renderer.controls.SimpleNavigation || this.renderer.controls.SimpleNav;
+                nav?.activate();
             });
 
             // this.renderer.fontAtlas.loadFont("PressStart2P-Regular", "./fonts/", "PressStart2P-Regular.json");
@@ -207,7 +209,7 @@
 
             this.ec.addTo(this);
 
-            this.renderer.activeCamera.eye.set(17, 36, 220);
+            this.renderer.activeCamera.set(new Vec3(120, 120, 120), Vec3.ZERO);
             this.renderer.activeCamera.update();
         }
     }
