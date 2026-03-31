@@ -1,7 +1,6 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="module" src="./rays.js"></script>
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 <body>
@@ -27,48 +26,54 @@ var osm = new XYZ("OpenStreetMap", {
 //ellipsoid with earth dimensions
 let ellipsoid = wgs84;
 
-//coordinates of Bochum in lonlat
-let lonlatBochum = new LonLat(7, 51.5, 0);
-//coordinate above Bochum to allow a upwards direction of ray
-let lonlatBochumAir = new LonLat(7, 51.5, 2000000);
-//coordinates of Bochum in Cartesian
-let cartBochum = ellipsoid.lonLatToCartesian(lonlatBochum);
-let cartBochumAir = ellipsoid.lonLatToCartesian(lonlatBochumAir);
-//entity containing the Bochum ray
-let entityBochum = new Entity({
-    ray: {
-        startPosition: cartBochum,
-        endPosition: cartBochumAir,
-        startColor: "blue",
-        endColor: "green",
-        thickness: 5
-    }
-});
+const RAY_COUNT = 5000;
+const START_HEIGHT = 0;
+const MIN_END_HEIGHT = 100000;
+const MAX_END_HEIGHT = 2000000;
 
-//coordinates of Moscow in lonlat
-let lonlatMoscow = new LonLat(37.6, 55.75, 0);
-//coordinate above Moscow to allow a upwards direction of ray
-let lonlatMoscowAir = new LonLat(37.6, 55.75, 1000000);
-//coordinates of Moscow in Cartesian
-let cartMoscow = ellipsoid.lonLatToCartesian(lonlatMoscow);
-let cartMoscowAir = ellipsoid.lonLatToCartesian(lonlatMoscowAir);
-//entity containing the Moscow ray
-let entityMoscow = new Entity({
-    ray: {
-        startPosition: cartMoscow,
-        endPosition: cartMoscowAir,
-        startColor: "red",
-        endColor: "green",
-        thickness: 10
-    }
-});
+function randomInRange(min, max) {
+    return min + Math.random() * (max - min);
+}
+
+function randomLatDeg() {
+    const u = Math.random() * 2 - 1;
+    return Math.asin(u) * 180 / Math.PI;
+}
+
+function randomColor(alpha) {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const rays = [];
+
+for (let i = 0; i < RAY_COUNT; i++) {
+    const lon = randomInRange(-180, 180);
+    const lat = randomLatDeg();
+    const endHeight = randomInRange(MIN_END_HEIGHT, MAX_END_HEIGHT);
+    const alpha = randomInRange(0.2, 0.55);
+
+    const startLonLat = new LonLat(lon, lat, START_HEIGHT);
+    const endLonLat = new LonLat(lon, lat, endHeight);
+
+    rays.push(new Entity({
+        ray: {
+            startPosition: ellipsoid.lonLatToCartesian(startLonLat),
+            endPosition: ellipsoid.lonLatToCartesian(endLonLat),
+            startColor: randomColor(alpha),
+            endColor: randomColor(alpha),
+            thickness: randomInRange(2.0, 12.0)
+        }
+    }));
+}
 
 //polygonOffsetUnits is needed to hide rays behind globe
 let rayLayer = new Vector("rays", {polygonOffsetUnits: 0});
 
 //add entities containing the rays to the layer
-rayLayer.add(entityBochum);
-rayLayer.add(entityMoscow);
+rayLayer.addEntities(rays);
 
 var globus = new Globe({
     target: "globus",
@@ -83,8 +88,6 @@ var globus = new Globe({
 });
 
 window.globus = globus;
-window.entityMoscow = entityMoscow;
-window.entityBochum = entityBochum;
 
 	</script>
 </body>
