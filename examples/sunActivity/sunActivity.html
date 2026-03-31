@@ -19,18 +19,18 @@
         margin: 5px;
     }
 
-    #chkLightingEnabled {
+    #chkShadeMode {
         position: absolute;
         top: 60px;
         left: 10px;
         color: white;
     }
 
-    #chkLightingEnabled div {
+    #chkShadeMode div {
         float: left;
     }
 
-    #chkLightingEnabled input {
+    #chkShadeMode input {
         float: left;
     }
 </style>
@@ -42,9 +42,9 @@
     <button id="btnStop" class="btn">Stop</button>
     <button id="btnDeactivate" class="btn">Deactivate</button>
 </div>
-<div id="chkLightingEnabled">
+<div id="chkShadeMode">
     <input type="checkbox" checked/>
-    <div>Lighting</div>
+    <div>Shade mode (0/1)</div>
 </div>
     <script type="module" id="og-sandbox-script">
     'use strict';
@@ -67,8 +67,8 @@
         globus.sun.deactivate();
     };
 
-    document.querySelector("#chkLightingEnabled input").onclick = function (e) {
-        globus.planet.lightEnabled = this.checked;
+    document.querySelector("#chkShadeMode input").onclick = function () {
+        globus.planet.shadeMode = this.checked ? 1 : 0;
     };
 
     var osm = new XYZ("OpenStreetMap", {
