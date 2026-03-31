@@ -8,7 +8,7 @@
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
 
     'use strict';
 
@@ -44,20 +44,20 @@
     let center = new LonLat(8.19, 46.73);
 
     const polylineEntity = new Entity({
-        'polyline': {
-            'pathLonLat': createGrid(center),
-            'thickness': 4,
-            'color': "orange",
-            'isClosed': false
+        polyline: {
+            pathLonLat: createGrid(center),
+            thickness: 7,
+            color: "blue",
+            isClosed: false
         }
     });
 
     const pointLayer = new Vector("points", {
-        'clampToGround': true,
-        'entities': [
+        clampToGround: true,
+        entities: [
             polylineEntity
         ],
-        'async': false
+        polygonOffsetUnits: -5,
     });
 
     const osm = new OpenStreetMap();
@@ -85,13 +85,13 @@
     });
 
     pointLayer.events.on("ldown", function (e) {
-        this.planet.renderer.controls.mouseNavigation.deactivate();
+        this.planet.renderer.controls.navigation.deactivate();
         startPos = this.planet.getLonLatFromPixelTerrain(e);
         pickingObject = e.pickingObject;
     });
 
     pointLayer.events.on("lup", function (e) {
-        e.renderer.controls.mouseNavigation.activate();
+        e.renderer.controls.navigation.activate();
         center.lon += endPos.lon - startPos.lon;
         center.lat += endPos.lat - startPos.lat;
         pickingObject = null;
