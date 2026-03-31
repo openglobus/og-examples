@@ -58,6 +58,10 @@
             fontsSrc: "../../external/og/lib/res/fonts"
         });
 
+        const cameraPosition = new LonLat(8.536973999798752, 46.152337433688, 16002.675802157113);
+        const cameraLookPoint = new LonLat(8.4994227, 46.2905952);
+        globus.planet.camera.setLonLat(cameraPosition, cameraLookPoint);
+
         //Rotate points around the center
         let center = new LonLat(8.5, 46.3);
         let angle = 0.1 * math.RADIANS;
