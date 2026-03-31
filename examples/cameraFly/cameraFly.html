@@ -24,7 +24,7 @@
 
     document.getElementById("viewPoint").onclick = function () {
         const DIST = 6000;
-        let viewPoi = new LonLat(8.8418519, 46.8048607);
+        let viewPoi = new LonLat(8.8295114, 46.8247223, 3218);
         let ell = globus.planet.ellipsoid;
         globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST, {
             amplitude: 0,
