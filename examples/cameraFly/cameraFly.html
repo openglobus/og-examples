@@ -23,28 +23,40 @@
     } from "../../external/og/lib/og.es.js";
 
     document.getElementById("viewPoint").onclick = function () {
-        const DIST = 2000;
-        let viewPoi = new LonLat(9.98464, 46.06157, 3039);
+        const DIST = 6000;
+        let viewPoi = new LonLat(8.8418519, 46.8048607);
         let ell = globus.planet.ellipsoid;
-        globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST);
+        globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST, {
+            amplitude: 0,
+            duration: 2000
+        });
     };
 
     document.getElementById("flyPoint").onclick = function () {
-
         let ell = globus.planet.ellipsoid;
-
-        let destPos = new LonLat(10.13176, 46.18868, 10779);
+        let destPos = new LonLat(10.13176, 46.18868, 20779);
         let viewPoi = new LonLat(9.98464, 46.06157, 3039);
-
         let lookCart = ell.lonLatToCartesian(viewPoi);
         let upVec = ell.lonLatToCartesian(destPos).normalize();
-
-        // 0 - is an amplitude of the fly track
-        globus.planet.camera.flyLonLat(destPos, lookCart, upVec, 0);
+        globus.planet.camera.flyLonLat(destPos, {
+            look: lookCart,
+            up: upVec,
+            amplitude: 0,
+            duration: 2000,
+            ease: (t) => t * t * (3 - 2 * t),
+            linearPath: true
+        });
     };
 
     document.getElementById("viewExtent").onclick = function () {
-        globus.planet.flyExtent(new Extent(new LonLat(9.53297, 46.02795), new LonLat(11.56212, 45.78692)));
+        globus.planet.flyExtent(
+            new Extent(new LonLat(9.53297, 46.02795), new LonLat(11.56212, 45.78692)),
+            undefined,
+            {
+                amplitude: 0,
+                duration: 2000
+            }
+        );
     };
 
     let osm = new XYZ("OpenStreetMap", {
