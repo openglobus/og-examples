@@ -34,8 +34,9 @@
         });
 
         const pointLayer = new Vector("points", {
-            'relativeToGround': true,
-            'visibility': true
+            relativeToGround: true,
+            visibility: true,
+            polygonOffsetUnits: -5,
         });
 
         const globe = new Globe({
@@ -55,33 +56,48 @@
             return circleCoords;
         };
 
-        function createCircles(outPathLonLat, outPathColors, num = 80) {
+        function createCircleEntities(num = 80) {
+            let entities = [];
             let ell = globe.planet.ellipsoid;
             for (let i = 0; i < num; i++) {
                 let center = new LonLat(math.random(8.08, 8.31), math.random(46.7, 46.8));
                 let circle = createCircle(ell, center, math.random(100, 1000));
-                outPathLonLat.push(circle);
-
                 let color = [math.random(), math.random(), math.random()];
-                outPathColors.push([color]);
+                entities.push(new Entity({
+                    polyline: {
+                        pathLonLat: [circle],
+                        pathColors: [[[color[0], color[1], color[2], 1.0]]],
+                        thickness: 5.3,
+                        isClosed: true
+                    }
+                }));
             }
+
+            return entities;
         }
 
-        let pathLonLat = [],
-            pathColors = [];
+        const circleEntities = createCircleEntities();
+        pointLayer.addEntities(circleEntities);
 
-        createCircles(pathLonLat, pathColors);
+        const defaultThickness = 5.3;
+        const hoverThickness = 10;
+        let hoveredCircle = null;
 
-        const polylineEntity = new Entity({
-            'polyline': {
-                'pathLonLat': pathLonLat,
-                'pathColors': pathColors,
-                'thickness': 3.3,
-                'isClosed': true
+        pointLayer.events.on("mouseenter", function (e) {
+            e.renderer.handler.canvas.style.cursor = "pointer";
+            if (hoveredCircle && hoveredCircle !== e.pickingObject) {
+                hoveredCircle.polyline?.setThickness(defaultThickness);
             }
+            e.pickingObject?.polyline?.setThickness(hoverThickness);
+            hoveredCircle = e.pickingObject || null;
         });
 
-        pointLayer.addEntities([polylineEntity]);
+        pointLayer.events.on("mouseleave", function (e) {
+            e.renderer.handler.canvas.style.cursor = "default";
+            const circle = e.pickingObject || hoveredCircle;
+            circle?.polyline?.setThickness(defaultThickness);
+            hoveredCircle = null;
+        });
 
         globe.planet.viewExtentArr([8.08, 46.72, 8.31, 46.75]);
 
