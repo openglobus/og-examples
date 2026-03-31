@@ -108,7 +108,7 @@
         Clock,
         Globe,
         GlobusRgbTerrain,
-        XYZ
+        Bing
     } from "../../external/og/lib/og.es.js";
 
     function getDateStr(date) {
@@ -126,23 +126,14 @@
         return (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
     };
 
-    let osm = new XYZ("OpenStreetMap", {
-        specular: [0.0003, 0.00012, 0.00001],
-        shininess: 20,
-        diffuse: [0.89, 0.9, 0.83],
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
     let globus = new Globe({
         target: "globus",
         name: "Earth",
-        layers: [osm],
+        layers: [new Bing()],
         terrain: new GlobusRgbTerrain("OpenGlobus"),
         resourcesSrc: "../../external/og/lib/res",
-        fontsSrc: "../../external/og/lib/res/fonts"
+        fontsSrc: "../../external/og/lib/res/fonts",
+        atmosphereEnabled: true,
     });
 
     var clockA = new Clock({

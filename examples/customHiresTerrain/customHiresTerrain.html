@@ -15,7 +15,8 @@
         Globe,
         RgbTerrain,
         XYZ,
-        control
+        control,
+        LonLat
     } from "../../external/og/lib/og.es.js";
 
     var highResTerrain = new RgbTerrain("MyTerrain", {
@@ -40,9 +41,13 @@
         terrain: highResTerrain,
         layers: [osm],
         resourcesSrc: "../../external/og/lib/res",
-        fontsSrc: "../../external/og/lib/res/fonts",
-        viewExtent: [-113.2697019, 37.1551107, -112.1484175, 37.3981816]
+        fontsSrc: "../../external/og/lib/res/fonts"
     });
+
+    globus.planet.camera.setLonLat(
+        new LonLat(-112.97645655817573, 37.25640302754812, 14278.74619800427),
+        new LonLat(-112.97645655817573, 37.25640302754812, 0)
+    );
 
     globus.planet.addControl(new control.KeyboardNavigation());
     globus.planet.addControl(new control.TimelineControl());
