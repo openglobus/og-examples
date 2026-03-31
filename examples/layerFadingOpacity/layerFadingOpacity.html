@@ -16,7 +16,8 @@
         Globe,
         GlobusRgbTerrain,
         XYZ,
-        control
+        control,
+        LonLat
     } from "../../external/og/lib/og.es.js";
 
     let osm = new XYZ("OSM", {
@@ -68,8 +69,10 @@
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
-    //View at Germany
-    globe.planet.viewExtentArr([8.389217264662717, 50.129333035050855, 11.016863349016512, 50.66288338364864]);
+    globe.planet.camera.setLonLat(
+        new LonLat(9.572875498214428, 50.44595454217784, 120028),
+        new LonLat(9.572875498214428, 50.44595454217784, 0)
+    );
 
     //Load points
     fetch("DE.json.txt", {
@@ -82,10 +85,11 @@
         .then(function (resp) {
             let labels = [],
                 markers = [];
+            const pointHeight = 1000;
             for (let i = 0; i < resp.length; i++) {
                 let ri = resp[i];
                 markers.push(new Entity({
-                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat)],
+                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat), pointHeight],
                     'billboard': {
                         'src': "./marker.png",
                         'width': 12,
@@ -98,7 +102,7 @@
                 }));
 
                 labels.push(new Entity({
-                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat)],
+                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat), pointHeight],
                     'label': {
                         'text': ri.name,
                         'size': 16,
