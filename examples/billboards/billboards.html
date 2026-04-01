@@ -2,93 +2,160 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 <body>
     <div id="globus" style="width:100%;height:100%"></div>
+    <div style="position:absolute;top:12px;left:12px;z-index:10;padding:10px;background:rgba(0,0,0,0.65);color:#fff;font-family:Arial,sans-serif;font-size:12px;border-radius:4px;">
+        <label for="billboardOpacity">Billboard opacity: <span id="billboardOpacityValue">1.00</span></label><br>
+        <input id="billboardOpacity" type="range" min="0" max="1" step="0.01" value="1" style="width:220px;">
+    </div>
 <script type="module" id="og-sandbox-script">
 'use strict';
 
-import {
-    Entity,
-    EntityCollection,
-    LonLat,
-    Globe,
-    GlobusRgbTerrain,
-    Bing
-} from "../../external/og/lib/og.es.js";
+    // Credits <a href="https://www.flaticon.com/free-icons/hot-dogs" title="hot dogs icons">Hot dogs icons created by Aranagraphics - Flaticon</a>
 
-function rnd(min, max) {
-    return Math.random() * (max - min) + min;
-}
+    import {
+        Entity,
+        Vector,
+        LonLat,
+        Globe,
+        GlobusRgbTerrain,
+        Bing
+    } from "../../external/og/lib/og.es.js";
 
-let entities = [],
-    colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'darkblue', 'purple']
+    const entities = [
+        new Entity({
+            name: "beautiful",
+            lonlat: [12.060643, 60.955, 8000],
+            billboard: {src: "./beautiful.png", scale: 0.4}
+        }),
+        new Entity({
+            name: "carrot",
+            lonlat: [12.860643, 60.955, 5000],
+            billboard: {
+                src: "./carrot.png",
+                scale: 0.5,
+                color: "#ff810e"
+            }
+        }),
+        new Entity({
+            name: "cat",
+            lonlat: [13.660643, 60.955, 5000],
+            billboard: {src: "./cat.png", scale: 0.4}
+        }),
+        new Entity({
+            name: "dog",
+            lonlat: [14.460643, 60.955, 1000],
+            billboard: {src: "./dog.png", scale: 0.5, offset: [0, 78 * 0.5]}
+        }),
+        new Entity({
+            name: "flag",
+            lonlat: [12.060643, 61.355, 500],
+            billboard: {
+                src: "./flag.png",
+                size: [90, 133],
+                offset: [0, 133 / 4],
+                scale: 0.5
+            }
+        }),
+        new Entity({
+            name: "marker",
+            lonlat: [12.860643, 61.355, 500],
+            billboard: {
+                src: "./marker.png",
+                size: [29, 48],
+                offset: [0, 24]
+            }
+        }),
+        new Entity({
+            name: "route66",
+            lonlat: [13.660643, 61.355, 5000],
+            billboard: {src: "./route66.png", scale: 0.35}
+        }),
+        new Entity({
+            name: "satellite",
+            lonlat: [14.460643, 61.355, 12000],
+            billboard: {src: "./satellite.png", scale: 0.5}
+        }),
+        new Entity({
+            name: "star",
+            lonlat: [12.060643, 61.755, 8000],
+            billboard: {src: "./star.png", scale: 0.4}
+        }),
+        new Entity({
+            name: "sunflowers",
+            lonlat: [12.860643, 61.755, 10000],
+            billboard: {src: "./sunflowers.png", scale: 0.44}
+        }),
+        new Entity({
+            name: "tree",
+            lonlat: [13.660643, 61.755, 500],
+            billboard: {src: "./tree.png", size: [80, 120], offset: [0, 60]}
+        }),
+        new Entity({
+            name: "tree2",
+            lonlat: [14.460643, 61.755, 500],
+            billboard: {src: "./tree2.png", size: [100, 100], offset: [0, 50]}
+        })
+    ];
 
-for (let i = 0; i < 5000; i++) {
-    entities.push(new Entity({
-        'name': 'sat-' + i,
-        'lonlat': [rnd(-180, 180), rnd(-90, 90), rnd(100000, 5000000)],
-        'billboard': {
-            'src': './carrot.png',
-            'size': [24, 24],
-            'color': colors[i % 7],
-            'rotation': rnd(0, 360)
-        },
-        'properties': {
-            'bearing': rnd(0, 360),
-            'color': colors[i % 7]
-        }
-    }));
-}
-
-let carrots = new EntityCollection({
-    'entities': entities,
-    'scaleByDistance': [6000000, 24000000, 10000000000]
+const layer = new Vector("billboards", {
+    entities,
+    scaleByDistance: [0, 8000000, 30000000]
 });
 
-carrots.events.on("mouseenter", function (e) {
-    let b = e.pickingObject.billboard;
-    b.setColor(1, 1, 1);
-});
-
-carrots.events.on("mouseleave", function (e) {
-    let b = e.pickingObject.billboard;
-    b.setColorHTML(e.pickingObject.properties.color);
-});
-
-carrots.events.on("lclick", function (e) {
-    e.pickingObject.billboard.remove();
-});
-
-let sat = new Bing();
+    let sat = new Bing();
 
 let globus = new Globe({
-    target: "globus",
-    name: "Earth",
-    terrain: new GlobusRgbTerrain(),
-    layers: [sat],
-    atmosphereEnabled: true,
-    resourcesSrc: "../../external/og/lib/res",
-    fontsSrc: "../../external/og/lib/res/fonts",
-    sun: {
-        stopped: true
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [sat],
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts",
+        sun: {
+            stopped: true
     }
 });
 
-globus.planet.events.on("draw", () => {
-    carrots.each(function (e) {
-        let c = e.getLonLat();
-        let ll = globus.planet.ellipsoid.getBearingDestination(c, e.properties.bearing, 2000);
-        e.properties.bearing = globus.planet.ellipsoid.inverse(c, ll).finalAzimuth;
-        e.setLonLat(new LonLat(ll.lon, ll.lat, c.height));
-        e.billboard.setRotation(e.billboard.getRotation() + 0.01);
-    });
+const globusDiv = document.getElementById("globus");
+layer.events.on("mouseenter", function () {
+    if (globusDiv) {
+        globusDiv.style.cursor = "pointer";
+    }
+});
+layer.events.on("mouseleave", function () {
+    if (globusDiv) {
+        globusDiv.style.cursor = "default";
+    }
 });
 
-carrots.addTo(globus.planet);
+const opacitySlider = document.getElementById("billboardOpacity");
+const opacityValue = document.getElementById("billboardOpacityValue");
 
-globus.planet.flyLonLat(new LonLat(54.5, 43.5, 20108312));
+function setLayerBillboardsOpacity(opacity) {
+    const entities = layer.getEntities();
+    for (let i = 0; i < entities.length; i++) {
+        const entity = entities[i];
+        if (entity.billboard) {
+            entity.billboard.setOpacity(opacity);
+        }
+    }
+}
+
+if (opacitySlider && opacityValue) {
+    opacitySlider.addEventListener("input", function (e) {
+        const value = Number(e.target.value);
+        opacityValue.textContent = value.toFixed(2);
+        setLayerBillboardsOpacity(value);
+    });
+}
+
+layer.addTo(globus.planet);
+
+globus.planet.flyLonLat(new LonLat(13.172047419993145, 61.28501794362854, 318408.82726816897));
 </script>
 </body>
 </html>
