@@ -60,14 +60,14 @@
         });
 
         pointLayer.events.on("ldown", function (e) {
-            e.renderer.controls.mouseNavigation.deactivate();
+        e.renderer.controls.navigation.deactivate();
             startClick.set(e.x, e.y);
             pickingObject = e.pickingObject;
             startPos = e.pickingObject.layer.planet.getPixelFromCartesian(pickingObject.getCartesian());
         });
 
         pointLayer.events.on("lup", function (e) {
-            e.renderer.controls.mouseNavigation.activate();
+        e.renderer.controls.navigation.activate();
             pickingObject = null;
         });
 

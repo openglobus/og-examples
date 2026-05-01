@@ -15,11 +15,11 @@
             Globe,
             GlobusRgbTerrain,
             GeoImage,
-            XYZ,
+            OpenStreetMap,
             LonLat
         } from "../../external/og/lib/og.es.js";
 
-        let osm = new XYZ("OpenStreetMap", {
+        let osm = new OpenStreetMap("OpenStreetMap", {
             isBaseLayer: true,
             url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             visibility: true,

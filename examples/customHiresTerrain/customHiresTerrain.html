@@ -14,7 +14,7 @@
     import {
         Globe,
         RgbTerrain,
-        XYZ,
+        OpenStreetMap,
         control
     } from "../../external/og/lib/og.es.js";
 
@@ -26,7 +26,7 @@
         //gridSizeByZoom: [64, 32, 16, 8, 8, 8, 8, 16, 16, 16, 64, 128, 128, 128, 128, 128, 128, 64, 64, 32, 16, 8]
     });
 
-    let osm = new XYZ("OpenStreetMap", {
+    let osm = new OpenStreetMap("OpenStreetMap", {
         isBaseLayer: true,
         url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,

@@ -4,10 +4,6 @@
     "id": "baseLayers"
   },
   {
-    "label": "JAXA World Terrain with Gebco Bathymetry",
-    "id": "worldTerrain"
-  },
-  {
     "label": "Billboards",
     "id": "billboards"
   },

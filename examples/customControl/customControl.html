@@ -27,7 +27,7 @@
         import {
             Globe,
             GlobusRgbTerrain,
-            XYZ,
+            OpenStreetMap,
             LonLat,
             Vec3,
             Control
@@ -95,7 +95,7 @@
             }
         };
 
-        let osm = new XYZ("OpenStreetMap", {
+        let osm = new OpenStreetMap("OpenStreetMap", {
             specular: [0.0003, 0.00012, 0.00001],
             shininess: 20,
             diffuse: [0.89, 0.9, 0.83],

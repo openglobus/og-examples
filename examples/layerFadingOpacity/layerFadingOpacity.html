@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 
 <head>
     <title>Layer Fading Opacity Example</title>
@@ -15,11 +15,11 @@
         Entity,
         Globe,
         GlobusRgbTerrain,
-        XYZ,
+        OpenStreetMap,
         control
     } from "../../external/og/lib/og.es.js";
 
-    let osm = new XYZ("OSM", {
+    let osm = new OpenStreetMap("OSM", {
         'isBaseLayer': true,
         'url': "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         'visibility': true,

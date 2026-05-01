@@ -17,7 +17,7 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        XYZ,
+        OpenStreetMap,
         LonLat,
         Extent
     } from "../../external/og/lib/og.es.js";
@@ -47,7 +47,7 @@
         globus.planet.flyExtent(new Extent(new LonLat(9.53297, 46.02795), new LonLat(11.56212, 45.78692)));
     };
 
-    let osm = new XYZ("OpenStreetMap", {
+    let osm = new OpenStreetMap("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,

@@ -46,9 +46,8 @@
     'use strict';
 
     import {
-        Handler,
         Renderer,
-        RenderNode,
+        Scene,
         EntityCollection,
         Entity,
         Vec3,
@@ -62,7 +61,7 @@
         fontsSrc: "./fonts"
     });
 
-    class MyScene extends RenderNode {
+    class MyScene extends Scene {
         constructor() {
             super("MyScene");
 
@@ -213,7 +212,7 @@
     }
 
     let myScene = new MyScene()
-    renderer.addNodes([
+    renderer.addScenes([
         new scene.Axes(),
         myScene
     ]);

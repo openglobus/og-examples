@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 
 <head>
     <title>OpenGlobus - Earth planet</title>
@@ -36,7 +36,7 @@
     import {
         Globe,
         GlobusRgbTerrain,
-        XYZ
+        OpenStreetMap
     } from "../../external/og/lib/og.es.js";
 
     document.getElementById("heightFactor").onchange = function () {
@@ -47,7 +47,7 @@
         globus.planet.setLodSize(parseFloat(this.value), parseFloat(this.value));
     };
 
-    let osm = new XYZ("OpenStreetMap", {
+    let osm = new OpenStreetMap("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,

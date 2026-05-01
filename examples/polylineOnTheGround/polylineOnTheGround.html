@@ -85,13 +85,13 @@
     });
 
     pointLayer.events.on("ldown", function (e) {
-        this.planet.renderer.controls.mouseNavigation.deactivate();
+                this.planet.renderer.controls.navigation.deactivate();
         startPos = this.planet.getLonLatFromPixelTerrain(e);
         pickingObject = e.pickingObject;
     });
 
     pointLayer.events.on("lup", function (e) {
-        e.renderer.controls.mouseNavigation.activate();
+                e.renderer.controls.navigation.activate();
         center.lon += endPos.lon - startPos.lon;
         center.lat += endPos.lat - startPos.lat;
         pickingObject = null;
