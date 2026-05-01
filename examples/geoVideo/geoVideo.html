@@ -53,7 +53,6 @@
         isBaseLayer: false,
         attribution: 'SkyBox Imaging Inc.',
         opacity: 1.0,
-        diffuse: [1.2, 1.2, 1.2]
     });
 
 
@@ -62,9 +61,8 @@
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
         layers: [sat, imergac, lv],
-        atmosphereEnabled: true,
         resourcesSrc: "../../external/og/lib/res",
-        fontsSrc: "../../external/og/lib/res/fonts"
+        fontsSrc: "../../external/og/lib/res/fonts",
     });
 
     globus.planet.flyExtent(imergac.getExtent());
