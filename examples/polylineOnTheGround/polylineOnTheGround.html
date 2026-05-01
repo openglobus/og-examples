@@ -8,7 +8,7 @@
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
 
     'use strict';
 
@@ -27,7 +27,6 @@
         let size = 0.26;
         let cell = 0.005;
 
-        let vert = [];
         for (let i = 0; i < size; i += cell) {
             let par = [],
                 mer = [];
@@ -44,20 +43,21 @@
     let center = new LonLat(8.19, 46.73);
 
     const polylineEntity = new Entity({
-        'polyline': {
-            'pathLonLat': createGrid(center),
-            'thickness': 4,
-            'color': "orange",
-            'isClosed': false
+        polyline: {
+            pathLonLat: createGrid(center),
+            thickness: 4,
+            color: "#ef46ea",
+            isClosed: false
         }
     });
 
-    const pointLayer = new Vector("points", {
-        'clampToGround': true,
-        'entities': [
+    const vectorLayer = new Vector("grid", {
+        depthOffset: -100,
+        clampToGround: true,
+        entities: [
             polylineEntity
         ],
-        'async': false
+        async: false
     });
 
     const osm = new OpenStreetMap();
@@ -66,7 +66,7 @@
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm, pointLayer],
+        layers: [osm, vectorLayer],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
@@ -76,22 +76,22 @@
     let pickingObject = null;
     let startPos, endPos;
 
-    pointLayer.events.on("mouseenter", function (e) {
+    vectorLayer.events.on("mouseenter", function (e) {
         e.renderer.handler.canvas.style.cursor = "pointer";
     });
 
-    pointLayer.events.on("mouseleave", function (e) {
+    vectorLayer.events.on("mouseleave", function (e) {
         e.renderer.handler.canvas.style.cursor = "default";
     });
 
-    pointLayer.events.on("ldown", function (e) {
-                this.planet.renderer.controls.navigation.deactivate();
+    vectorLayer.events.on("ldown", function (e) {
+        this.planet.renderer.controls.navigation.deactivate();
         startPos = this.planet.getLonLatFromPixelTerrain(e);
         pickingObject = e.pickingObject;
     });
 
-    pointLayer.events.on("lup", function (e) {
-                e.renderer.controls.navigation.activate();
+    vectorLayer.events.on("lup", function (e) {
+        e.renderer.controls.navigation.activate();
         center.lon += endPos.lon - startPos.lon;
         center.lat += endPos.lat - startPos.lat;
         pickingObject = null;
