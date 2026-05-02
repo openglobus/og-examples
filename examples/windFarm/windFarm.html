@@ -51,7 +51,7 @@
 
     const planet = globus.planet;
 
-    globus.planet.addControl(new control.GeoObjectEditor());
+    globus.planet.addControl(new control.EntityEditor());
 
     function setInitialCamera() {
         const lookCartesian = planet.ellipsoid.lonLatToCartesian(CAMERA_LOOK_LONLAT);

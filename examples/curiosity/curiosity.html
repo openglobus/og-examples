@@ -19,7 +19,7 @@
         Entity,
         Renderer,
         Vec3,
-        RenderNode,
+        Scene,
         EntityCollection,
         scene,
         Gltf,
@@ -244,12 +244,13 @@
     }
 
     let renderer = new Renderer("frame", {
-        msaa: 8,
-        controls: [new control.SimpleNavigation({speed: 0.01})],
+        controls: [
+            new control.SimpleNavigation({speed: 0.01}),
+        ],
         autoActivate: true
     });
 
-    class MyScene extends RenderNode {
+    class MyScene extends Scene {
         constructor() {
             super("MyScene");
         }
