@@ -24,6 +24,7 @@ jobs:
 
             npm install
             npm run build
+            mv -f build/__config.json build/config.json
 
             cd external/og
             npm install
