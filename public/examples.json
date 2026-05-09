@@ -36,10 +36,6 @@
     "id": "customControl"
   },
   {
-    "label": "Custom High Resolution Terrain Provider",
-    "id": "customHiresTerrain"
-  },
-  {
     "label": "Custom Scene",
     "id": "customScene"
   },
@@ -126,10 +122,6 @@
   {
     "label": "Lighting Control",
     "id": "lighting"
-  },
-  {
-    "label": "Mapbox Terrain Provider",
-    "id": "mapboxTerrain"
   },
   {
     "label": "Show marker on time",
