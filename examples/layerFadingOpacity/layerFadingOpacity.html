@@ -19,25 +19,18 @@
         control
     } from "../../external/og/lib/og.es.js";
 
-    let osm = new OpenStreetMap("OSM", {
-        'isBaseLayer': true,
-        'url': "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        'visibility': true,
-        'attribution': 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
     let townMarkers = new Vector("town markers", {
-        'nodeCapacity': 100000,
-        'maxZoom': 9,
-        'scaleByDistance': [0, 1500000, 25000000],
-        'fading': true
+        nodeCapacity: 100000,
+        maxZoom: 9,
+        scaleByDistance: [0, 1500000, 25000000],
+        fading: true
     });
 
     let townLabels = new Vector("town labels", {
-        'nodeCapacity': 50,
-        'scaleByDistance': [0, 350000, 25000000],
-        'minZoom': 10,
-        'fading': true
+        nodeCapacity: 50,
+        scaleByDistance: [0, 350000, 25000000],
+        minZoom: 10,
+        fading: true
     });
 
     townLabels.events.on("mouseenter", function (e) {
@@ -60,7 +53,7 @@
         name: "Earth",
         target: "earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm, townLabels, townMarkers],
+        layers: [new OpenStreetMap(), townLabels, townMarkers],
         sun: {
             active: false
         },
@@ -73,7 +66,6 @@
 
     //Load points
     fetch("DE.json.txt", {
-        //credentials: 'include',
         method: 'GET'
     })
         .then(function (resp) {
@@ -85,30 +77,30 @@
             for (let i = 0; i < resp.length; i++) {
                 let ri = resp[i];
                 markers.push(new Entity({
-                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat)],
-                    'billboard': {
-                        'src': "./marker.png",
-                        'width': 12,
-                        'height': 12,
-                        'offset': [0, 6]
+                    lonlat: [parseFloat(ri.lon), parseFloat(ri.lat), 450],
+                    billboard: {
+                        src: "./marker.png",
+                        width: 24,
+                        height: 24,
+                        offset: [0, 12]
                     },
-                    'properties': {
-                        'name': ri.name
+                    properties: {
+                        name: ri.name
                     }
                 }));
 
                 labels.push(new Entity({
-                    'lonlat': [parseFloat(ri.lon), parseFloat(ri.lat)],
-                    'label': {
-                        'text': ri.name,
-                        'size': 16,
-                        'outline': 0.17,
-                        'outlineColor': "rgba(0,0,0,0.12)",
-                        'color': "rgba(0,0,0,0.88)",
-                        'align': "center"
+                    lonlat: [parseFloat(ri.lon), parseFloat(ri.lat), 450],
+                    label: {
+                        text: ri.name,
+                        size: 21,
+                        outline: 0.17,
+                        outlineColor: "rgba(0,0,0,0.12)",
+                        color: "rgba(0,0,0,1)",
+                        align: "center"
                     },
-                    'properties': {
-                        'name': ri.name
+                    properties: {
+                        name: ri.name
                     }
                 }));
             }
