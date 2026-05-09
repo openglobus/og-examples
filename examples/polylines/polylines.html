@@ -3,118 +3,129 @@
 <head>
     <title>OpenGlobus - Earth planet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 
 <body>
-<div id="globus" style="width:100%;height:100%"></div>
+    <div id="globus" style="width:100%;height:100%"></div>
     <script type="module" id="og-sandbox-script">
-    'use strict';
+        'use strict';
 
-    import {
-        math,
-        Globe,
-        Entity,
-        GlobusRgbTerrain,
-        XYZ,
-        LonLat,
-        Vector,
-        Vec3,
-        Quat
-    } from "../../external/og/lib/og.es.js";
+        import {
+            math,
+            Globe,
+            Entity,
+            GlobusRgbTerrain,
+            OpenStreetMap,
+            LonLat,
+            Vector,
+            Vec3,
+            Quat
+        } from "../../external/og/lib/og.es.js";
 
-    //
-    // Orbit circles
-    //
-    var size = 5.0;
-    var greenOrbit = [];
-    var p = new Vec3(0, 0, 6378137.0 + 3000000.0);
-    var q = Quat.axisAngleToQuat(new Vec3(1, 1, 0).normalize(), size * math.RADIANS);
+        //
+        // Orbit circles
+        //
+        let size = 5.0;
+        let greenOrbit = [];
+        let p = new Vec3(0, 0, 6378137.0 + 3000000.0);
+        let q = Quat.axisAngleToQuat(new Vec3(1, 1, 0).normalize(), size * math.RADIANS);
 
-    var redOrbit = [];
-    var p2 = new Vec3(0, 0, 6378137.0 + 5000000.0);
-    var q2 = Quat.axisAngleToQuat(new Vec3(-0.1, 1, 0.1).normalize(), size * math.RADIANS);
+        let redOrbit = [];
+        let p2 = new Vec3(6378137.0 + 200000.0, 0, 0);
+        let q2 = Quat.axisAngleToQuat(new Vec3(0, 0, 1), size * math.RADIANS);
+        const redOrbitTexture = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAHUlEQVQYlWP8////fwYiABMxigZYIeN/BoZh4xkA/EcGDcZEQfUAAAAASUVORK5CYII=";
+        const polarSquareRadius = 6378137.0 + 2250000.0;
+        const polarSquare = [[
+            new Vec3(polarSquareRadius, 0, polarSquareRadius),
+            new Vec3(polarSquareRadius, 0, -polarSquareRadius),
+            new Vec3(-polarSquareRadius, 0, -polarSquareRadius),
+            new Vec3(-polarSquareRadius, 0, polarSquareRadius)
+        ]];
 
-    for (let i = 0; i < 360; i += size) {
-        p = q.mulVec3(p);
-        greenOrbit.push(p);
+        for (let i = 0; i < 360; i += size) {
+            p = q.mulVec3(p);
+            greenOrbit.push(p);
 
-        p2 = q2.mulVec3(p2);
-        redOrbit.push(p2);
-    }
-
-    //
-    // Geodetic grid
-    //
-    var grid = [];
-    //meridians
-    for (let i = -180; i < 180; i += 10) {
-        var mer = [];
-        for (let j = -90; j <= 90; j++) {
-            mer.push(new LonLat(i, j, 20000));
+            p2 = q2.mulVec3(p2);
+            redOrbit.push(p2);
         }
-        grid.push(mer);
-    }
 
-    //parallels
-    for (let i = -90; i < 90; i += 10) {
-        var mer = [];
-        for (let j = -180; j <= 180; j++) {
-            mer.push(new LonLat(j, i, 20000));
+        //
+        // Geodetic grid
+        //
+        let grid = [];
+        // meridians
+        for (let i = -180; i < 180; i += 10) {
+            let mer = [];
+            for (let j = -90; j <= 90; j++) {
+                mer.push(new LonLat(i, j, 20000));
+            }
+            grid.push(mer);
         }
-        grid.push(mer);
-    }
 
-    var collection = new Vector("Collection", {
-        'entities':
-            [{
-                'polyline': {
-                    'pathLonLat': grid,
-                    'thickness': 1,
-                    'color': "rgba(68, 157, 205, 0.92)"
-                }
-            }, {
-                'polyline': {
-                    'path3v': [greenOrbit],
-                    'thickness': 5.5,
-                    'color': "#39b739",
-                    'isClosed': true
-                }
-            }, {
-                'polyline': {
-                    'path3v': [redOrbit],
-                    'thickness': 2.5,
-                    'color': "#ff3b3b",
-                    'isClosed': true
-                }
-            }, {
-                'polyline': {
-                    'pathLonLat': [[new LonLat(55, 2.3510, 200000), new LonLat(52, 17, 200000), new LonLat(50, 35, 300000)]],
-                    'pathColors': [[[1, 1, 1, 1], [1, 1, 0, 1], [1, 0, 0, 1]]],
-                    'thickness': 5.5,
-                    'color': "red",
-                    'isClosed': false
-                }
-            }]
-    });
+        // parallels
+        for (let i = -90; i < 90; i += 10) {
+            let mer = [];
+            for (let j = -180; j <= 180; j++) {
+                mer.push(new LonLat(j, i, 20000));
+            }
+            grid.push(mer);
+        }
 
-    var osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
+        let collection = new Vector("Collection", {
+            entities: [
+                {
+                    polyline: {
+                        pathLonLat: grid,
+                        thickness: 2,
+                        color: "rgba(68, 157, 205, 0.92)"
+                    }
+                },
+                {
+                    polyline: {
+                        path3v: [greenOrbit],
+                        thickness: 5.5,
+                        color: "#39b739",
+                        isClosed: true
+                    }
+                },
+                {
+                    polyline: {
+                        path3v: [redOrbit],
+                        thickness: 4.5,
+                        color: "#ffffff",
+                        src: redOrbitTexture,
+                        isClosed: true
+                    }
+                },
+                {
+                    polyline: {
+                        path3v: polarSquare,
+                        pathColors: [[
+                            [1, 0, 0, 1],
+                            [0, 1, 0, 1],
+                            [0, 0, 1, 1],
+                            [1, 1, 1, 1]
+                        ]],
+                        thickness: 5.5,
+                        color: "white",
+                        isClosed: true
+                    }
+                }
+            ]
+        });
 
-    var globus = new Globe({
-        target: "globus",
-        name: "Earth",
-        layers: [osm, collection],
-        terrain: new GlobusRgbTerrain(),
-        resourcesSrc: "../../external/og/lib/res",
-        fontsSrc: "../../external/og/lib/res/fonts"
-    });
+        let globus = new Globe({
+            target: "globus",
+            name: "Earth",
+            layers: [new OpenStreetMap(), collection],
+            terrain: new GlobusRgbTerrain(),
+            resourcesSrc: "../../external/og/lib/res",
+            fontsSrc: "../../external/og/lib/res/fonts"
+        });
 
-</script>
+    </script>
 </body>
 
 </html>
