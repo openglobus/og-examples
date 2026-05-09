@@ -3,7 +3,7 @@
 <head>
     <title>Attribution Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 
 <body>
@@ -11,8 +11,8 @@
 <button id="viewPoint" style="top: 0; position: absolute; left:10px; margin:10px;">View point</button>
 <button id="flyPoint" style="top: 0; position: absolute; left:100px; margin:10px;">Fly point</button>
 <button id="viewExtent" style="top: 0; position: absolute; left:210px; margin:10px;">View extent</button>
-    <script type="module" id="og-sandbox-script">
-    'use strict';
+<script type="module" id="og-sandbox-script">
+    "use strict";
 
     import {
         Globe,
@@ -22,36 +22,41 @@
         Extent
     } from "../../external/og/lib/og.es.js";
 
-    document.getElementById("viewPoint").onclick = function () {
+    document.getElementById("viewPoint").onclick = function() {
         const DIST = 2000;
-        let viewPoi = new LonLat(9.98464, 46.06157, 3039);
+        let viewPoi = new LonLat(7.9981766, 46.4310708, 3633);
         let ell = globus.planet.ellipsoid;
-        globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST);
+        globus.planet.camera.flyDistance(ell.lonLatToCartesian(viewPoi), DIST, {
+            linearPath: true
+        });
     };
 
-    document.getElementById("flyPoint").onclick = function () {
+    document.getElementById("flyPoint").onclick = function() {
 
         let ell = globus.planet.ellipsoid;
 
-        let destPos = new LonLat(10.13176, 46.18868, 10779);
-        let viewPoi = new LonLat(9.98464, 46.06157, 3039);
+        let destPos = new LonLat(8.0385638, 46.3662788, 15779);
+        let viewPoi = new LonLat(8.1385638, 46.3562788, 2636);
 
         let lookCart = ell.lonLatToCartesian(viewPoi);
         let upVec = ell.lonLatToCartesian(destPos).normalize();
 
-        // 0 - is an amplitude of the fly track
-        globus.planet.camera.flyLonLat(destPos, lookCart, upVec, 0);
+        globus.planet.camera.flyLonLat(destPos, {
+            look: lookCart, up: upVec, amplitude: 0, linearPath: true
+        });
     };
 
-    document.getElementById("viewExtent").onclick = function () {
-        globus.planet.flyExtent(new Extent(new LonLat(9.53297, 46.02795), new LonLat(11.56212, 45.78692)));
+    document.getElementById("viewExtent").onclick = function() {
+        globus.planet.flyExtent(
+            new Extent(new LonLat(8.444305070806447, 46.83498494404538), new LonLat(8.359558474132529, 46.81334158471044))
+        );
     };
 
     let osm = new OpenStreetMap("OpenStreetMap", {
         isBaseLayer: true,
         url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        attribution: "Data @ OpenStreetMap contributors, ODbL"
     });
 
     let globus = new Globe({
