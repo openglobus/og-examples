@@ -1,91 +1,281 @@
+<html>
+
 <head>
-    <title>OpenGlobus - Earth planet</title>
+    <title>OpenGlobus - Rays</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="module" src="./rays.js"></script>
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
+
 <body>
     <div id="globus" style="width:100%;height:100%"></div>
     <script type="module" id="og-sandbox-script">
-import {
-    wgs84,
-    Globe,
-    Entity,
-    GlobusRgbTerrain,
-    XYZ,
-    LonLat,
-    Vector
-} from "../../external/og/lib/og.es.js";
+        import {
+            wgs84,
+            Globe,
+            Entity,
+            GlobusRgbTerrain,
+            OpenStreetMap,
+            LonLat,
+            Vector
+        } from "../../external/og/lib/og.es.js";
 
-var osm = new XYZ("OpenStreetMap", {
-    isBaseLayer: true,
-    url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    visibility: true,
-    attribution: "Data @ OpenStreetMap contributors, ODbL"
-});
+        const ellipsoid = wgs84;
 
-//ellipsoid with earth dimensions
-let ellipsoid = wgs84;
+        const bochumStart = ellipsoid.lonLatToCartesian(new LonLat(7.0, 51.5, 0));
+        const bochumEnd = ellipsoid.lonLatToCartesian(new LonLat(7.0, 51.5, 1400000));
+        const rayBochum = new Entity({
+            lonlat: new LonLat(7.0, 51.5, 1460000),
+            label: {
+                text: "Bochum",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: bochumStart,
+                endPosition: bochumEnd,
+                startColor: "rgba(64, 170, 255, 0.65)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 6
+            }
+        });
 
-//coordinates of Bochum in lonlat
-let lonlatBochum = new LonLat(7, 51.5, 0);
-//coordinate above Bochum to allow a upwards direction of ray
-let lonlatBochumAir = new LonLat(7, 51.5, 2000000);
-//coordinates of Bochum in Cartesian
-let cartBochum = ellipsoid.lonLatToCartesian(lonlatBochum);
-let cartBochumAir = ellipsoid.lonLatToCartesian(lonlatBochumAir);
-//entity containing the Bochum ray
-let entityBochum = new Entity({
-    ray: {
-        startPosition: cartBochum,
-        endPosition: cartBochumAir,
-        startColor: "blue",
-        endColor: "green",
-        thickness: 5
-    }
-});
+        const abuDhabiStart = ellipsoid.lonLatToCartesian(new LonLat(54.3773, 24.4539, 0));
+        const abuDhabiEnd = ellipsoid.lonLatToCartesian(new LonLat(54.3773, 24.4539, 1700000));
+        const rayAbuDhabi = new Entity({
+            lonlat: new LonLat(54.3773, 24.4539, 1760000),
+            label: {
+                text: "Abu Dhabi",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: abuDhabiStart,
+                endPosition: abuDhabiEnd,
+                startColor: "rgba(255, 64, 64, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 8
+            }
+        });
 
-//coordinates of Moscow in lonlat
-let lonlatMoscow = new LonLat(37.6, 55.75, 0);
-//coordinate above Moscow to allow a upwards direction of ray
-let lonlatMoscowAir = new LonLat(37.6, 55.75, 1000000);
-//coordinates of Moscow in Cartesian
-let cartMoscow = ellipsoid.lonLatToCartesian(lonlatMoscow);
-let cartMoscowAir = ellipsoid.lonLatToCartesian(lonlatMoscowAir);
-//entity containing the Moscow ray
-let entityMoscow = new Entity({
-    ray: {
-        startPosition: cartMoscow,
-        endPosition: cartMoscowAir,
-        startColor: "red",
-        endColor: "green",
-        thickness: 10
-    }
-});
+        const newYorkStart = ellipsoid.lonLatToCartesian(new LonLat(-74.0, 40.71, 0));
+        const newYorkEnd = ellipsoid.lonLatToCartesian(new LonLat(-74.0, 40.71, 1200000));
+        const rayNewYork = new Entity({
+            lonlat: new LonLat(-74.0, 40.71, 1260000),
+            label: {
+                text: "New York",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: newYorkStart,
+                endPosition: newYorkEnd,
+                startColor: "rgba(255, 195, 56, 0.60)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 6
+            }
+        });
 
-//polygonOffsetUnits is needed to hide rays behind globe
-let rayLayer = new Vector("rays", {polygonOffsetUnits: 0});
+        const tokyoStart = ellipsoid.lonLatToCartesian(new LonLat(139.7, 35.68, 0));
+        const tokyoEnd = ellipsoid.lonLatToCartesian(new LonLat(139.7, 35.68, 1600000));
+        const rayTokyo = new Entity({
+            lonlat: new LonLat(139.7, 35.68, 1660000),
+            label: {
+                text: "Tokyo",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: tokyoStart,
+                endPosition: tokyoEnd,
+                startColor: "rgba(80, 230, 140, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
 
-//add entities containing the rays to the layer
-rayLayer.add(entityBochum);
-rayLayer.add(entityMoscow);
+        const sydneyStart = ellipsoid.lonLatToCartesian(new LonLat(151.2, -33.86, 0));
+        const sydneyEnd = ellipsoid.lonLatToCartesian(new LonLat(151.2, -33.86, 1300000));
+        const raySydney = new Entity({
+            lonlat: new LonLat(151.2, -33.86, 1360000),
+            label: {
+                text: "Sydney",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: sydneyStart,
+                endPosition: sydneyEnd,
+                startColor: "rgba(198, 120, 255, 0.60)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 6
+            }
+        });
 
-var globus = new Globe({
-    target: "globus",
-    name: "Earth",
-    terrain: new GlobusRgbTerrain(),
-    layers: [osm, rayLayer],
-    sun: {
-        active: true
-    },
-    resourcesSrc: "../../external/og/lib/res",
-    fontsSrc: "../../external/og/lib/res/fonts"
-});
+        const kyivStart = ellipsoid.lonLatToCartesian(new LonLat(30.5234, 50.4501, 0));
+        const kyivEnd = ellipsoid.lonLatToCartesian(new LonLat(30.5234, 50.4501, 1500000));
+        const rayKyiv = new Entity({
+            lonlat: new LonLat(30.5234, 50.4501, 1560000),
+            label: {
+                text: "Kyiv",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: kyivStart,
+                endPosition: kyivEnd,
+                startColor: "rgba(82, 160, 255, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
 
-window.globus = globus;
-window.entityMoscow = entityMoscow;
-window.entityBochum = entityBochum;
+        const parisStart = ellipsoid.lonLatToCartesian(new LonLat(2.3522, 48.8566, 0));
+        const parisEnd = ellipsoid.lonLatToCartesian(new LonLat(2.3522, 48.8566, 1450000));
+        const rayParis = new Entity({
+            lonlat: new LonLat(2.3522, 48.8566, 1510000),
+            label: {
+                text: "Paris",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: parisStart,
+                endPosition: parisEnd,
+                startColor: "rgba(255, 133, 56, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
 
-	</script>
+        const rotterdamStart = ellipsoid.lonLatToCartesian(new LonLat(4.47917, 51.9225, 0));
+        const rotterdamEnd = ellipsoid.lonLatToCartesian(new LonLat(4.47917, 51.9225, 1480000));
+        const rayRotterdam = new Entity({
+            lonlat: new LonLat(4.47917, 51.9225, 1540000),
+            label: {
+                text: "Rotterdam",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: rotterdamStart,
+                endPosition: rotterdamEnd,
+                startColor: "rgba(255, 214, 82, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
+
+        const almatyStart = ellipsoid.lonLatToCartesian(new LonLat(76.886, 43.238, 0));
+        const almatyEnd = ellipsoid.lonLatToCartesian(new LonLat(76.886, 43.238, 1520000));
+        const rayAlmaty = new Entity({
+            lonlat: new LonLat(76.886, 43.238, 1580000),
+            label: {
+                text: "Alma-Ata",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: almatyStart,
+                endPosition: almatyEnd,
+                startColor: "rgba(255, 120, 200, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
+
+        const saintPetersburgStart = ellipsoid.lonLatToCartesian(new LonLat(30.3351, 59.9343, 0));
+        const saintPetersburgEnd = ellipsoid.lonLatToCartesian(new LonLat(30.3351, 59.9343, 1550000));
+        const raySaintPetersburg = new Entity({
+            lonlat: new LonLat(30.3351, 59.9343, 1610000),
+            label: {
+                text: "Saint Petersburg",
+                size: 17,
+                color: "white",
+                opacity: 0.3,
+                outline: 0.1,
+                outlineColor: "black",
+                align: "center",
+                offset: [0, 14]
+            },
+            ray: {
+                startPosition: saintPetersburgStart,
+                endPosition: saintPetersburgEnd,
+                startColor: "rgba(120, 220, 255, 0.62)",
+                endColor: "rgba(255,255,255,0.18)",
+                thickness: 7
+            }
+        });
+
+        const rayLayer = new Vector("rays", {
+            polygonOffsetUnits: 0,
+            entities: [
+                rayBochum,
+                rayAbuDhabi,
+                rayKyiv,
+                rayParis,
+                rayRotterdam,
+                rayAlmaty,
+                raySaintPetersburg,
+                rayNewYork,
+                rayTokyo,
+                raySydney
+            ]
+        });
+
+        new Globe({
+            target: "globus",
+            name: "Earth",
+            terrain: new GlobusRgbTerrain(),
+            layers: [new OpenStreetMap(), rayLayer],
+            resourcesSrc: "../../external/og/lib/res",
+            fontsSrc: "../../external/og/lib/res/fonts"
+        });
+    </script>
 </body>
+
 </html>
