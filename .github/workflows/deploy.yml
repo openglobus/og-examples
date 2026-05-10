@@ -19,7 +19,7 @@ jobs:
             cd /var/www/openglobus.org/og-examples
             git fetch origin
             git checkout master
-            git reset --hard origin/master
+            git pull
             git submodule update --progress --init --recursive --force --remote
 
             npm install
