@@ -39,27 +39,34 @@
     });
 
     globe.planet.addControls([
-        new control.GeoObjectEditor(),
+        new control.EntityEditor(),
+        new control.OrthoSwitcher(),
         new control.LayerSwitcher()
     ]);
 
     const baseObj = Object3d.createCube(0.4, 2, 0.4)
         .translate(new Vec3(0, 1, 0))
-        .setMaterial({
-            ambient: "#802727",
-            diffuse: "#ff5252",
+        .setColor("#ff5252")
+        .setMaterialProperties({
+            ambientOcclusion: 1.0,
+            roughness: 0.15,
+            metallic: 0.85
         });
 
     const viewObj = Object3d.createFrustum(3, 2, 1)
-        .setMaterial({
-            ambient: "#28552b",
-            diffuse: "#1cdd23",
+        .setColor("#1cdd23")
+        .setMaterialProperties({
+            ambientOcclusion: 1.0,
+            roughness: 0.2,
+            metallic: 0.8
         });
 
     const viewObj2 = Object3d.createFrustum(3, 2, 1)
-        .setMaterial({
-            ambient: "#5f2563",
-            diffuse: "#ef00ff",
+        .setColor("#ef00ff")
+        .setMaterialProperties({
+            ambientOcclusion: 1.0,
+            roughness: 0.1,
+            metallic: 0.9
         });
 
     const pos = new LonLat(-105.6173319876, 39.615583413, 4057.9466);
@@ -103,8 +110,9 @@
 
     globe.planet.camera.setLonLat(
         new LonLat(-105.61717175714179, 39.61567256262465, 4064.033358156039),
-        pos, // look point
+        pos // look point
     );
+    globe.planet.camera.viewDistance(globe.planet.ellipsoid.lonLatToCartesian(pos), 12000.0);
 
 </script>
 </body>
