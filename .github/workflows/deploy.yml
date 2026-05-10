@@ -17,7 +17,7 @@ jobs:
             set -euo pipefail
 
             cd /var/www/openglobus.org/og-examples
-            git fetch origin
+            git fetch
             git checkout master
             git pull
             git submodule update --progress --init --recursive --force --remote
