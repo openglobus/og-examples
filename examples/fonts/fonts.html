@@ -82,8 +82,9 @@
                             outlineColor: "black",
                             size: size
                         }
-                    }), new Entity({
-                        cartesian: new Vec3(0, 20, 0),
+                    }),
+                    new Entity({
+                        cartesian: new Vec3(0, 15, 0),
                         label: {
                             text: "VastShadow-Regular",
                             color: "rgba(255,255,0,1.0)",
@@ -94,7 +95,7 @@
                         }
                     }),
                     new Entity({
-                        cartesian: new Vec3(0, 40, 0),
+                        cartesian: new Vec3(0, 30, 0),
                         label: {
                             text: "PressStart2P-Regular",
                             color: "white",
@@ -104,16 +105,18 @@
                         }
                     }),
                     new Entity({
-                        cartesian: new Vec3(5, 40, 0),
+                        cartesian: new Vec3(0, 45, 0),
                         label: {
                             text: "Notable-Regular",
                             color: "white",
                             face: "Notable-Regular",
+                            align: "right",
                             outlineColor: "rgba(255,0,0,0.7)",
                             size: size
                         }
-                    }), new Entity({
-                        cartesian: new Vec3(5, 50, 0),
+                    }),
+                    new Entity({
+                        cartesian: new Vec3(5, 60, 0),
                         label: {
                             text: "MrDeHaviland-Regular",
                             color: "white",
@@ -121,9 +124,9 @@
                             outlineColor: "black",
                             size: size
                         }
-                    })
-                    , new Entity({
-                        cartesian: new Vec3(5, 60, 0),
+                    }),
+                    new Entity({
+                        cartesian: new Vec3(0, 75, 0),
                         label: {
                             text: "Audiowide-Regular",
                             color: "green",
@@ -131,8 +134,9 @@
                             outlineColor: "white",
                             size: size
                         }
-                    }), new Entity({
-                        cartesian: new Vec3(5, 70, 0),
+                    }),
+                    new Entity({
+                        cartesian: new Vec3(0, 90, 0),
                         label: {
                             text: "ArchitectsDaughter-Regular",
                             color: "white",
@@ -187,11 +191,9 @@
             });
 
             document.querySelector("#text").addEventListener("focus", () => {
-                this.renderer.controls.SimpleNav.deactivate();
             });
 
             document.querySelector("#text").addEventListener("blur", () => {
-                this.renderer.controls.SimpleNav.activate();
             });
 
             // this.renderer.fontAtlas.loadFont("PressStart2P-Regular", "./fonts/", "PressStart2P-Regular.json");
@@ -201,7 +203,7 @@
             // this.renderer.fontAtlas.loadFont("MrDeHaviland-Regular", "./fonts/", "MrDeHaviland-Regular.json");
             // this.renderer.fontAtlas.loadFont("Audiowide-Regular", "./fonts/", "Audiowide-Regular.json");
             // this.renderer.fontAtlas.loadFont("ArchitectsDaughter-Regular", "./fonts/", "ArchitectsDaughter-Regular.json");
-            // this.renderer.fontAtlas.loadFont("Segoe", "./fonts/", "segoeui.json");
+            // this.renderer.fontAtlas.loadFont("arial", "./fonts/", "arial.json");
 
             this.ec.addTo(this);
 
