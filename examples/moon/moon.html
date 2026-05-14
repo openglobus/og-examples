@@ -32,38 +32,45 @@
         corners: [[23.472860008891054,0.6741784451421893],[23.472873082709846,0.6742068883279126],[23.47290553091237,0.6741923147363605],[23.472892671128694,0.674164039580197]],
         visibility: true,
         isBaseLayer: false,
+        pickingEnabled: false,
         opacity: 1.0
     });
 
     const mountains = new Vector("Mountains", {
+        pickingEnabled: false,
         fading: true,
         minZoom: 4,
         scaleByDistance: [0, 3500000, 3800000],
     });
 
     const craters = new Vector("Craters", {
+        pickingEnabled: false,
         fading: true,
         scaleByDistance: [0, 15000000, 25000000],
     });
 
     const lacus = new Vector("Lakes", {
+        pickingEnabled: false,
         fading: true,
         minZoom: 4
     });
 
     const maria = new Vector("Seas And Oceans", {
+        pickingEnabled: false,
         fading: true,
         maxZoom: 8,
         scaleByDistance: [0, 15000000, 25000000],
     });
 
     const vallis = new Vector("Valleys", {
+        pickingEnabled: false,
         fading: true,
         scaleByDistance: [0, 15000000, 25000000],
     });
 
     const sat = new XYZ("moon", {
         isBaseLayer: true,
+        pickingEnabled: false,
         url: "https://{s}.terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
         visibility: true,
         maxNativeZoom: 10,
@@ -74,6 +81,7 @@
 
     const sat2 = new XYZ("Lunar QuickMap", {
         isBaseLayer: true,
+        pickingEnabled: false,
         url: "https://lroc-tiles.quickmap.io/tiles/wac_nac_nacroi/lunar-fulleqc/{z}/{x}/{y}.jpg",
         visibility: false,
         attribution: `<a href="https://lunar.quickmap.io">Lunar QuickMap</a>, a collaboration between NASA, Arizona State University & Applied Coherent Technology Corp.`,
@@ -85,6 +93,7 @@
 
     const appoloSat = new XYZ("APPOLO_SAT", {
         isBaseLayer: false,
+        pickingEnabled: false,
         url: "https://{s}.terrain.openglobus.org/moon/sat_appolo/{z}/{x}/{y}.png",
         visibility: true,
         maxNativeZoom: 12,
@@ -127,6 +136,7 @@
 
     globe.planet.addControl(new control.TimelineControl());
     globe.planet.addControl(new control.LayerSwitcher());
+    globe.planet.addControl(new control.OrthoSwitcher());
     globe.planet.addControl(new control.ElevationProfileControl());
     globe.planet.addControl(new control.RulerSwitcher({
         ignoreTerrain: false
