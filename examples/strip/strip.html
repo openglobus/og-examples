@@ -8,80 +8,88 @@
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
         Globe,
         LonLat,
-        XYZ,
+        Bing,
         Vector,
-        Ellipsoid
+        GlobusRgbTerrain
     } from "../../external/og/lib/og.es.js";
 
-    var osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
-    var globe = new Globe({
+    const globe = new Globe({
         target: "globus",
         name: "Earth",
-        layers: [osm],
+        terrain: new GlobusRgbTerrain(),
+        layers: [new Bing()],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
+    const ell = globe.planet.ellipsoid;
 
-    let path = [];
+    function getUpperOffset(index, length, minOffset = 750, maxOffset = 1000) {
+        if (length <= 1) return minOffset;
+        const t = index / (length - 1);
+        const k = t <= 0.5 ? t / 0.5 : (1 - t) / 0.5; // 0 -> 1 -> 0
+        return minOffset + (maxOffset - minOffset) * k;
+    }
 
-    let ell = globe.planet.ellipsoid;
+    function getCartesianPath(points) {
+        const stripPath = [];
+        const upperPath = [];
 
-    function getLeaf(startPoi, endPoi, maxHeight = 8000000, n = 70) {
-        let path = [];
-        for (let i = 0; i <= n; i++) {
-            let p0 = Ellipsoid.getIntermediatePointOnGreatCircle(startPoi, endPoi, i / n);
-            let height = Math.sin(i / n * Math.PI) * maxHeight;
-            let p1 = new LonLat(p0.lon, p0.lat, height);
-            let pBottom = ell.lonLatToCartesian(p0),
-                pTop = ell.lonLatToCartesian(p1);
-            path.push([pBottom, pTop]);
+        for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            const baseHeight = 760;
+            const upperHeight = getUpperOffset(i, points.length, 760, 1500);
+            const p0 = ell.lonLatToCartesian(new LonLat(p[0], p[1], baseHeight));
+            const p1 = ell.lonLatToCartesian(new LonLat(p[0], p[1], upperHeight));
+            stripPath.push([p0, p1]);
+            upperPath.push(p1);
         }
-        return path;
+
+        return {stripPath, upperPath};
     }
 
+    async function init() {
+        const response = await fetch("./points.geojson");
 
-    let rainbow = [
-        "rgba(255, 0, 0, 0.7)",
-        "rgba(255, 127, 0, 0.7)",
-        "rgba(255, 255, 0, 0.7)",
-        "rgba(0, 255, 0, 0.7)",
-        "rgba(0, 0, 255, 0.7)",
-        "rgba(46, 43, 95, 0.7)",
-        "rgba(139, 0, 255, 0.7)"
-    ];
+        const geojson = await response.json();
+        const stripPoints = geojson.features[0].geometry.coordinates.map((c) => [c[0], c[1]]);
+        const cartesianData = getCartesianPath(stripPoints);
 
-    let leaves = [];
-
-    let numLeaves = rainbow.length,
-        amp = 360 / numLeaves;
-
-    for (let i = 0; i < numLeaves; i++) {
-        leaves.push({
-            'strip': {
-                'path': getLeaf(new LonLat(i * amp, 0, 0), new LonLat(i * amp + amp, 0, 0)),
-                'color': rainbow[i]
-            }
+        const collection = new Vector("Collection", {
+            entities: [
+                {
+                    strip: {
+                        path: cartesianData.stripPath,
+                        color: "rgba(0, 130, 255, 0.2)"
+                    }
+                },
+                {
+                    polyline: {
+                        path3v: [cartesianData.upperPath],
+                        thickness: 5.0,
+                        color: "rgba(0, 220, 22, 1.0)"
+                    }
+                }
+            ]
         });
+
+        globe.planet.addLayer(collection);
+
+        globe.planet.camera.setLonLat(
+            new LonLat(-114.9685, 36.8665, 2150),
+            new LonLat(-114.9605, 36.8722, 780)
+        );
     }
 
-    var collection = new Vector("Collection", {
-        'entities': leaves
+    init().catch((err) => {
+        console.error(err);
     });
-
-    globe.planet.addLayer(collection);
 
 </script>
 </body>
