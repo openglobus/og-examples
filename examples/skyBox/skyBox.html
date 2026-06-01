@@ -1,8 +1,9 @@
-﻿<html>
+<html>
 <head>
-    <title>OpenGlobus - Earth planet</title>
+    <title>SkyBox | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: SkyBox." />
+    <meta name="keywords" content="SkyBox" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="module" src="./skyBox.js"></script>
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
 <body>
@@ -13,24 +14,23 @@
 import {
     Globe,
     GlobusRgbTerrain,
-    XYZ,
-    SkyBox
+    Bing,
+    scene
 } from "../../external/og/lib/og.es.js";
-
-var osm = new XYZ("OpenStreetMap", {
-    isBaseLayer: true,
-    url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    visibility: true,
-    attribution: 'Data @ OpenStreetMap contributors, ODbL'
-});
-
 
 var globus = new Globe({
     target: "globus",
-    skybox: SkyBox.createDefault('../../res/'),
+    skybox: new scene.SkyBox({
+        px: "./px.webp",
+        nx: "./nx.webp",
+        py: "./py.webp",
+        ny: "./ny.webp",
+        pz: "./pz.webp",
+        nz: "./nz.webp"
+    }),
     name: "Earth",
     terrain: new GlobusRgbTerrain(),
-    layers: [osm],
+    layers: [new Bing()],
     sun: {
         active: true
     },
@@ -41,3 +41,7 @@ var globus = new Globe({
 </script>
 </body>
 </html>
+
+
+
+

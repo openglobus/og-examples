@@ -1,7 +1,8 @@
-﻿<html>
-
+<html>
 <head>
-    <title>OpenGlobus - Earth planet</title>
+    <title>Layer Height above Ellipsoid | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: Layer Height above Ellipsoid." />
+    <meta name="keywords" content="Layer, height, ellipsoid" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -46,20 +47,6 @@
         zIndex: 10
     });
 
-    var sat = new XYZ("Mapbox Satellite", {
-        shininess: 20,
-        specular: [0.2, 0.2, 0.2],
-        diffuse: [1.2, 1.2, 1.2],
-        isBaseLayer: false,
-        height: 4000,
-        extent: [[130.355, 31.368], [130.656, 31.583]],
-        url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWdldmxpY2hzY2FuZXgiLCJhIjoiY2pwcGdsaXlnMDQzdDQybXhsOWZlbXBvdSJ9.fR2YE-ehJA4iajaJBAPKvw",
-        visibility: true,
-        zIndex: 15,
-        attribution: `<a href="https://www.mapbox.com/about/maps/" target="_blank" title="Mapbox">©Mapbox</a> satellite`
-    });
-
-
     var img = new GeoImage("Sakurajima volcano LANDSAT-8", {
         src: "landsat 8 sakurajima volcano lg.jpg",
         corners: [[130.45707789384713, 31.709325879170276], [130.7840602216474, 31.692775737529196], [130.7733037851439, 31.43233754673159], [130.46073202271168, 31.433614009357886]],
@@ -79,7 +66,7 @@
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm, osmRed, sat, img],
+        layers: [osm, osmRed, img],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
@@ -89,3 +76,4 @@
 </body>
 
 </html>
+

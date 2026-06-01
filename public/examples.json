@@ -1,234 +1,667 @@
 [
   {
     "label": "Base Layers",
-    "id": "baseLayers"
+    "id": "baseLayers",
+    "tags": [
+      "Layer",
+      "base",
+      "layers",
+      "osm",
+      "Bing",
+      "OpenStreetMap",
+      "imagery",
+      "satellite"
+    ],
+    "image": ""
   },
   {
     "label": "Billboards",
-    "id": "billboards"
+    "id": "billboards",
+    "tags": [
+      "Billboard",
+      "billboards",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "Billboards/Labels Dragging",
-    "id": "billboardsDragging"
+    "id": "billboardsDragging",
+    "tags": [
+      "Billboard",
+      "text",
+      "dragging",
+      "billboards",
+      "labels",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "Ground Billboards",
-    "id": "billboardsOnTheGround"
+    "id": "billboardsOnTheGround",
+    "tags": [
+      "billboard",
+      "billboards",
+      "entity"
+    ],
+    "image": ""
   },
   {
     "label": "Fly Camera",
-    "id": "cameraFly"
+    "id": "cameraFly",
+    "tags": [
+      "PlanetCamera",
+      "Camera",
+      "fly",
+      "animation"
+    ],
+    "image": ""
   },
   {
     "label": "CanvasTiles Layer",
-    "id": "canvasTiles"
+    "id": "canvasTiles",
+    "tags": [
+      "layer",
+      "CanvasTiles"
+    ],
+    "image": ""
   },
   {
     "label": "Ground Circles-Polylines",
-    "id": "circlesOnTheGround"
+    "id": "circlesOnTheGround",
+    "tags": [
+      "circle",
+      "circles",
+      "Polyline",
+      "Entity",
+      "clampToGround",
+      "depthOffset"
+    ],
+    "image": ""
   },
   {
     "label": "Clocks",
-    "id": "clocks"
+    "id": "clocks",
+    "tags": [
+      "clocks",
+      "animation"
+    ],
+    "image": ""
   },
   {
     "label": "Custom Plugin (open with the link)",
-    "id": "customControl"
+    "id": "customControl",
+    "tags": [
+      "custom",
+      "plugin",
+      "link"
+    ],
+    "image": ""
   },
   {
     "label": "Custom Scene",
-    "id": "customScene"
+    "id": "customScene",
+    "tags": [
+      "custom",
+      "scene",
+      "renderer",
+      "glsl"
+    ],
+    "image": ""
   },
   {
     "label": "Drawing geometry on the ground",
-    "id": "drawingControl"
+    "id": "drawingControl",
+    "tags": [
+      "drawing",
+      "geometry",
+      "control"
+    ],
+    "image": ""
   },
   {
     "label": "Elevation Profile",
-    "id": "elevationProfile"
+    "id": "elevationProfile",
+    "tags": [
+      "elevation",
+      "profile",
+      "control"
+    ],
+    "image": ""
   },
   {
-    "label": "Ellipsoid(wgs84) Terrain Provider",
-    "id": "emptyTerrain"
+    "label": "Ellipsoid (WGS84) Terrain Provider",
+    "id": "emptyTerrain",
+    "tags": [
+      "terrain",
+      "ellipsoid",
+      "wgs84"
+    ],
+    "image": ""
   },
   {
     "label": "Fonts and Labels",
-    "id": "fonts"
+    "id": "fonts",
+    "tags": [
+      "text",
+      "fonts",
+      "labels",
+      "Entity",
+      "renderer"
+    ],
+    "image": ""
   },
   {
     "label": "Geoid Model",
-    "id": "geoidModel"
+    "id": "geoidModel",
+    "tags": [
+      "geoid",
+      "model"
+    ],
+    "image": ""
   },
   {
     "label": "GeoImage Layer",
-    "id": "geoImage"
+    "id": "geoImage",
+    "tags": [
+      "Layer",
+      "GeoImage",
+      "image"
+    ],
+    "image": ""
   },
   {
     "label": "GeoImage Dragging",
-    "id": "geoImageDragging"
+    "id": "geoImageDragging",
+    "tags": [
+      "dragging",
+      "GeoImage",
+      "image"
+    ],
+    "image": ""
   },
   {
     "label": "Instanced Geo Objects",
-    "id": "geoObject"
+    "id": "geoObject",
+    "tags": [
+      "geo",
+      "objects",
+      "Entity",
+      "GeoObject"
+    ],
+    "image": ""
   },
   {
     "label": "GeoObject Pitch Yaw Roll",
-    "id": "pitchYawRoll"
+    "id": "pitchYawRoll",
+    "tags": [
+      "GeoObject",
+      "pitch",
+      "yaw",
+      "roll",
+      "Entity",
+      "plane",
+      "aviation"
+    ],
+    "image": ""
   },
   {
     "label": "GeoTexture2d(Framebuffer) Layer",
-    "id": "geoTexture2d"
+    "id": "geoTexture2d",
+    "tags": [
+      "Layer",
+      "GeoTexture2d",
+      "Framebuffer",
+      "glsl",
+      "animation",
+      "weather"
+    ],
+    "image": ""
   },
   {
     "label": "Ground Video Layer",
-    "id": "geoVideo"
+    "id": "geoVideo",
+    "tags": [
+      "Layer",
+      "video",
+      "GeoVideo",
+      "weather",
+      "animation"
+    ],
+    "image": ""
   },
   {
     "label": "Height Factor",
-    "id": "heightFactor"
+    "id": "heightFactor",
+    "tags": [
+      "height",
+      "factor",
+      "levelOfDetail",
+      "detalization",
+      "lod",
+      "camera"
+    ],
+    "image": ""
   },
   {
     "label": "KML Layer",
-    "id": "kml"
+    "id": "kml",
+    "tags": [
+      "Layer",
+      "kml"
+    ],
+    "image": ""
   },
   {
     "label": "Layer Animation Control",
-    "id": "layerAnimation"
+    "id": "layerAnimation",
+    "tags": [
+      "Layer",
+      "animation",
+      "control"
+    ],
+    "image": ""
   },
   {
     "label": "Earth Animation Example",
-    "id": "earthAnimation"
+    "id": "earthAnimation",
+    "tags": [
+      "planet",
+      "animation",
+      "Earth",
+      "control"
+    ],
+    "image": ""
   },
   {
     "label": "Layer Fading Opacity",
-    "id": "layerFadingOpacity"
+    "id": "layerFadingOpacity",
+    "tags": [
+      "Layer",
+      "fading",
+      "opacity",
+      "Entity",
+      "Label",
+      "Billboard"
+    ],
+    "image": ""
   },
   {
     "label": "Layer Height above Ellipsoid",
-    "id": "layerHeight"
+    "id": "layerHeight",
+    "tags": [
+      "Layer",
+      "height",
+      "ellipsoid"
+    ],
+    "image": ""
   },
   {
     "label": "Layer Opacity",
-    "id": "layerOpacity"
+    "id": "layerOpacity",
+    "tags": [
+      "Layer",
+      "opacity"
+    ],
+    "image": ""
   },
   {
-    "label": "layer Switcher Control",
-    "id": "layerSwitcher"
+    "label": "Layer Switcher Control",
+    "id": "layerSwitcher",
+    "tags": [
+      "Layer",
+      "switcher",
+      "control"
+    ],
+    "image": ""
   },
   {
     "label": "Layer Z-Index",
-    "id": "layerZIndex"
+    "id": "layerZIndex",
+    "tags": [
+      "layer",
+      "index",
+      "zIndex"
+    ],
+    "image": ""
   },
   {
     "label": "Lighting Control",
-    "id": "lighting"
+    "id": "lighting",
+    "tags": [
+      "lighting"
+    ],
+    "image": ""
   },
   {
     "label": "Show marker on time",
-    "id": "markerOnTimer"
+    "id": "markerOnTimer",
+    "tags": [
+      "marker",
+      "time",
+      "Entity",
+      "animation",
+      "timer",
+      "Billboard"
+    ],
+    "image": ""
   },
   {
     "label": "Mars",
-    "id": "mars"
+    "id": "mars",
+    "tags": [
+      "Planet",
+      "Mars",
+      "Entity",
+      "projection",
+      "SkyBox"
+    ],
+    "image": ""
   },
   {
     "label": "Moon",
-    "id": "moon"
+    "id": "moon",
+    "tags": [
+      "Planet",
+      "Moon",
+      "Entity",
+      "projection"
+    ],
+    "image": ""
   },
   {
     "label": "Multiple Globuses",
-    "id": "multipleViewports"
+    "id": "multipleViewports",
+    "tags": [
+      "multiple",
+      "Globus"
+    ],
+    "image": ""
   },
   {
     "label": "Shared Globuses Navigation",
-    "id": "sharedGlobusesNavigation"
+    "id": "sharedGlobusesNavigation",
+    "tags": [
+      "Camera",
+      "shared",
+      "Globus",
+      "navigation",
+      "multiple"
+    ],
+    "image": ""
   },
   {
     "label": "Popup",
-    "id": "pointPopup"
+    "id": "pointPopup",
+    "tags": [
+      "popup",
+      "coordinates"
+    ],
+    "image": ""
   },
   {
     "label": "Ground Polyline(clampToGround)",
-    "id": "polylineOnTheGround"
+    "id": "polylineOnTheGround",
+    "tags": [
+      "Polyline",
+      "clampToGround",
+      "relativeToGround",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "Polyline Entities",
-    "id": "polylines"
+    "id": "polylines",
+    "tags": [
+      "Polyline",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "Polyline Color Animation",
-    "id": "polylinesColorAnimation"
+    "id": "polylinesColorAnimation",
+    "tags": [
+      "Polyline",
+      "animation",
+      "color",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "Ray Entities",
-    "id": "rays"
+    "id": "rays",
+    "tags": [
+      "Ray",
+      "Entity",
+      "Label"
+    ],
+    "image": ""
   },
   {
     "label": "Ground Ruler Control",
-    "id": "ruler"
+    "id": "ruler",
+    "tags": [
+      "ruler",
+      "control"
+    ],
+    "image": ""
   },
   {
     "label": "Strip Entity",
-    "id": "strip"
+    "id": "strip",
+    "tags": [
+      "Strip",
+      "Entity",
+      "Polyline"
+    ],
+    "image": ""
   },
   {
     "label": "Sun Activity",
-    "id": "sunActivity"
+    "id": "sunActivity",
+    "tags": [
+      "sun",
+      "activity"
+    ],
+    "image": ""
   },
   {
     "label": "Sun Position",
-    "id": "sunPosition"
+    "id": "sunPosition",
+    "tags": [
+      "sun",
+      "position"
+    ],
+    "image": ""
   },
   {
     "label": "Terrain Provider Switching",
-    "id": "terrainSwitch"
+    "id": "terrainSwitch",
+    "tags": [
+      "terrain",
+      "switching"
+    ],
+    "image": ""
   },
   {
     "label": "Vector Layer",
-    "id": "vectorLayer"
+    "id": "vectorLayer",
+    "tags": [
+      "Layer",
+      "Vector",
+      "Entity",
+      "Geometry",
+      "geoJson"
+    ],
+    "image": ""
   },
   {
     "label": "WMS Layer",
-    "id": "wms"
+    "id": "wms",
+    "tags": [
+      "layer",
+      "wms"
+    ],
+    "image": ""
   },
   {
     "label": "EPSG4326 Globe",
-    "id": "epsg4326"
+    "id": "epsg4326",
+    "tags": [
+      "g4326",
+      "epsg4326",
+      "Globe",
+      "projection"
+    ],
+    "image": ""
   },
   {
     "label": "Lines And Circles",
-    "id": "linesCircles"
+    "id": "linesCircles",
+    "tags": [
+      "Polyline",
+      "circle",
+      "lines",
+      "circles",
+      "Entity"
+    ],
+    "image": ""
   },
   {
     "label": "CO2",
-    "id": "co2"
+    "id": "co2",
+    "tags": [
+      "co2",
+      "video",
+      "GeoVideo",
+      "animation"
+    ],
+    "image": ""
   },
   {
     "label": "Nested GeoObjects Simple",
-    "id": "nestedGeoObjectsSimple"
+    "id": "nestedGeoObjectsSimple",
+    "tags": [
+      "nested",
+      "GeoObject",
+      "simple",
+      "Entity",
+      "renderer",
+      "hierarchy"
+    ],
+    "image": ""
   },
   {
     "label": "Nested GeoObjects",
-    "id": "nestedGeoObjectsPlanet"
+    "id": "nestedGeoObjectsPlanet",
+    "tags": [
+      "nested",
+      "GeoObject",
+      "Entity",
+      "hierarchy"
+    ],
+    "image": ""
   },
   {
-    "label": "Lower Resoloution",
-    "id": "lowResolution"
+    "label": "Lower Resolution",
+    "id": "lowResolution",
+    "tags": [
+      "lower",
+      "resolution"
+    ],
+    "image": ""
   },
   {
     "label": "Curiosity",
-    "id": "curiosity"
+    "id": "curiosity",
+    "tags": [
+      "curiosity",
+      "Entity",
+      "gltf",
+      "hierarchy",
+      "nested",
+      "animation"
+    ],
+    "image": ""
   },
   {
     "label": "Orthographic Projection",
-    "id": "orthographic"
+    "id": "orthographic",
+    "tags": [
+      "Camera",
+      "orthographic",
+      "projection"
+    ],
+    "image": ""
   },
   {
     "label": "Navigation Modes",
-    "id": "navigationMode"
+    "id": "navigationMode",
+    "tags": [
+      "Camera",
+      "Navigation",
+      "modes",
+      "control",
+      "north",
+      "free"
+    ],
+    "image": ""
   },
   {
-    "label": "WindFarm Instanced Onjects Animation",
-    "id": "windFarm"
+    "label": "Wind Farm Instanced Objects Animation",
+    "id": "windFarm",
+    "tags": [
+      "animation",
+      "wind",
+      "farm",
+      "objects",
+      "Entity",
+      "GeoObject",
+      "nested",
+      "hierarchy"
+    ],
+    "image": ""
+  },
+  {
+    "label": "BIL Terrain",
+    "id": "bilTerrain",
+    "tags": [
+      "terrain",
+      "bil",
+      "bil16",
+      "bil32"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Disable Layer Picking",
+    "id": "disableLayerPicking",
+    "tags": [
+      "layer",
+      "disable",
+      "picking"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Layer Picking",
+    "id": "layerPicking",
+    "tags": [
+      "Layer",
+      "picking"
+    ],
+    "image": ""
+  },
+  {
+    "label": "SkyBox",
+    "id": "skyBox",
+    "tags": [
+      "SkyBox"
+    ],
+    "image": ""
   }
 ]
