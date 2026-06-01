@@ -1,8 +1,8 @@
 <html>
 <head>
     <title>Layer Height above Ellipsoid | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Layer Height above Ellipsoid." />
-    <meta name="keywords" content="Layer, height, ellipsoid" />
+    <meta name="description" content="OpenGlobus example: Layer Height above Ellipsoid."/>
+    <meta name="keywords" content="Layer, height, ellipsoid"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -10,7 +10,7 @@
 <body>
 <div id="globus" style="width:100%;height:100%;top: 0;"></div>
 <button id="btnChangeHeights" style="position:absolute;left:0;top:0;margin:10px;">Change heights</button>
-    <script type="module" id="og-sandbox-script">
+<script type="module" id="og-sandbox-script">
     'use strict';
 
     import {
@@ -21,10 +21,10 @@
     } from "../../external/og/lib/og.es.js";
 
     document.getElementById("btnChangeHeights").onclick = function () {
-        var h0 = sat.getHeight(),
+        var h0 = osmRed.getHeight(),
             h1 = img.getHeight();
         img.setHeight(h0);
-        sat.setHeight(h1);
+        osmRed.setHeight(h1);
     };
 
     var osm = new XYZ("OpenStreetMap", {
@@ -39,7 +39,6 @@
         specular: [0.7, 0.4, 0.4],
         shininess: 70,
         isBaseLayer: false,
-        extent: [[130.10, 31.16], [130.9, 31.8]],
         url: "//b.tile.openstreetmap.org/{z}/{x}/{y}.png",
         visibility: true,
         height: 4000,
