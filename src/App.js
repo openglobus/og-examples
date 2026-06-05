@@ -15,7 +15,7 @@ import 'split-pane-react/esm/themes/default.css';
 const ExampleDetail = ({examplesUrl, examples, refresh}) => {
     const {id} = useParams();
     const {exampleHtml, loadExample, setExampleHtml} = useExampleContext();
-    const [sizes, setSizes] = useState(['44%', 'auto']);
+    const [sizes, setSizes] = useState(['36%', 'auto']);
     const [drag, setDrag] = useState(false);
     const [showCode, setShowCode] = useState(window.innerWidth > 768);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

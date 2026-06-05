@@ -72,30 +72,31 @@
         quadTreeStrategyPrototype: quadTreeStrategyType.equi,
         target: "globus",
         terrain: highResTerrain,
+    maxAltitude: 8100000,
         layers: [sat1, sat_arcgis, mountains, craters, vallis],
         nightTextureSrc: null,
         specularTextureSrc: null,
         fontsSrc: "./fonts",
         atmosphereParameters: {
-            ATMOS_HEIGHT: 60000.0,
-            RAYLEIGH_SCALE: 0.18,
-            MIE_SCALE: 0.08,
-            GROUND_ALBEDO: 0.15,
-            BOTTOM_RADIUS: 3389508.0 - 3000, // fix sea level
-            EQUATORIAL_RADIUS: 3396200.0 - 3000, // fix sea level
-            rayleighScatteringCoefficient_0: 1.0,
-            rayleighScatteringCoefficient_1: 1.2,
-            rayleighScatteringCoefficient_2: 1.4,
-            mieScatteringCoefficient: 10.0,
-            mieExtinctionCoefficient: 20.0,
-            ozoneAbsorptionCoefficient_0: 0.10,
-            ozoneAbsorptionCoefficient_1: 0.15,
-            ozoneAbsorptionCoefficient_2: 0.80,
-            ozoneDensityHeight: 10e3,
-            ozoneDensityWide: 30e3,
-            SUN_ANGULAR_RADIUS: 0.004685,
-            SUN_INTENSITY: 1.0,
-            disableSunDisk: false
+        ATMOS_HEIGHT: 60000.0,
+        RAYLEIGH_SCALE: 0.18,
+        MIE_SCALE: 0.08,
+        GROUND_ALBEDO: 0.15,
+        BOTTOM_RADIUS: 3389508.0 - 3000,
+        EQUATORIAL_RADIUS: 3396200.0 - 3000,
+        rayleighScatteringCoefficient_0: 0.18,
+        rayleighScatteringCoefficient_1: 0.42,
+        rayleighScatteringCoefficient_2: 0.95,
+        mieScatteringCoefficient: 8.0,
+        mieExtinctionCoefficient: 9.5,
+        ozoneAbsorptionCoefficient_0: 0.05,
+        ozoneAbsorptionCoefficient_1: 0.35,
+        ozoneAbsorptionCoefficient_2: 1.35,
+        ozoneDensityHeight: 10e3,
+        ozoneDensityWide: 30e3,
+        SUN_ANGULAR_RADIUS: 0.0031,
+        SUN_INTENSITY: 1.0,
+        disableSunDisk: false
         },
         skybox: new scene.SkyBox({
             px: "./px.webp",
@@ -108,9 +109,14 @@
         atmosphereEnabled: true
     });
 
+globe.planet.atmosphereMaxOpacity = 1.0;
+globe.planet.atmosphereMinOpacity = 0.02;
+globe.planet.atmosphereOpacityCurveShift = 1.7;
+
     globe.planet.addControls([new control.DebugInfo()]);
     globe.planet.addControls([new control.TimelineControl()]);
     globe.planet.addControls([new control.LayerSwitcher()]);
+    globe.planet.addControl(new control.OrthoSwitcher());
 
     fetch("./mountains.json").then((r) => r.json()).then((data) => {
         mountains.setEntities(data.features.map((f) => createLabelEntity(
