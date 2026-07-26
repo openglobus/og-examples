@@ -17,9 +17,9 @@ jobs:
             set -euo pipefail
 
             cd /var/www/openglobus.org/og-examples
-            git fetch
             git checkout master
-            git pull
+            git pull --ff-only --no-recurse-submodules origin master
+            git submodule sync --recursive
             git submodule update --progress --init --recursive --force --remote
 
             npm install

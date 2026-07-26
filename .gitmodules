@@ -1,3 +1,4 @@
 [submodule "external/og"]
 	path = external/og
 	url = git@github.com:openglobus/openglobus.git
+	branch = master
