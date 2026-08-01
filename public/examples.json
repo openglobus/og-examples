@@ -488,6 +488,18 @@
     "image": ""
   },
   {
+    "label": "Transparent Background",
+    "id": "transparentBackground",
+    "tags": [
+      "transparent",
+      "background",
+      "augmented reality",
+      "opacity",
+      "Globe"
+    ],
+    "image": ""
+  },
+  {
     "label": "Vector Layer",
     "id": "vectorLayer",
     "tags": [

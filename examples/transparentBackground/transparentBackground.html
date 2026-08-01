@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Transparent Background | OpenGlobus Example</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="OpenGlobus example: transparent globe background and frame opacity." />
+        <meta name="keywords" content="transparent, background, augmented reality, opacity, Globe" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+        <style>
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
+
+            body {
+                overflow: hidden;
+                font-family: Arial, sans-serif;
+                color: white;
+                background-color: #182333;
+                background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+                background-size: 40px 40px;
+            }
+
+            .html-background {
+                position: absolute;
+                inset: 0;
+                display: grid;
+                place-items: center;
+            }
+
+            .html-background::before {
+                content: "HTML background behind transparent globe canvas";
+                max-width: min(720px, calc(100% - 80px));
+                padding: 24px 32px;
+                border: 1px solid rgba(130, 225, 255, 0.6);
+                background: rgba(5, 15, 28, 0.75);
+                color: #e7f7ff;
+                font-size: 32px;
+                font-weight: 700;
+                line-height: 1.3;
+                text-align: center;
+                box-shadow: 0 0 32px rgba(87, 215, 255, 0.2);
+            }
+
+            #earth {
+                position: absolute;
+                inset: 0;
+                background: transparent;
+            }
+
+            #earth .og-inner {
+                background: transparent;
+            }
+
+            .ar-controls {
+                position: absolute;
+                left: 20px;
+                bottom: 20px;
+                z-index: 1;
+                display: grid;
+                gap: 8px;
+                width: min(320px, calc(100% - 72px));
+                padding: 16px;
+                background: rgba(0, 0, 0, 0.7);
+                font-size: 14px;
+            }
+
+            .ar-controls label {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .ar-controls input {
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="html-background"></div>
+        <div id="earth"></div>
+        <div class="ar-controls">
+            <label for="planetOpacity">
+                Planet opacity
+                <span id="planetOpacityValue">0.42</span>
+            </label>
+            <input id="planetOpacity" type="range" min="0" max="1" step="0.01" value="0.42" />
+        </div>
+        <script type="module" id="og-sandbox-script">
+            'use strict';
+
+            // Augmented reality configuration:
+            // - transparentBackground enables the canvas alpha channel so a camera or video feed remains visible.
+            // - frameOpacity controls globe content opacity from 0 (fully transparent) to 1 (fully opaque)
+            //   and can be adjusted at runtime through globe.renderer.frameOpacity.
+            //
+            // Map interaction:
+            // - Left click adds a marker.
+            // - Ctrl + left click adds a text label.
+            // - Drag moves a marker, and right click removes it.
+
+            import {
+                Globe,
+                LonLat,
+                OpenStreetMap,
+                control,
+                GlobusRgbTerrain,
+                Object3d,
+                Vector,
+                Bing,
+                Vec2,
+                Vec3,
+                Entity
+            } from "../../external/og/lib/og.es.js";
+
+            const INITIAL_FRAME_OPACITY = 0.42;
+            const MARKER_SOURCE = "./marker.png";
+
+            const objectLayer = createObjectLayer();
+            const gridLayer = createGeodeticGridLayer();
+            const pointLayer = createPointLayer();
+
+            const globe = new Globe({
+                target: "earth",
+                name: "Earth",
+                terrain: new GlobusRgbTerrain(),
+                transparentBackground: true,
+                frameOpacity: INITIAL_FRAME_OPACITY,
+                layers: [new Bing(), new OpenStreetMap(), objectLayer, gridLayer, pointLayer],
+                resourcesSrc: "../../external/og/lib/res",
+                fontsSrc: "./"
+            });
+
+            setInitialCameraView(globe);
+            bindFrameOpacityControl(globe);
+            addGlobeControls(globe);
+            enablePointLayerInteractions(globe, pointLayer);
+            objectLayer.add(createNestedObjectHierarchy());
+            globe.planet.addLayer(createStripLayer(globe.planet.ellipsoid));
+
+            function createObjectLayer() {
+                return new Vector("Objects", {
+                    scaleByDistance: [50, 50000, 1]
+                });
+            }
+
+            function createGeodeticGridLayer() {
+                const grid = [];
+
+                for (let longitude = -180; longitude < 180; longitude += 10) {
+                    const meridian = [];
+                    for (let latitude = -90; latitude <= 90; latitude++) {
+                        meridian.push(new LonLat(longitude, latitude, 20000));
+                    }
+                    grid.push(meridian);
+                }
+
+                for (let latitude = -90; latitude < 90; latitude += 10) {
+                    const parallel = [];
+                    for (let longitude = -180; longitude <= 180; longitude++) {
+                        parallel.push(new LonLat(longitude, latitude, 20000));
+                    }
+                    grid.push(parallel);
+                }
+
+                return new Vector("Geodetic grid", {
+                    pickingEnabled: true,
+                    entities: [
+                        {
+                            polyline: {
+                                pathLonLat: grid,
+                                thickness: [12.5],
+                                opacity: 0.8,
+                                color: ["rgba(205,68,203,1)"]
+                            }
+                        }
+                    ]
+                });
+            }
+
+            function createPointLayer() {
+                return new Vector("Points", {
+                    clampToGround: true,
+                    async: false,
+                    entities: [
+                        createMarkerEntity([-105.6182, 39.6149], "rgba(255,255,255,0.7)", "Blue Marker")
+                    ]
+                });
+            }
+
+            function setInitialCameraView(globe) {
+                globe.planet.camera.setLonLat(
+                    new LonLat(-105.55573039522102, 39.62684661706047, 6939.131370203212),
+                    new LonLat(-105.6324995, 39.6107935, 3851)
+                );
+            }
+
+            function bindFrameOpacityControl(globe) {
+                const opacityInput = document.getElementById("planetOpacity");
+                const opacityValue = document.getElementById("planetOpacityValue");
+
+                opacityInput.value = INITIAL_FRAME_OPACITY.toString();
+                updateFrameOpacity();
+                opacityInput.addEventListener("input", updateFrameOpacity);
+
+                function updateFrameOpacity() {
+                    const opacity = Number(opacityInput.value);
+                    globe.renderer.frameOpacity = opacity;
+                    opacityValue.textContent = opacity.toFixed(2);
+                }
+            }
+
+            function addGlobeControls(globe) {
+                globe.planet.addControls([
+                    new control.EntityEditor(),
+                    new control.LayerSwitcher(),
+                    new control.ToggleWireframe(),
+                    new control.TimelineControl(),
+                    new control.OrthoSwitcher(),
+                    new control.RulerSwitcher(),
+                    new control.ElevationProfileControl(),
+                    new control.DebugInfo(),
+                    new control.Lighting()
+                ]);
+            }
+
+            function enablePointLayerInteractions(globe, pointLayer) {
+                let draggedEntity = null;
+                let dragStartPosition = null;
+                const dragStartPixel = new Vec2();
+
+                pointLayer.events.on("mouseenter", (event) => {
+                    event.renderer.handler.canvas.style.cursor = "pointer";
+                });
+
+                pointLayer.events.on("mouseleave", (event) => {
+                    event.renderer.handler.canvas.style.cursor = "default";
+                });
+
+                pointLayer.events.on("ldown", (event) => {
+                    if (!event.pickingObject) {
+                        return;
+                    }
+
+                    event.renderer.controls.navigation?.deactivate();
+                    dragStartPixel.set(event.x, event.y);
+                    draggedEntity = event.pickingObject;
+                    dragStartPosition = globe.planet.getPixelFromCartesian(draggedEntity.getCartesian());
+                });
+
+                pointLayer.events.on("lup", (event) => {
+                    event.renderer.controls.navigation?.activate();
+                    draggedEntity = null;
+                    dragStartPosition = null;
+                });
+
+                globe.planet.renderer.events.on("mousemove", (event) => {
+                    if (!draggedEntity || !dragStartPosition) {
+                        return;
+                    }
+
+                    const dragOffset = new Vec2(event.x, event.y).sub(dragStartPixel);
+                    const currentPixel = dragStartPosition.add(dragOffset);
+                    const cartesian = globe.planet.getCartesianFromPixelTerrain(currentPixel);
+                    if (cartesian) {
+                        draggedEntity.setCartesian3v(cartesian);
+                    }
+                });
+
+                globe.renderer.events.on("lclick", (event) => {
+                    if (!isPlanetLayerClick(event.pickingObject, globe.planet)) {
+                        return;
+                    }
+
+                    const lonLat = globe.planet.getLonLatFromPixelTerrain(event, true);
+                    if (!lonLat) {
+                        return;
+                    }
+
+                    const entity = event.sys?.ctrlKey
+                        ? createLabelEntity(lonLat)
+                        : createMarkerEntity(lonLat);
+                    pointLayer.add(entity);
+                });
+
+                pointLayer.events.on("rclick", (event) => {
+                    event.pickingObject?.remove();
+                });
+            }
+
+            function isPlanetLayerClick(pickingObject, planet) {
+                return !!(
+                    pickingObject &&
+                    pickingObject._planet === planet &&
+                    typeof pickingObject.isBaseLayer === "function"
+                );
+            }
+
+            function createMarkerEntity(lonLat, color = "rgba(255,255,255,1)", name = "New Marker") {
+                return new Entity({
+                    name,
+                    lonlat: lonLat,
+                    billboard: {
+                        src: MARKER_SOURCE,
+                        size: [29, 48],
+                        offset: [0, 24],
+                        color
+                    }
+                });
+            }
+
+            function createLabelEntity(lonLat) {
+                return new Entity({
+                    name: "New Label",
+                    lonlat: lonLat,
+                    label: {
+                        align: "center",
+                        text: "Hello world!",
+                        size: 16,
+                        offset: [0, 50, 0],
+                        color: "rgba(0,0,0,1)",
+                        outlineColor: "rgba(255,255,255,0.3)",
+                        outline: 0.2
+                    }
+                });
+            }
+
+            function createNestedObjectHierarchy() {
+                const baseObject = Object3d.createCube(0.4, 2, 0.4)
+                    .translate(new Vec3(0, 1, 0))
+                    .setColor("white");
+                const greenFrustum = Object3d.createFrustum(3, 2, 1).setColor("#1cdd23");
+                const magentaFrustum = Object3d.createFrustum(3, 2, 1).setColor("#ef00ff");
+
+                const parentEntity = new Entity({
+                    lonlat: new LonLat(-105.6173319876, 39.615583413, 4057.9466),
+                    independentPicking: true,
+                    scale: 3,
+                    geoObject: {
+                        instanced: true,
+                        tag: "baseObject",
+                        object3d: baseObject
+                    }
+                });
+
+                const childEntity = new Entity({
+                    cartesian: new Vec3(0, 1, 0),
+                    independentPicking: true,
+                    relativePosition: true,
+                    geoObject: {
+                        instanced: true,
+                        tag: "greenFrustum",
+                        object3d: greenFrustum
+                    }
+                });
+
+                const grandchildEntity = new Entity({
+                    cartesian: new Vec3(0, 3, -1),
+                    independentPicking: true,
+                    relativePosition: true,
+                    geoObject: {
+                        instanced: true,
+                        tag: "magentaFrustum",
+                        object3d: magentaFrustum
+                    }
+                });
+
+                childEntity.appendChild(grandchildEntity);
+                parentEntity.appendChild(childEntity);
+                return parentEntity;
+            }
+
+            function createStripLayer(ellipsoid) {
+                const greenStripPath = [
+                    createVerticalSegment(ellipsoid, -105.6164781, 39.6094186, 3714, 4214),
+                    createVerticalSegment(ellipsoid, -105.6444247, 39.6166427, 3424, 4424)
+                ];
+                const redStripPath = [
+                    createVerticalSegment(ellipsoid, -105.6164781, 39.6077287, 3714, 4214),
+                    createVerticalSegment(ellipsoid, -105.6444247, 39.6150294, 3424, 4424)
+                ];
+                const blueStripStart = createVerticalSegment(
+                    ellipsoid,
+                    -105.6164781,
+                    39.6060457,
+                    3714,
+                    4214
+                );
+                const blueStripEnd = createVerticalSegment(
+                    ellipsoid,
+                    -105.6444247,
+                    39.6132437,
+                    3424,
+                    4424
+                );
+
+                return new Vector("Strips", {
+                    entities: [
+                        createStripEntity(greenStripPath, "rgba(8,216,0,1)"),
+                        createStripEntity(redStripPath, "rgba(220,0,0,0.5)"),
+                        createStripEntity(createWavyStripPath(blueStripStart, blueStripEnd), "rgba(0,75,255,0.5)")
+                    ]
+                });
+            }
+
+            function createVerticalSegment(ellipsoid, longitude, latitude, bottomAltitude, topAltitude) {
+                return [
+                    ellipsoid.lonLatToCartesian(new LonLat(longitude, latitude, bottomAltitude)),
+                    ellipsoid.lonLatToCartesian(new LonLat(longitude, latitude, topAltitude))
+                ];
+            }
+
+            function createWavyStripPath(startSegment, endSegment) {
+                const [startBottom, startTop] = startSegment;
+                const [endBottom, endTop] = endSegment;
+                const offsetDirection = Vec3.sub(endBottom, startBottom).cross(startBottom).getNormal().scaleTo(1200);
+
+                const interpolateSegment = (fraction, offsetSign) => [
+                    Vec3.lerp(startBottom, endBottom, fraction).add(offsetDirection.scaleTo(offsetSign)),
+                    Vec3.lerp(startTop, endTop, fraction).add(offsetDirection.scaleTo(offsetSign))
+                ];
+
+                return [
+                    startSegment,
+                    interpolateSegment(0.25, 1),
+                    interpolateSegment(0.5, -1),
+                    interpolateSegment(0.75, 1),
+                    endSegment
+                ];
+            }
+
+            function createStripEntity(path, color) {
+                return new Entity({
+                    strip: {
+                        gridSize: 10,
+                        path,
+                        color
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
