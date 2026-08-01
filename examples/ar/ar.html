@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Augmented Reality | OpenGlobus Example</title>
+        <meta charset="utf-8" />
+        <meta
+            name="description"
+            content="OpenGlobus example: align a transparent globe with a reference photo."
+        />
+        <meta name="keywords" content="augmented reality, transparent background, camera, Globe" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+        <style>
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
+
+            body {
+                overflow: hidden;
+                background: black;
+                font-family: Arial, sans-serif;
+                color: white;
+            }
+
+            .ar-stage {
+                position: absolute;
+                inset: 0;
+                display: grid;
+                place-items: center;
+            }
+
+            .ar-frame {
+                position: relative;
+                width: min(100vw, 150vh);
+                aspect-ratio: 3 / 2;
+            }
+
+            .ar-photo,
+            #earth {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            #earth,
+            #earth .og-inner {
+                background: transparent;
+            }
+
+            .ar-controls {
+                position: absolute;
+                left: 20px;
+                bottom: 20px;
+                z-index: 1;
+                display: grid;
+                gap: 8px;
+                width: min(320px, calc(100% - 72px));
+                padding: 16px;
+                background: rgba(0, 0, 0, 0.7);
+            }
+
+            .ar-controls label {
+                display: flex;
+                justify-content: space-between;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="ar-stage">
+            <div class="ar-frame">
+                <img class="ar-photo" src="./mt-kilimanjaro.jpg" alt="Mount Kilimanjaro" />
+                <div id="earth"></div>
+            </div>
+        </div>
+
+        <div class="ar-controls">
+            <label for="planetOpacity">
+                Planet opacity
+                <span id="planetOpacityValue">0.80</span>
+            </label>
+            <input id="planetOpacity" type="range" min="0" max="1" step="0.01" value="0.8" />
+            <button id="arFlyToLocation" type="button">Fly to AR location</button>
+        </div>
+
+        <script type="module" id="og-sandbox-script">
+            'use strict';
+
+            import {
+                Bing,
+                Globe,
+                GlobusRgbTerrain,
+                LonLat,
+                Vector
+            } from "../../external/og/lib/og.es.js";
+
+            const INITIAL_FRAME_OPACITY = 0.8;
+
+            const globe = new Globe({
+                target: "earth",
+                name: "Earth",
+                terrain: new GlobusRgbTerrain(),
+                transparentBackground: true,
+                frameOpacity: INITIAL_FRAME_OPACITY,
+                layers: [new Bing()],
+                resourcesSrc: "../../external/og/lib/res",
+                fontsSrc: "./"
+            });
+
+            // Approximate camera parameters for the Kilimanjaro reference photo.
+            const AR_CAMERA_POSITION = new LonLat(37.41477, -2.70365);
+            const AR_CAMERA_EYE_HEIGHT = 0;
+            const AR_CAMERA_AZIMUTH = 189.5;
+            const AR_CAMERA_TILT = 2.25;
+            const AR_CAMERA_HORIZONTAL_FOV = 17;
+            const AR_TARGET_DISTANCE = 41000;
+            const AR_PEAK_NAME = "Uhuru Peak, Kilimanjaro";
+            const AR_PEAK_HEIGHT = 5895;
+            const PHOTO_CREDIT_URL =
+                "https://www.istockphoto.com/photo/three-giraffe-in-national-park-of-kenya-gm697689066-129229411";
+
+            globe.planet.camera.setHorizontalViewAngle(AR_CAMERA_HORIZONTAL_FOV);
+            globe.planet.addLayer(createPeakLabelLayer(globe.planet.ellipsoid));
+            globe.planet.addLayer(createPhotoAttributionLayer());
+
+            bindFrameOpacityControl(globe);
+            document.getElementById("arFlyToLocation").addEventListener("click", flyToArLocation);
+            flyToArLocation();
+
+            function flyToArLocation() {
+                globe.planet.terrain.getHeightAsync(AR_CAMERA_POSITION, (terrainHeight) => {
+                    const cameraHeight = (terrainHeight ?? 0) + AR_CAMERA_EYE_HEIGHT;
+                    const { cameraPosition, lookAtPosition } = createArCameraPose(cameraHeight);
+
+                    globe.planet.camera.flyLonLat(cameraPosition, {
+                        look: lookAtPosition,
+                        linearPath: true,
+                        duration: 3000
+                    });
+                });
+            }
+
+            function createArCameraPose(cameraHeight) {
+                const cameraPosition = new LonLat(
+                    AR_CAMERA_POSITION.lon,
+                    AR_CAMERA_POSITION.lat,
+                    cameraHeight
+                );
+                const lookAtPosition = globe.planet.ellipsoid.getBearingDestination(
+                    cameraPosition,
+                    AR_CAMERA_AZIMUTH,
+                    AR_TARGET_DISTANCE
+                );
+
+                // Local-horizon approximation; sufficient for visually aligning this reference photo.
+                lookAtPosition.height =
+                    cameraHeight + AR_TARGET_DISTANCE * Math.tan((AR_CAMERA_TILT * Math.PI) / 180);
+
+                return { cameraPosition, lookAtPosition };
+            }
+
+            function createPeakLabelLayer(ellipsoid) {
+                const peakPosition = ellipsoid.getBearingDestination(
+                    AR_CAMERA_POSITION,
+                    AR_CAMERA_AZIMUTH,
+                    AR_TARGET_DISTANCE
+                );
+
+                return new Vector("Kilimanjaro Peak", {
+                    entities: [
+                        {
+                            name: AR_PEAK_NAME,
+                            lonlat: [peakPosition.lon, peakPosition.lat, AR_PEAK_HEIGHT],
+                            label: {
+                                text: AR_PEAK_NAME,
+                                size: 27,
+                                align: "center",
+                                color: "rgba(255,255,255,1)",
+                                outlineColor: "rgba(0,0,0,1)",
+                                outline: 0.21
+                            }
+                        }
+                    ]
+                });
+            }
+
+            function createPhotoAttributionLayer() {
+                return new Vector("Photo Attribution", {
+                    attribution: `Photo: <a href="${PHOTO_CREDIT_URL}" target="_blank" rel="noopener noreferrer">iStockphoto, Credit:Byrdyak</a>`
+                });
+            }
+
+            function bindFrameOpacityControl(globe) {
+                const opacityInput = document.getElementById("planetOpacity");
+                const opacityValue = document.getElementById("planetOpacityValue");
+
+                opacityInput.value = INITIAL_FRAME_OPACITY.toString();
+                updateFrameOpacity();
+                opacityInput.addEventListener("input", updateFrameOpacity);
+
+                function updateFrameOpacity() {
+                    const opacity = Number(opacityInput.value);
+                    globe.renderer.frameOpacity = opacity;
+                    opacityValue.textContent = opacity.toFixed(2);
+                }
+            }
+        </script>
+    </body>
+</html>

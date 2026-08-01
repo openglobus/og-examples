@@ -1,5 +1,17 @@
 [
   {
+    "label": "Augmented Reality",
+    "id": "ar",
+    "tags": [
+      "augmented reality",
+      "transparent",
+      "background",
+      "camera",
+      "Globe"
+    ],
+    "image": ""
+  },
+  {
     "label": "Base Layers",
     "id": "baseLayers",
     "tags": [
