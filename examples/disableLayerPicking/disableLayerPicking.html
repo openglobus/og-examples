@@ -27,79 +27,82 @@
         import {
             Globe,
             GlobusRgbTerrain,
-            XYZ,
+            OpenStreetMap,
             Vector,
+            control,
         } from "../../external/og/lib/og.es.js";
 
-        var sat = new XYZ("MapQuest Satellite", {
-            shininess: 20,
-            specular: [0.00048, 0.00037, 0.00035],
-            diffuse: [0.88, 0.85, 0.8],
-            ambient: [0.15, 0.1, 0.23],
-            isBaseLayer: false,
-            url: "//tileproxy.cloud.mapquest.com/tiles/1.0.0/sat/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: '@2014 MapQuest - Portions @2014 "Map data @ <a target="_blank" href="//www.openstreetmap.org/">OpenStreetMap</a> and contributors, <a target="_blank" href="//opendatacommons.org/licenses/odbl/"> CC-BY-SA</a>"',
-            zIndex: 0,
-            pickingEnabled: false
-        });
+        const osm = new OpenStreetMap();
 
-        var osm = new XYZ("OpenStreetMap", {
-            specular: [0.0003, 0.00012, 0.00001],
-            extent: [[42.3, 43.21], [42.6, 43.42]],
-            shininess: 20,
-            diffuse: [0.89, 0.9, 0.83],
-            isBaseLayer: false,
-            url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: 'Data @ OpenStreetMap contributors, ODbL',
-            zIndex: 1,
-            opacity: 0.7
-        });
-
-
-        var vec = new Vector("Disable picking or event handling", {
+        const pickableLayer = new Vector("Blue geometry", {
             fading: true,
-            'visibility': true,
-            'isBaseLayer': false,
-            'diffuse': [0, 0, 0],
-            'ambient': [1, 1, 1],
-            'zIndex': 2,
-            'pickingEnabled': false,
-            'entities': [{
-                'geometry': {
-                    'type': "Polygon",
-                    'coordinates': [[[42.4, 43.3], [42.42, 43.34], [42.44, 43.35], [42.49, 43.34], [42.5, 43.302]]],
-                    'style': {
-                        'lineWidth': 8,
-                        'fillColor': "rgba(190, 0, 0, 0.6)",
-                        'lineColor': "red"
+            visibility: true,
+            zIndex: 1,
+            pickingEnabled: true,
+            entities: [{
+                geometry: {
+                    type: "Polygon",
+                    coordinates: [[
+                        [42.38, 43.28],
+                        [42.52, 43.28],
+                        [42.52, 43.37],
+                        [42.38, 43.37],
+                        [42.38, 43.28]
+                    ]],
+                    style: {
+                        lineWidth: 8,
+                        fillColor: "rgba(0, 130, 210, 0.6)",
+                        lineColor: "rgb(0, 90, 190)"
                     }
                 }
             }]
         });
 
-        var globus = new Globe({
+        const nonPickableLayer = new Vector("Red geometry", {
+            extent: [[42.37, 43.27], [42.53, 43.38]],
+            fading: true,
+            visibility: true,
+            zIndex: 2,
+            pickingEnabled: false,
+            entities: [{
+                geometry: {
+                    type: "Polygon",
+                    coordinates: [[
+                        [42.4, 43.3],
+                        [42.42, 43.34],
+                        [42.44, 43.35],
+                        [42.49, 43.34],
+                        [42.5, 43.302],
+                        [42.4, 43.3]
+                    ]],
+                    style: {
+                        lineWidth: 8,
+                        fillColor: "rgba(190, 0, 0, 0.6)",
+                        lineColor: "red"
+                    }
+                }
+            }]
+        });
+
+        const globus = new Globe({
             target: "globus",
             name: "Earth",
             terrain: new GlobusRgbTerrain(),
-            layers: [sat, osm, vec],
+            layers: [osm, pickableLayer, nonPickableLayer],
             resourcesSrc: "../../external/og/lib/res",
             fontsSrc: "../../external/og/lib/res/fonts"
         });
 
-        globus.planet.renderer.events.on("mousemove", function (e) {
-            if (e.pickingObject) {
-                document.getElementById("layerName").innerHTML = e.pickingObject.name;
-                e.pickingObject.opacity = 1.0;
-            } else {
-                document.getElementById("layerName").innerHTML = "";
-                osm.opacity = 0.7;
-            }
+        globus.planet.addControl(new control.LayerSwitcher());
 
+        const layerName = document.getElementById("layerName");
+
+        globus.planet.renderer.events.on("mousemove", function (e) {
+            const pickedLayer = e.pickingObject?.layer || e.pickingObject;
+            layerName.textContent = pickedLayer?.name || "";
         });
 
-        globus.planet.flyExtent(osm.getExtent());
+        globus.planet.flyExtent(nonPickableLayer.getExtent());
     </script>
 </body>
 
