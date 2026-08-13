@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Idle Mode | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: pause frame rendering while the scene is unchanged." />
+    <meta name="keywords" content="idleMode, rendering, performance, Handler, Globe" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+    <style>
+        #renderStatus {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+            min-width: 190px;
+            padding: 12px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.94);
+            color: #182024;
+            font: 13px/1.4 Arial, sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+        }
+
+        .render-status__title {
+            margin-bottom: 7px;
+            color: #586268;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .render-status__state {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .render-status__dot {
+            width: 9px;
+            height: 9px;
+            flex: 0 0 9px;
+            border-radius: 50%;
+            background: #d18400;
+        }
+
+        #renderStatus[data-state="idle"] .render-status__dot {
+            background: #16834b;
+        }
+
+        .render-status__frames {
+            margin-top: 5px;
+            color: #586268;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+
+<body>
+<div id="renderStatus" data-state="rendering">
+    <div class="render-status__title">Idle mode enabled</div>
+    <div class="render-status__state">
+        <span class="render-status__dot"></span>
+        <span id="renderState">Rendering</span>
+    </div>
+    <div class="render-status__frames">Rendered frames: <span id="frameCount">0</span></div>
+</div>
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Globe,
+        OpenStreetMap
+    } from "../../external/og/lib/og.es.js";
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        idleMode: true,
+        layers: [new OpenStreetMap()],
+        viewExtent: [-12, 35, 30, 60],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    const status = document.getElementById("renderStatus");
+    const state = document.getElementById("renderState");
+    const frameCount = document.getElementById("frameCount");
+    const handler = globe.renderer.handler;
+    let renderedFrames = 0;
+    let idleTimer = 0;
+
+    function showRendering() {
+        status.dataset.state = "rendering";
+        state.textContent = "Rendering";
+    }
+
+    function updateIdleState() {
+        if (handler.isIdle) {
+            status.dataset.state = "idle";
+            state.textContent = "Idle: scene frozen";
+        }
+    }
+
+    globe.renderer.events.on("predraw", function () {
+        renderedFrames++;
+        frameCount.textContent = renderedFrames;
+        showRendering();
+        window.clearTimeout(idleTimer);
+        idleTimer = window.setTimeout(updateIdleState, 180);
+    });
+</script>
+</body>
+</html>

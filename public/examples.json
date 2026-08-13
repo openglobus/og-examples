@@ -636,6 +636,31 @@
     "image": ""
   },
   {
+    "label": "Free Navigation",
+    "id": "freeNavigation",
+    "tags": [
+      "Camera",
+      "FreeNavigation",
+      "control",
+      "Grand Canyon",
+      "TimelineControl",
+      "LayerSwitcher"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Idle Mode",
+    "id": "idleMode",
+    "tags": [
+      "Globe",
+      "Handler",
+      "idleMode",
+      "rendering",
+      "performance"
+    ],
+    "image": ""
+  },
+  {
     "label": "Wind Farm Instanced Objects Animation",
     "id": "windFarm",
     "tags": [
