@@ -1,10 +1,10 @@
 <html>
 <head>
     <title>Free Navigation | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Free-flight camera navigation over the Grand Canyon." />
-    <meta name="keywords" content="FreeNavigation, camera, control, Grand Canyon, TimelineControl, LayerSwitcher" />
+    <meta name="description" content="OpenGlobus example: Free-flight camera navigation over the Grand Canyon."/>
+    <meta name="keywords" content="FreeNavigation, camera, control, Grand Canyon, TimelineControl, LayerSwitcher"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
 
 <body>
@@ -21,15 +21,15 @@
         control
     } from "../../external/og/lib/og.es.js";
 
-    const timelineTime = new Date(Date.UTC(2026, 7, 13, 17, 0, 0));
+    const timelineTime = new Date();
     const osm = new OpenStreetMap();
-    const bing = new Bing(null, { visibility: false });
+    const bing = new Bing(null, {visibility: false});
 
     const globe = new Globe({
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm, bing],
+        layers: [bing, osm],
         sun: {
             stopped: true
         },
@@ -43,19 +43,18 @@
     );
 
     globe.planet.addControls([
-        new control.TimelineControl({ current: timelineTime }),
+        new control.TimelineControl({current: timelineTime}),
         new control.LayerSwitcher()
     ]);
 
     const freeNavigation = new control.FreeNavigation({
         autoActivate: false,
-        pointerLock: false,
         showInfo: true,
         speed: 200
     });
 
     globe.planet.addControl(freeNavigation);
-    freeNavigation.activate();
+
 </script>
 </body>
 </html>

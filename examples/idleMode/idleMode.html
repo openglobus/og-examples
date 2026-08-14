@@ -71,7 +71,8 @@
 
     import {
         Globe,
-        OpenStreetMap
+        OpenStreetMap,
+        control
     } from "../../external/og/lib/og.es.js";
 
     const globe = new Globe({
@@ -83,6 +84,8 @@
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
+
+    globe.planet.addControl(new control.DebugInfo());
 
     const status = document.getElementById("renderStatus");
     const state = document.getElementById("renderState");
