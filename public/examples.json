@@ -477,7 +477,10 @@
     "id": "sunActivity",
     "tags": [
       "sun",
-      "activity"
+      "activity",
+      "OpenStreetMap",
+      "Lighting",
+      "TimelineControl"
     ],
     "image": ""
   },

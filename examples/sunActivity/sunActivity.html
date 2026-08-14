@@ -4,94 +4,236 @@
     <meta name="description" content="OpenGlobus example: Sun Activity." />
     <meta name="keywords" content="sun, activity" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+    <style>
+        #sunPanel {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+            width: min(340px, calc(100% - 32px));
+            padding: 14px;
+            box-sizing: border-box;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #182024;
+            font: 13px/1.4 Arial, sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+        }
+
+        .sun-panel__actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .sun-panel__actions button {
+            min-height: 34px;
+            border: 1px solid #aab3b8;
+            border-radius: 4px;
+            background: #f7f9fa;
+            color: #182024;
+            cursor: pointer;
+        }
+
+        .sun-panel__actions button:hover {
+            background: #e8edf0;
+        }
+
+        .sun-panel__label {
+            display: block;
+            margin-bottom: 6px;
+            color: #586268;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        #sunDateTime,
+        #sunDate {
+            width: 100%;
+            min-height: 36px;
+            box-sizing: border-box;
+            border: 1px solid #aab3b8;
+            border-radius: 4px;
+            padding: 6px 8px;
+            background: white;
+            color: #182024;
+            font: inherit;
+        }
+
+        .sun-panel__fallback {
+            display: grid;
+            gap: 10px;
+        }
+
+        .sun-panel__slider {
+            display: grid;
+            grid-template-columns: 48px minmax(0, 1fr) 34px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sun-panel__slider input {
+            width: 100%;
+        }
+
+        .sun-panel__slider output {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
 </head>
-
-<style>
-    .buttonContainer {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-    }
-
-    .btn {
-        float: left;
-        padding: 5px;
-        margin: 5px;
-    }
-
-    #chkLightingEnabled {
-        position: absolute;
-        top: 60px;
-        left: 10px;
-        color: white;
-    }
-
-    #chkLightingEnabled div {
-        float: left;
-    }
-
-    #chkLightingEnabled input {
-        float: left;
-    }
-</style>
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
-<div class="buttonContainer">
-    <button id="btnActivate" class="btn">Activate</button>
-    <button id="btnStop" class="btn">Stop</button>
-    <button id="btnDeactivate" class="btn">Deactivate</button>
+<div id="sunPanel">
+    <div class="sun-panel__actions">
+        <button id="btnActivate" type="button">Activate</button>
+        <button id="btnStop" type="button">Stop</button>
+        <button id="btnDeactivate" type="button">Deactivate</button>
+    </div>
+    <label id="nativeDateTimeField" hidden>
+        <span class="sun-panel__label">Local solar time</span>
+        <input id="sunDateTime" type="datetime-local" step="60" />
+    </label>
+    <div id="fallbackDateTime" class="sun-panel__fallback" hidden>
+        <label>
+            <span class="sun-panel__label">Local solar date</span>
+            <input id="sunDate" type="date" />
+        </label>
+        <label class="sun-panel__slider">
+            <span>Hour</span>
+            <input id="sunHour" type="range" min="0" max="23" step="1" />
+            <output id="sunHourValue">00</output>
+        </label>
+        <label class="sun-panel__slider">
+            <span>Minute</span>
+            <input id="sunMinute" type="range" min="0" max="59" step="1" />
+            <output id="sunMinuteValue">00</output>
+        </label>
+    </div>
 </div>
-<div id="chkLightingEnabled">
-    <input type="checkbox" checked/>
-    <div>Lighting</div>
-</div>
-    <script type="module" id="og-sandbox-script">
-    'use strict';
+<script type="module" id="og-sandbox-script">
+    "use strict";
 
     import {
         Globe,
         GlobusRgbTerrain,
-        XYZ
+        OpenStreetMap,
+        control
     } from "../../external/og/lib/og.es.js";
 
-    document.getElementById("btnActivate").onclick = function () {
-        globus.sun.activate();
-    };
-
-    document.getElementById("btnStop").onclick = function () {
-        globus.sun.stop();
-    };
-
-    document.getElementById("btnDeactivate").onclick = function () {
-        globus.sun.deactivate();
-    };
-
-    document.querySelector("#chkLightingEnabled input").onclick = function (e) {
-        globus.planet.lightEnabled = this.checked;
-    };
-
-    var osm = new XYZ("OpenStreetMap", {
-        isBaseLayer: true,
-        url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        visibility: true,
-        attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-
-
-    var globus = new Globe({
+    const initialDateTime = new Date();
+    const globus = new Globe({
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm],
+        layers: [new OpenStreetMap()],
         sun: {
-            active: false
+            localDateTime: initialDateTime
         },
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
-    
+
+    const timeline = new control.TimelineControl({ current: initialDateTime });
+    globus.planet.addControls([
+        new control.Lighting(),
+        timeline
+    ]);
+
+    const nativeDateTimeField = document.getElementById("nativeDateTimeField");
+    const nativeDateTimeInput = document.getElementById("sunDateTime");
+    const fallbackDateTime = document.getElementById("fallbackDateTime");
+    const fallbackDateInput = document.getElementById("sunDate");
+    const hourInput = document.getElementById("sunHour");
+    const minuteInput = document.getElementById("sunMinute");
+    const hourValue = document.getElementById("sunHourValue");
+    const minuteValue = document.getElementById("sunMinuteValue");
+
+    function pad(value) {
+        return String(value).padStart(2, "0");
+    }
+
+    function formatDate(date) {
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    }
+
+    function formatDateTime(date) {
+        return `${formatDate(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function updateInputs(date) {
+        nativeDateTimeInput.value = formatDateTime(date);
+        fallbackDateInput.value = formatDate(date);
+        hourInput.value = date.getHours();
+        minuteInput.value = date.getMinutes();
+        hourValue.value = pad(date.getHours());
+        minuteValue.value = pad(date.getMinutes());
+    }
+
+    function applySunDateTime(date) {
+        if (Number.isNaN(date.getTime())) return;
+        globus.sun.setLocalDateTime(date);
+        globus.sun.start();
+        globus.renderer.requestRedraw();
+        updateInputs(date);
+    }
+
+    function readFallbackDateTime() {
+        if (!fallbackDateInput.value) return null;
+        const [year, month, day] = fallbackDateInput.value.split("-").map(Number);
+        return new Date(year, month - 1, day, Number(hourInput.value), Number(minuteInput.value));
+    }
+
+    const pickerProbe = document.createElement("input");
+    pickerProbe.type = "datetime-local";
+    const hasNativeDateTimePicker =
+        pickerProbe.type === "datetime-local" && typeof pickerProbe.showPicker === "function";
+
+    if (hasNativeDateTimePicker) {
+        nativeDateTimeField.hidden = false;
+        nativeDateTimeInput.addEventListener("input", function () {
+            applySunDateTime(new Date(this.value));
+        });
+    } else {
+        fallbackDateTime.hidden = false;
+        fallbackDateInput.addEventListener("input", function () {
+            const date = readFallbackDateTime();
+            date && applySunDateTime(date);
+        });
+        hourInput.addEventListener("input", function () {
+            const date = readFallbackDateTime();
+            date && applySunDateTime(date);
+        });
+        minuteInput.addEventListener("input", function () {
+            const date = readFallbackDateTime();
+            date && applySunDateTime(date);
+        });
+    }
+
+    timeline.events.on("setcurrent", function (date) {
+        applySunDateTime(date);
+    });
+
+    document.getElementById("btnActivate").addEventListener("click", function () {
+        globus.sun.start();
+    });
+    document.getElementById("btnStop").addEventListener("click", function () {
+        globus.sun.stop();
+    });
+    document.getElementById("btnDeactivate").addEventListener("click", function () {
+        globus.sun.deactivate();
+    });
+
+    updateInputs(initialDateTime);
 </script>
 </body>
 
