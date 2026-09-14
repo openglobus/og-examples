@@ -23,13 +23,13 @@
     let townMarkers = new Vector("town markers", {
         nodeCapacity: 100000,
         maxZoom: 9,
-        scaleByDistance: [0, 1500000, 25000000],
+        scaleByDistance: [0, 0, 1500000],
         fading: true
     });
 
     let townLabels = new Vector("town labels", {
         nodeCapacity: 50,
-        scaleByDistance: [0, 350000, 25000000],
+        scaleByDistance: [0, 0, 350000],
         minZoom: 10,
         fading: true
     });
