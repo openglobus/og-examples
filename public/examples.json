@@ -715,5 +715,20 @@
       "SkyBox"
     ],
     "image": ""
+  },
+  {
+    "label": "Projector",
+    "id": "projector",
+    "tags": [
+      "Projector",
+      "DepthCamera",
+      "DepthCameraHandler",
+      "EntityEditor",
+      "projection",
+      "frustum",
+      "depth",
+      "bias"
+    ],
+    "image": ""
   }
 ]

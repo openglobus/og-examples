@@ -1,0 +1,353 @@
+<html>
+<head>
+    <title>Projector | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: a Projector with a depth camera above Mount Rainier, with live controls for near/far, render mode, colors and depth bias."/>
+    <meta name="keywords"
+          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, frustum, depth bias, projection, Mount Rainier"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        #projectorPanel {
+            position: absolute;
+            left: 10px;
+            bottom: 30px;
+            z-index: 100;
+            width: 264px;
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.94);
+            color: #182024;
+            font: 12px/1.3 Arial, sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+        }
+
+        #projectorPanel h4 {
+            margin: 10px 0 6px;
+            color: #586268;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        #projectorPanel h4:first-child {
+            margin-top: 0;
+        }
+
+        .pp-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .pp-row > span {
+            flex: 0 0 100px;
+        }
+
+        .pp-row input[type="number"],
+        .pp-row select {
+            flex: 1 1 auto;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .pp-row input[type="range"] {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .pp-row input[type="color"] {
+            flex: 0 0 34px;
+            height: 20px;
+            padding: 0;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+        }
+
+        .pp-row output {
+            flex: 0 0 34px;
+            color: #586268;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pp-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .pp-hint {
+            margin-top: 8px;
+            color: #586268;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="projectorPanel">
+    <h4>Projector</h4>
+    <label class="pp-check"><input type="checkbox" id="ppEnabled" checked/>Enabled</label>
+    <div class="pp-row">
+        <span>Render mode</span>
+        <select id="ppMode">
+            <option value="color">color</option>
+            <option value="light" selected>light</option>
+        </select>
+    </div>
+    <div class="pp-row">
+        <span>Color</span>
+        <input type="color" id="ppColor" value="#ffff00"/>
+        <input type="range" id="ppOpacity" min="0" max="1" step="0.01" value="1"/>
+        <output id="ppOpacityValue">1.00</output>
+    </div>
+    <div class="pp-row">
+        <span>Width, px</span>
+        <input type="number" id="ppWidth" min="1" step="16" value="1920"/>
+    </div>
+    <div class="pp-row">
+        <span>Height, px</span>
+        <input type="number" id="ppHeight" min="1" step="16" value="1080"/>
+    </div>
+    <div class="pp-row">
+        <span>Horizontal FOV</span>
+        <input type="range" id="ppFov" min="5" max="120" step="1" value="30"/>
+        <output id="ppFovValue">30</output>
+    </div>
+
+    <h4>Depth camera</h4>
+    <div class="pp-row">
+        <span>Near, m</span>
+        <input type="number" id="ppNear" min="1" step="10" value="100"/>
+    </div>
+    <div class="pp-row">
+        <span>Far, m</span>
+        <input type="number" id="ppFar" min="2" step="1000" value="100000"/>
+    </div>
+
+    <h4>Frustum</h4>
+    <label class="pp-check"><input type="checkbox" id="ppShowFrustum" checked/>Show frustum</label>
+    <div class="pp-row">
+        <span>Color</span>
+        <input type="color" id="ppFrustumColor" value="#9bff9b"/>
+        <input type="range" id="ppFrustumOpacity" min="0" max="1" step="0.01" value="0.7"/>
+        <output id="ppFrustumOpacityValue">0.70</output>
+    </div>
+    <div class="pp-row">
+        <span>Length</span>
+        <input type="range" id="ppFrustumLength" min="0.5" max="20" step="0.1" value="10"/>
+        <output id="ppFrustumLengthValue">10.0</output>
+    </div>
+
+    <h4>Depth bias</h4>
+    <div class="pp-row">
+        <span>Depth bias, m</span>
+        <input type="number" id="ppDepthBias" min="0" step="0.1" value="1"/>
+    </div>
+    <div class="pp-row">
+        <span>Normal bias</span>
+        <input type="range" id="ppNormalBias" min="0" max="1" step="0.01" value="0.45"/>
+        <output id="ppNormalBiasValue">0.45</output>
+    </div>
+
+    <div class="pp-hint">Click the green pyramid to pick it up in the Entity Editor, then drag the gizmo to aim the
+        projector.
+    </div>
+</div>
+
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Bing,
+        DepthCamera,
+        Globe,
+        GlobusRgbTerrain,
+        LonLat,
+        OpenStreetMap,
+        Projector,
+        control,
+        math
+    } from "../../external/og/lib/og.es.js";
+
+    // Above Mount Rainier, Washington, USA
+    const PROJECTOR_POSITION = new LonLat(-121.797751805, 47.027439152, 24358.0321);
+    const PROJECTOR_PITCH = -49.7;
+    const PROJECTOR_YAW = 173.59;
+    const PROJECTOR_ROLL = 0;
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new Bing(null, {visibility: false}), new OpenStreetMap(null)],
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    // Stands off to the east, so that both the projector and the lit slope are in view.
+    globe.planet.viewLonLat(new LonLat(-121.2000, 46.9400, 22000), new LonLat(-121.7900, 46.9400, 13000));
+
+    globe.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.EntityEditor({editMode: "yaw"}),
+        new control.TimelineControl()
+    ]);
+
+    // A DepthCameraHandler renders the depth map the projector projects through,
+    // and owns the frustum pyramid entity.
+    const depthCameraHandler = new control.DepthCameraHandler();
+    globe.planet.addControl(depthCameraHandler);
+
+    const depthCamera = new DepthCamera({
+        showFrustum: true,
+        showFootprint: false,
+        frustumLength: 10,
+        frustumColor: "rgba(155,255,155,0.7)",
+        // Projector throw range: nothing is projected closer than near or beyond far.
+        // The depth buffer is spread over this range, so the tighter it is fitted
+        // around the target, the more precise the projection and the fewer artifacts.
+        near: 100,
+        far: 100000,
+        depthBiasWorld: 1.0,   // meters
+        normalBias: 0.45       // 0.2 .. 1.0
+    });
+    depthCameraHandler.add(depthCamera);
+
+    const projectorCamera = depthCamera.camera;
+    projectorCamera.setLonLat(PROJECTOR_POSITION);
+    // Orientation in the local planet frame. setPitchYawRoll takes radians,
+    // while the Entity Editor shows the same angles in degrees.
+    projectorCamera.setPitchYawRoll(
+        PROJECTOR_PITCH * math.RADIANS,
+        PROJECTOR_YAW * math.RADIANS,
+        PROJECTOR_ROLL * math.RADIANS
+    );
+    projectorCamera.setViewportSize(1920, 1080);
+    projectorCamera.setHorizontalViewAngle(30);
+    projectorCamera.update();
+
+    const projector = new Projector({
+        enabled: true,
+        depthCamera: depthCamera,
+        color: [1.0, 1.0, 0.0, 1.0],
+        renderMode: "light",
+        priority: 0
+    });
+    globe.planet.renderer.projectors.add(projector);
+
+    //
+    // Controls
+    //
+    const $ = (id) => document.getElementById(id);
+
+    function hexToRgb(hex) {
+        const value = parseInt(hex.slice(1), 16);
+        return [((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255];
+    }
+
+    function applyProjectorColor() {
+        projector.setColorHTML($("ppColor").value);
+        projector.setOpacity(parseFloat($("ppOpacity").value));
+    }
+
+    function applyFrustumColor() {
+        const rgb = hexToRgb($("ppFrustumColor").value);
+        depthCamera.frustumColor = [rgb[0], rgb[1], rgb[2], parseFloat($("ppFrustumOpacity").value)];
+    }
+
+    // Projector "lens": viewport size only sets the shape of the projected image,
+    // the depth map resolution is the DepthCamera framebuffer and stays fixed.
+    // Horizontal FOV is re-applied after the size, because the camera stores the
+    // vertical angle and derives it from the horizontal one and the aspect ratio.
+    function applyProjectorLens() {
+        const width = parseInt($("ppWidth").value, 10);
+        const height = parseInt($("ppHeight").value, 10);
+        const fov = parseFloat($("ppFov").value);
+
+        if (!Number.isFinite(width) || !Number.isFinite(height) || width < 1 || height < 1) return;
+        if (!Number.isFinite(fov) || fov <= 0 || fov >= 180) return;
+
+        projectorCamera.setViewportSize(width, height);
+        projectorCamera.setHorizontalViewAngle(fov);
+        projectorCamera.update();
+    }
+
+    function applyNearFar() {
+        const near = parseFloat($("ppNear").value);
+        const far = parseFloat($("ppFar").value);
+
+        if (!Number.isFinite(near) || !Number.isFinite(far) || near <= 0 || far <= near) {
+            return;
+        }
+
+        projectorCamera.setNearFar(near, far);
+        projectorCamera.update();
+    }
+
+    $("ppEnabled").oninput = function () {
+        projector.enabled = this.checked;
+    };
+
+    $("ppMode").oninput = function () {
+        projector.renderMode = this.value;
+    };
+
+    $("ppColor").oninput = applyProjectorColor;
+
+    $("ppOpacity").oninput = function () {
+        $("ppOpacityValue").value = parseFloat(this.value).toFixed(2);
+        applyProjectorColor();
+    };
+
+    $("ppWidth").oninput = applyProjectorLens;
+    $("ppHeight").oninput = applyProjectorLens;
+
+    $("ppFov").oninput = function () {
+        $("ppFovValue").value = this.value;
+        applyProjectorLens();
+    };
+
+    $("ppNear").oninput = applyNearFar;
+    $("ppFar").oninput = applyNearFar;
+
+    $("ppShowFrustum").oninput = function () {
+        depthCamera.showFrustum = this.checked;
+    };
+
+    $("ppFrustumColor").oninput = applyFrustumColor;
+
+    $("ppFrustumOpacity").oninput = function () {
+        $("ppFrustumOpacityValue").value = parseFloat(this.value).toFixed(2);
+        applyFrustumColor();
+    };
+
+    $("ppFrustumLength").oninput = function () {
+        $("ppFrustumLengthValue").value = parseFloat(this.value).toFixed(1);
+        depthCamera.frustumLength = parseFloat(this.value);
+    };
+
+    $("ppDepthBias").oninput = function () {
+        const value = parseFloat(this.value);
+        if (Number.isFinite(value)) {
+            depthCamera.depthBiasWorld = value;
+        }
+    };
+
+    $("ppNormalBias").oninput = function () {
+        $("ppNormalBiasValue").value = parseFloat(this.value).toFixed(2);
+        depthCamera.normalBias = parseFloat(this.value);
+    };
+
+    applyProjectorColor();
+    applyFrustumColor();
+</script>
+</body>
+</html>
