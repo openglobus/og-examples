@@ -1,0 +1,186 @@
+<html>
+<head>
+    <title>Custom Projectors | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: five nested projectors carried by one parent entity over the Swiss Alps, moved with the Entity Editor."/>
+    <meta name="keywords"
+          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, nested entities, relativePosition, Switzerland"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Bing,
+        DepthCamera,
+        Entity,
+        Globe,
+        GlobusRgbTerrain,
+        LonLat,
+        Object3d,
+        OpenStreetMap,
+        Projector,
+        Vector,
+        control,
+        math
+    } from "../../external/og/lib/og.es.js";
+
+    // Jungfrau massif, Bernese Alps, Switzerland
+    const BALL_POSITION = new LonLat(7.9700, 46.5600, 5200);
+    const BALL_RADIUS = 150;         // meters
+    const FRUSTUM_LENGTH = 900;      // meters
+    const PROJECTOR_FOV = 35;        // degrees, horizontal
+
+    // Four projectors looking outwards, one per quarter of the horizon, plus one nadir.
+    const PROJECTORS = [
+        {yaw: 0, pitch: -35, color: "#ff3355"},
+        {yaw: 90, pitch: -35, color: "#33dd66"},
+        {yaw: 180, pitch: -35, color: "#3388ff"},
+        {yaw: 270, pitch: -35, color: "#ffcc22"},
+        {yaw: 0, pitch: -90, color: "#cc44ff"}
+    ];
+    const PROJECTOR_OPACITY = 0.8;
+    const FRUSTUM_OPACITY = 0.7;
+
+    const rigLayer = new Vector("Projector rig", {
+        receiveProjectors: false,
+        pickingEnabled: true
+    });
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new Bing(null, {visibility: false}), new OpenStreetMap(null), rigLayer],
+        atmosphereEnabled: true,
+        // Fixed time of day, so the scene looks the same whenever it is opened.
+        sun: {
+            localDateTime: new Date(Date.UTC(2024, 6, 15, 16, 0, 0))
+        },
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    // Straight above the ball, looking down at it.
+    globe.planet.viewLonLat(new LonLat(BALL_POSITION.lon, BALL_POSITION.lat, 20000));
+
+    globe.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.EntityEditor({editMode: "yaw"})
+    ]);
+
+    const depthCameraHandler = new control.DepthCameraHandler();
+    globe.planet.addControl(depthCameraHandler);
+
+    // The parent entity. Everything else hangs off it.
+    const ball = new Entity({
+        name: "projector-ball",
+        lonlat: BALL_POSITION,
+        independentPicking: true,
+        geoObject: {
+            tag: "projector-ball",
+            color: "#ffffff",
+            object3d: Object3d.createSphere(32, 32, BALL_RADIUS)
+        }
+    });
+
+    const frustumObject3d = Object3d.createFrustum();
+    const rig = [];
+
+    for (let i = 0; i < PROJECTORS.length; i++) {
+
+        const depthCamera = new DepthCamera({
+            // The frustum here is our own nested entity
+            showFrustum: false,
+            showFootprint: false,
+            near: 1000,
+            far: 20000000,
+            excludeLayers: [rigLayer],
+            depthBiasWorld: 1.0,
+            normalBias: 0.45
+        });
+        depthCameraHandler.add(depthCamera);
+
+        const camera = depthCamera.camera;
+        camera.setViewportSize(1024, 1024);   // square projection
+        camera.setHorizontalViewAngle(PROJECTOR_FOV);
+        camera.update();
+
+        const projector = new Projector({
+            enabled: true,
+            depthCamera: depthCamera,
+            color: PROJECTORS[i].color,
+            renderMode: "light",
+            priority: 0
+        });
+        projector.setOpacity(PROJECTOR_OPACITY);
+        globe.planet.renderer.projectors.add(projector);
+
+        // Nested child: it moves with the ball, but can still be offset on its own.
+        // All of them sit in the local center.
+        const frustum = new Entity({
+            name: `projector-${i}`,
+            relativePosition: true,
+            independentPicking: true,
+            cartesian: [0, 0, 0],
+            geoObject: {
+                tag: "projector-frustum",
+                color: PROJECTORS[i].color,
+                object3d: frustumObject3d
+            }
+        });
+
+        frustum.geoObject.setOpacity(FRUSTUM_OPACITY);
+        ball.appendChild(frustum);
+
+        frustum.setScale3v(
+            Object3d.getFrustumScaleByCameraAngles(
+                FRUSTUM_LENGTH,
+                camera.horizontalViewAngle,
+                camera.verticalViewAngle
+            )
+        );
+
+        frustum.setPitchYawRoll(
+            PROJECTORS[i].pitch * math.RADIANS,
+            PROJECTORS[i].yaw * math.RADIANS,
+            0
+        );
+
+        rig.push({camera, frustum});
+    }
+
+    rigLayer.add(ball);
+
+    // Update frustum position and orientation
+    globe.planet.renderer.events.on("predraw", function () {
+        for (let i = 0; i < rig.length; i++) {
+            const camera = rig[i].camera;
+            const frustum = rig[i].frustum;
+
+            camera.eye.copy(frustum.getAbsoluteCartesian());
+
+            // ver.1
+            // Quaternion transport - the rotation goes over whole, exact at any angle:
+            // camera.setRotation(frustum.getAbsoluteRotation());
+
+            // ver.2
+            // Angle transport - the same orientation split into pitch/yaw/roll and
+            // composed back.
+            camera.setPitchYawRoll(
+                frustum.getAbsolutePitch(),
+                frustum.getAbsoluteYaw(),
+                frustum.getAbsoluteRoll()
+            );
+
+            camera.update();
+        }
+    }, null, -300);
+</script>
+</body>
+</html>

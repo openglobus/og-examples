@@ -730,5 +730,20 @@
       "bias"
     ],
     "image": ""
+  },
+  {
+    "label": "Custom Projectors",
+    "id": "customProjectors",
+    "tags": [
+      "Projector",
+      "DepthCamera",
+      "DepthCameraHandler",
+      "EntityEditor",
+      "nested",
+      "entity",
+      "relativePosition",
+      "projection"
+    ],
+    "image": ""
   }
 ]
