@@ -1,0 +1,99 @@
+<html>
+<head>
+    <title>Docking Dialogs | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: DockManager layout with the globe dialog docked to the center, TimelineControl at the bottom, DebugInfo and Lighting on the left and a floating LayerSwitcher."/>
+    <meta name="keywords"
+          content="dock, DockManager, Dialog, ui, TimelineControl, DebugInfo, Lighting, LayerSwitcher"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module" id="og-sandbox-script">
+"use strict";
+
+import {
+    Globe,
+    GlobusRgbTerrain,
+    OpenStreetMap,
+    Bing,
+    control,
+    ui
+} from "../../external/og/lib/og.es.js";
+
+const app = document.getElementById("app");
+
+// Watches the host: every dialog appended to it can be dragged by its header
+// to an edge to dock there, and the seams between the sides are draggable.
+const dockManager = new ui.DockManager({
+    host: app
+});
+
+// The globe lives in a dialog of its own, docked to the center.
+const globeDialog = new ui.Dialog({
+    title: "Globe",
+    dock: "center",
+    useHide: true,
+    width: 800,
+    height: 500,
+    left: 180,
+    top: 100
+});
+
+globeDialog.appendTo(app);
+
+// Dock it right away, so the globe canvas gets its final size at once.
+dockManager.attach(globeDialog);
+
+const globe = new Globe({
+    target: globeDialog.container,
+    name: "Earth",
+    terrain: new GlobusRgbTerrain(),
+    layers: [new OpenStreetMap(), new Bing()],
+    // Control dialogs land in the dock host instead of the globe container.
+    uiContainer: app,
+    resourcesSrc: "../../external/og/lib/res",
+    fontsSrc: "../../external/og/lib/res/fonts"
+});
+
+const timeline = new control.TimelineControl();
+
+globe.planet.addControl(timeline);
+
+dockManager.attach(timeline._dialog);
+
+// Not docked: opens floating, but can still be dragged to any edge.
+globe.planet.addControl(new control.LayerSwitcher());
+
+const debugInfo = new control.DebugInfo();
+const lighting = new control.Lighting();
+
+globe.planet.addControl(debugInfo);
+globe.planet.addControl(lighting);
+
+// These two do not ask for a side themselves, so dock them to the left.
+// A hidden dialog costs no room: the side opens when the dialog shows up.
+for (const c of [debugInfo, lighting]) {
+    dockManager.dock(c._dialog, "left");
+    c._dialog.show();
+}
+</script>
+</body>
+</html>

@@ -123,6 +123,21 @@
     "image": ""
   },
   {
+    "label": "Docking Dialogs",
+    "id": "dockingDialogs",
+    "tags": [
+      "dock",
+      "DockManager",
+      "Dialog",
+      "ui",
+      "TimelineControl",
+      "DebugInfo",
+      "Lighting",
+      "LayerSwitcher"
+    ],
+    "image": ""
+  },
+  {
     "label": "Drawing geometry on the ground",
     "id": "drawingControl",
     "tags": [
