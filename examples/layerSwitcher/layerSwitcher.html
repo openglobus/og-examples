@@ -23,6 +23,8 @@
         Vector,
         WMS,
         GlobusRgbTerrain,
+        MapterhornTerrain,
+        EmptyTerrain,
         OpenStreetMap,
         Bing,
         GeoImage,
@@ -121,7 +123,7 @@
         zIndex: 300
     });
 
-    let terrains = [new GlobusRgbTerrain(), new GlobusRgbTerrain()]
+    let terrains = [new GlobusRgbTerrain(), new MapterhornTerrain(), new EmptyTerrain()]
 
     let globus = new Globe({
         target: "globus",
