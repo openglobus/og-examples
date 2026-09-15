@@ -27,6 +27,21 @@
     "image": ""
   },
   {
+    "label": "Basic Time Zone",
+    "id": "basicTimeZone",
+    "tags": [
+      "time zones",
+      "timezone",
+      "Sun",
+      "Vector",
+      "geoJson",
+      "TimelineControl",
+      "DockManager",
+      "Dialog"
+    ],
+    "image": ""
+  },
+  {
     "label": "Billboards",
     "id": "billboards",
     "tags": [
@@ -514,6 +529,22 @@
     "tags": [
       "terrain",
       "switching"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Time Zone Provider",
+    "id": "timeZoneProvider",
+    "tags": [
+      "time zones",
+      "timezone",
+      "timeZoneProvider",
+      "Sun",
+      "Vector",
+      "geoJson",
+      "TimelineControl",
+      "DockManager",
+      "Dialog"
     ],
     "image": ""
   },

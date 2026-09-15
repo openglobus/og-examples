@@ -1,0 +1,225 @@
+<html>
+<head>
+    <title>Time Zone Provider | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: TimeZoneProvider feeds Sun.timeZoneProvider and the map from one lazily loaded geojson, with the globe docked to the center and a timeline docked at the bottom."/>
+    <meta name="keywords"
+          content="time zones, timezone, TimeZoneProvider, Sun, Vector, geoJson, TimelineControl, DockManager, Dialog"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .tz-panel {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .tz-panel .tz-zone {
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Globe,
+        Entity,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        TimeZoneProvider,
+        tzOffsetMinutes,
+        Vector,
+        control,
+        ui
+    } from "../../external/og/lib/og.es.js";
+
+    const app = document.getElementById("app");
+
+    const dockManager = new ui.DockManager({
+        host: app
+    });
+
+    // The globe lives in a dialog docked to the center.
+    const globeDialog = new ui.Dialog({
+        title: "Time Zones",
+        dock: "center",
+        hideToolbar: true,
+        width: 800,
+        height: 500,
+        left: 180,
+        top: 100
+    });
+
+    globeDialog.appendTo(app);
+    dockManager.attach(globeDialog);
+
+    // Local clock 07:00 under the camera by default (wall-clock numbers, so Date.UTC);
+    // the timeline picks it up and opens with the local time mode on.
+    const today = new Date();
+    const localSevenAM = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 7, 0));
+
+    const globe = new Globe({
+        target: globeDialog.container,
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        uiContainer: app,
+        sun: {
+            localDateTime: localSevenAM
+        },
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    const timeline = new control.TimelineControl();
+
+    globe.planet.addControl(timeline);
+
+    dockManager.attach(timeline._dialog);
+
+    // Zone polygons from the library resources
+    const timeZones = new TimeZoneProvider({
+        src: "../../external/og/lib/res/tz/timezones.geojson"
+    });
+
+    // Clock readout over the globe.
+    const panel = document.createElement("div");
+    panel.className = "tz-panel";
+    panel.innerHTML = `<div class="tz-utc"></div><div class="tz-zone">—</div>`;
+    globeDialog.container.appendChild(panel);
+
+    const $utc = panel.querySelector(".tz-utc");
+    const $zone = panel.querySelector(".tz-zone");
+
+    const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    // Reads the date in UTC, so zone time is just utc + offset.
+    function fmt(d) {
+        const p = (n) => String(n).padStart(2, "0");
+        return `${DAYS[d.getUTCDay()]} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`;
+    }
+
+    function utcLabel(min) {
+        if (!min) return "UTC±00:00";
+        const s = min < 0 ? "-" : "+";
+        const a = Math.abs(min);
+        const p = (n) => String(n).padStart(2, "0");
+        return `UTC${s}${p(Math.floor(a / 60))}:${p(a % 60)}`;
+    }
+
+    // Zone fill colors, cycled by the offset (a quarter of an hour per step).
+    const PALETTE = [
+        "rgba(217, 89, 89, 0.7)",
+        "rgba(217, 153, 77, 0.7)",
+        "rgba(217, 209, 77, 0.7)",
+        "rgba(140, 204, 90, 0.7)",
+        "rgba(89, 191, 140, 0.7)",
+        "rgba(89, 191, 204, 0.7)",
+        "rgba(89, 140, 217, 0.7)",
+        "rgba(128, 102, 217, 0.7)",
+        "rgba(191, 102, 204, 0.7)"
+    ];
+
+    function zoneColor(zone) {
+        return PALETTE[Math.round((zone + 12) * 4) % PALETTE.length];
+    }
+
+    let camTzid = null;
+    let camLon = NaN;
+    let camLat = NaN;
+
+    // The panel follows the camera position, not the pointer.
+    function updateCameraZone() {
+        const ll = globe.planet.camera.getLonLat();
+
+        if (ll.lon === camLon && ll.lat === camLat) return;
+
+        camLon = ll.lon;
+        camLat = ll.lat;
+        camTzid = timeZones.lookup(ll.lon, ll.lat);
+
+        updatePanel();
+    }
+
+    function updatePanel() {
+        const utc = timeline.model.current;
+
+        $utc.textContent = `UTC ${fmt(utc)}`;
+
+        if (camTzid) {
+            const off = tzOffsetMinutes(camTzid, utc);
+            const local = new Date(utc.getTime() + off * 60000);
+            $zone.textContent = `${utcLabel(off)} · ${fmt(local)}`;
+        } else {
+            $zone.textContent = "—";
+        }
+    }
+
+    // The card clock follows the timeline.
+    timeline.events.on("current", updatePanel);
+    timeline.events.on("setcurrent", updatePanel);
+    updatePanel();
+
+    // The sun takes the provider as is and lazily loads it on first use.
+    globe.sun.timeZoneProvider = timeZones;
+
+    // The very same single request feeds the map and the panel.
+    timeZones.load().then(() => {
+        const zones = new Vector("Time zones", {
+            visibility: true,
+            isBaseLayer: false,
+        });
+
+        zones.addTo(globe.planet);
+
+        const now = timeline.model.current;
+
+        for (const f of timeZones.data.features) {
+            zones.add(new Entity({
+                geometry: {
+                    type: f.geometry.type,
+                    coordinates: f.geometry.coordinates,
+                    style: {
+                        fillColor: zoneColor(tzOffsetMinutes(f.properties.tzid, now) / 60),
+                        lineColor: "#2c2c2c",
+                        lineWidth: 2
+                    }
+                }
+            }));
+        }
+
+        globe.planet.events.on("draw", updateCameraZone);
+        updateCameraZone();
+    });
+</script>
+</body>
+</html>

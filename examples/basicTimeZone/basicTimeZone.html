@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>Basic Time Zone | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: world time zones as a vector layer over the Sun built-in time zone lookup, with the globe docked to the center and a timeline docked at the bottom."/>
+    <meta name="keywords"
+          content="time zones, timezone, Sun, Vector, geoJson, TimelineControl, DockManager, Dialog"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Globe,
+        Entity,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        Vector,
+        control,
+        ui
+    } from "../../external/og/lib/og.es.js";
+
+    const app = document.getElementById("app");
+
+    const dockManager = new ui.DockManager({
+        host: app
+    });
+
+    // The globe lives in a dialog docked to the center.
+    const globeDialog = new ui.Dialog({
+        title: "Basic Time Zone",
+        dock: "center",
+        hideToolbar: true,
+        width: 800,
+        height: 500,
+        left: 180,
+        top: 100
+    });
+
+    globeDialog.appendTo(app);
+    dockManager.attach(globeDialog);
+
+    // Local clock 07:00 under the camera by default (wall-clock numbers, so Date.UTC);
+    // the timeline picks it up and opens with the local time mode on.
+    const today = new Date();
+    const localSevenAM = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 7, 0));
+
+    const globe = new Globe({
+        target: globeDialog.container,
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        uiContainer: app,
+        sun: {
+            localDateTime: localSevenAM
+        },
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    const timeline = new control.TimelineControl();
+
+    globe.planet.addControl(timeline);
+
+    dockManager.attach(timeline._dialog);
+
+    // Zone fill colors, cycled by the offset (a quarter of an hour per step).
+    const PALETTE = [
+        "rgba(217, 89, 89, 0.7)",
+        "rgba(217, 153, 77, 0.7)",
+        "rgba(217, 209, 77, 0.7)",
+        "rgba(140, 204, 90, 0.7)",
+        "rgba(89, 191, 140, 0.7)",
+        "rgba(89, 191, 204, 0.7)",
+        "rgba(89, 140, 217, 0.7)",
+        "rgba(128, 102, 217, 0.7)",
+        "rgba(191, 102, 204, 0.7)"
+    ];
+
+    function zoneColor(zone) {
+        return PALETTE[Math.round((zone + 12) * 4) % PALETTE.length];
+    }
+
+    fetch("../../external/og/lib/res/tz/timezones.geojson")
+        .then((r) => r.json())
+        .then((data) => {
+            const zones = new Vector("Time zones", {
+                visibility: true,
+                isBaseLayer: false
+            });
+
+            zones.addTo(globe.planet);
+
+            // Colored by the standard offset stored in the file.
+            for (const f of data.features) {
+                zones.add(new Entity({
+                    geometry: {
+                        type: f.geometry.type,
+                        coordinates: f.geometry.coordinates,
+                        style: {
+                            fillColor: zoneColor(f.properties.zone),
+                            lineColor: "#2c2c2c",
+                            lineWidth: 2
+                        }
+                    }
+                }));
+            }
+        });
+</script>
+</body>
+</html>
