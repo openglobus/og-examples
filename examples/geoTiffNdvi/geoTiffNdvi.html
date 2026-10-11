@@ -1,0 +1,51 @@
+<html>
+<head>
+    <title>GeoTIFF NDVI | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: NDVI vegetation index calculated on the fly from the bands of a cloud optimized GeoTIFF." />
+    <meta name="keywords" content="GeoTIFF, COG, NDVI, expression, bands, vegetation, Layer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        OpenStreetMap,
+        GeoTIFFLayer
+    } from "../../external/og/lib/og.es.js";
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    // PlanetScope image with 4 bands: 1 - blue, 2 - green, 3 - red, 4 - near infrared
+    var ndvi = new GeoTIFFLayer("NDVI", {
+        url: "https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif",
+        renderOptions: {
+            single: {
+                // formula calculated for every pixel, b1..bN are the band values.
+                // NDVI = (NIR - Red) / (NIR + Red)
+                expression: "(b4 - b3) / (b4 + b3)",
+                // formula result from -0.2 to 0.8 is painted with the whole palette
+                domain: [-0.2, 0.8],
+                colorScale: "earth"
+            }
+        }
+    });
+
+    globus.planet.addLayer(ndvi);
+
+    ndvi.whenReady().then(function () {
+        globus.planet.flyExtent(ndvi.getExtent());
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<html>
+<head>
+    <title>GeoTIFF Bands | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: RGB composite from GeoTIFF bands, each screen channel gets its own band and contrast stretch." />
+    <meta name="keywords" content="GeoTIFF, COG, bands, RGB, composite, Sentinel-2, Layer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<div style="position:absolute;top:10px;left:10px;background-color:white;padding:10px;">
+    <p>Red: band <input type="number" id="r-band" min="1" max="3" value="1"/></p>
+    min <input type="range" id="r-min" min="0" max="255" value="0"/><br/>
+    max <input type="range" id="r-max" min="0" max="255" value="255"/>
+
+    <p>Green: band <input type="number" id="g-band" min="1" max="3" value="2"/></p>
+    min <input type="range" id="g-min" min="0" max="255" value="0"/><br/>
+    max <input type="range" id="g-max" min="0" max="255" value="255"/>
+
+    <p>Blue: band <input type="number" id="b-band" min="1" max="3" value="3"/></p>
+    min <input type="range" id="b-min" min="0" max="255" value="0"/><br/>
+    max <input type="range" id="b-max" min="0" max="255" value="255"/>
+</div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        OpenStreetMap,
+        GeoTIFFLayer
+    } from "../../external/og/lib/og.es.js";
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    // Sentinel-2 true color image, 3 bands with values 0..255:
+    // band 1 - red, band 2 - green, band 3 - blue
+    var cog = new GeoTIFFLayer("Sentinel-2 RGB", {
+        url: "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/36/Q/WD/2020/7/S2A_36QWD_20200701_0_L2A/TCI.tif",
+        renderOptions: {
+            // r, g, b - screen color channels.
+            // band - which band of the file goes to the channel (starts from 1)
+            // min, max - band values stretched to the channel brightness 0..1
+            multi: {
+                r: { band: 1, min: 0, max: 255 },
+                g: { band: 2, min: 0, max: 255 },
+                b: { band: 3, min: 0, max: 255 }
+            }
+        }
+    });
+
+    globus.planet.addLayer(cog);
+
+    cog.whenReady().then(function () {
+        globus.planet.flyExtent(cog.getExtent());
+    });
+
+    // Reads band, min and max for a screen channel from the panel, prefix is "r", "g" or "b"
+    function readChannel(prefix) {
+        return {
+            band: Number(document.getElementById(prefix + "-band").value),
+            min: Number(document.getElementById(prefix + "-min").value),
+            max: Number(document.getElementById(prefix + "-max").value)
+        };
+    }
+
+    // Changing min/max repaints already loaded tiles, changing a band can load the tiles again
+    function applyBands() {
+        cog.setRenderOptions({
+            multi: {
+                r: readChannel("r"),
+                g: readChannel("g"),
+                b: readChannel("b")
+            }
+        });
+    }
+
+    var inputs = document.querySelectorAll("input");
+
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("input", applyBands);
+    }
+</script>
+</body>
+
+</html>

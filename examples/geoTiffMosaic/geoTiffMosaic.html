@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title>GeoTIFF Mosaic | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: several neighbouring cloud optimized GeoTIFF files shown as one mosaic layer." />
+    <meta name="keywords" content="GeoTIFF, COG, mosaic, sources, proj4, EPSG:2193, Layer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+    <!-- proj4 is needed for the files in a projection other than WGS84, Web Mercator or UTM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        GeoTIFFLayer
+    } from "../../external/og/lib/og.es.js";
+
+    // The files are in New Zealand Transverse Mercator (EPSG:2193).
+    // The layer finds the projection by its code in the global proj4 object.
+    proj4.defs(
+        "EPSG:2193",
+        "+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+    );
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    var mosaic = new GeoTIFFLayer("Mosaic", {
+        // mosaic: true - files are placed side by side as one image.
+        // Without it the files are stacked as bands of one image (see GeoTIFF Stacked Bands example).
+        mosaic: true,
+        // list of the files, two neighbouring map sheets
+        sources: [
+            { url: "https://tile-service-raster.s3.us-east-1.amazonaws.com/cogs/as-raster-tile/HM_COG.tif" },
+            { url: "https://tile-service-raster.s3.us-east-1.amazonaws.com/cogs/as-raster-tile/HN_COG.tif" }
+        ],
+        renderOptions: {
+            single: {
+                band: 1,
+                colorScale: "viridis"
+            }
+        }
+    });
+
+    globus.planet.addLayer(mosaic);
+
+    // getExtent() returns the extent of the whole mosaic
+    mosaic.whenReady().then(function () {
+        globus.planet.flyExtent(mosaic.getExtent());
+    });
+</script>
+</body>
+
+</html>
