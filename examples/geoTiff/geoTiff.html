@@ -10,6 +10,8 @@
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
 
+<div id="loading" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background-color:white;padding:10px;">LOADING...</div>
+
 <script type="module" id="og-sandbox-script">
     import {
         Globe,
@@ -52,6 +54,7 @@
 
     // whenReady() resolves when the file header is read, then the layer extent is known
     cog.whenReady().then(function () {
+        document.getElementById("loading").style.display = "none";
         globus.planet.flyExtent(cog.getExtent());
     });
 </script>

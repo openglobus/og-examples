@@ -12,6 +12,8 @@
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
 
+<div id="loading" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background-color:white;padding:10px;">LOADING...</div>
+
 <script type="module" id="og-sandbox-script">
     import {
         Globe,
@@ -48,6 +50,10 @@
         renderOptions: {
             single: {
                 band: 1,
+                // color palette for the band values, available:
+                // viridis, inferno, turbo, magma, plasma, rainbow, jet, hsv, hot, cool,
+                // spring, summer, autumn, winter, bone, copper, greys, ylgnbu, greens, ylorrd,
+                // bluered, rdbu, picnic, portland, blackbody, earth, electric, redblue, coolwarm
                 colorScale: "viridis"
             }
         }
@@ -57,6 +63,7 @@
 
     // getExtent() returns the extent of the whole mosaic
     mosaic.whenReady().then(function () {
+        document.getElementById("loading").style.display = "none";
         globus.planet.flyExtent(mosaic.getExtent());
     });
 </script>
