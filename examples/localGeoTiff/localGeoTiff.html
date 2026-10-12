@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>GeoTIFF Local File | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: open a GeoTIFF (COG) from the local disk with a file input, without uploading it anywhere." />
-    <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, GeoTIFFLayer, Layer" />
+    <meta name="description"
+          content="OpenGlobus example: open a GeoTIFF (COG) from the local disk with a file input, without uploading it anywhere."/>
+    <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, GeoTIFFLayer, Layer"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css">
 </head>
@@ -54,7 +55,10 @@
             src: file,
             // A file on the disk is read fast, so the layer can load tiles the same way
             // as XYZ does: a tile waits until its parent tile is loaded
-            waitForParentMaterial: true
+            waitForParentMaterial: true,
+            renderOptions: {
+                resampleMethod: "bilinear"
+            }
         });
 
         // the same with a promise: GeoTIFFLayer.fromBlob(file.name, file).then(...)

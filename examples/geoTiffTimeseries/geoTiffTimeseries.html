@@ -99,6 +99,7 @@
         return new GeoTIFFLayer("minute " + (band - 1), {
             url: FILE,
             renderOptions: {
+                resampleMethod: "bilinear",
                 single: {
                     band: band,
                     colors: COLORS,
