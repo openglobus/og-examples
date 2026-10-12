@@ -232,6 +232,20 @@
     "image": ""
   },
   {
+    "label": "GeoTIFF Local File",
+    "id": "localGeoTiff",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "local file",
+      "File",
+      "Blob",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
     "label": "GeoTIFF Mosaic",
     "id": "geoTiffMosaic",
     "tags": [

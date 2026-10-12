@@ -1,0 +1,92 @@
+<html>
+<head>
+    <title>GeoTIFF Local File | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: open a GeoTIFF (COG) from the local disk with a file input, without uploading it anywhere." />
+    <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, GeoTIFFLayer, Layer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<div style="position:absolute;top:10px;left:10px;background-color:white;padding:10px;">
+    <input type="file" id="file" accept=".tif,.tiff"/>
+    <p id="info" style="margin:10px 0 0 0;max-width:280px;">Choose a GeoTIFF file from your disk</p>
+</div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        GeoTIFFLayer
+    } from "../../external/og/lib/og.es.js";
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    var info = document.getElementById("info");
+    var cog = null;
+
+    function openFile(file) {
+        if (!file) {
+            return;
+        }
+
+        if (cog) {
+            cog.remove();
+            cog = null;
+        }
+
+        info.innerHTML = "Reading " + file.name + "...";
+
+        // src accepts a File or a Blob from the local disk, as well as an ArrayBuffer or an url string.
+        // The file is not read completely, only the parts needed for the visible tiles,
+        // exactly like HTTP range requests do for a remote COG.
+        var layer = new GeoTIFFLayer(file.name, {
+            src: file,
+            // A file on the disk is read fast, so the layer can load tiles the same way
+            // as XYZ does: a tile waits until its parent tile is loaded
+            waitForParentMaterial: true
+        });
+
+        // the same with a promise: GeoTIFFLayer.fromBlob(file.name, file).then(...)
+
+        cog = layer;
+        globus.planet.addLayer(layer);
+
+        layer.whenReady().then(function (metadata) {
+            info.innerHTML = describeFile(file, metadata);
+            globus.planet.flyExtent(layer.getExtent());
+        }).catch(function (err) {
+            info.innerHTML = "Cannot read " + file.name + ":<br/>" + err.message;
+            layer.remove();
+            if (cog === layer) {
+                cog = null;
+            }
+        });
+    }
+
+    function describeFile(file, metadata) {
+        return file.name + "<br/>" +
+            Math.round(file.size / 1048576) + " MB<br/>" +
+            metadata.width + " x " + metadata.height + " px<br/>" +
+            metadata.samplesPerPixel + " band(s)<br/>" +
+            "EPSG:" + metadata.crsCode + "<br/>" +
+            metadata.overviewCount + " overview level(s)";
+    }
+
+    document.getElementById("file").addEventListener("change", function (e) {
+        openFile(e.target.files[0]);
+    });
+</script>
+</body>
+
+</html>
