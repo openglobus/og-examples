@@ -1,0 +1,172 @@
+<html>
+<head>
+    <title>GeoTIFF Time Series | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: time series animation over the bands of a multi-band GeoTIFF (COG) with the LayerAnimation control."/>
+    <meta name="keywords" content="GeoTIFF, COG, time series, animation, LayerAnimation, bands, GeoTIFFLayer, Layer"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+    <style>
+        .pl-pane {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 5px;
+        }
+
+        .pl-button {
+            float: left;
+            margin: 5px;
+            padding: 5px;
+            width: 70px;
+        }
+
+        .pl-slider {
+            float: left;
+            margin-top: 11px;
+            width: 300px;
+        }
+
+        .pl-time {
+            float: left;
+            margin: 9px 10px;
+            font-family: monospace;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<div id="loading"
+     style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background-color:white;padding:10px;">
+    LOADING...
+</div>
+
+<div class="pl-pane">
+    <button class="pl-button pl-button__play">PLAY</button>
+    <button class="pl-button pl-button__stop">STOP</button>
+    <input type="range" min="0" max="126" value="0" class="pl-slider">
+    <span class="pl-time">0h 00'</span>
+</div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        Layer,
+        OpenStreetMap,
+        GeoTIFFLayer,
+        control
+    } from "../../external/og/lib/og.es.js";
+
+    // Empty layer that only shows the attribution of the data
+    var attr = new Layer("", {
+        attribution: `Time series data from the <a href="https://labs.geomatico.es/maplibre-cog-protocol/timeseries.html#14.99/41.18708/1.54609" target="_blank">maplibre-cog-protocol example</a>`,
+        url: "",
+        visibility: true,
+        isBaseLayer: false,
+        hideInLayerSwitcher: true
+    });
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        layers: [new OpenStreetMap(), attr],
+        atmosphereEnabled: false,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    // The file keeps 127 time steps of the same area in 127 bands, one band per minute.
+    // Taken from https://labs.geomatico.es/maplibre-cog-protocol/data/timeseries.tif
+    var FILE = "./timeseries.tif";
+
+    var BANDS = 127;
+
+    var SCALE = 8 / 255;
+    var DOMAIN = [1 / SCALE, 7 / SCALE];
+
+    // Brewer RdYlBu, reversed: low values are blue, high values are red
+    var COLORS = [
+        "#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8",
+        "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"
+    ];
+
+    // One layer per time step. Every layer reads its own band of the same file.
+    function createFrame(band) {
+        return new GeoTIFFLayer("minute " + (band - 1), {
+            url: FILE,
+            renderOptions: {
+                single: {
+                    band: band,
+                    colors: COLORS,
+                    domain: DOMAIN
+                }
+            }
+        });
+    }
+
+    var frames = [];
+
+    for (var band = 1; band <= BANDS; band++) {
+        frames.push(createFrame(band));
+    }
+
+    var la = new control.LayerAnimation({
+        layers: frames,
+        frameSize: BANDS,
+        playInterval: 200,
+        repeat: true
+    });
+
+    globus.planet.addControl(la);
+
+    var $slider = document.querySelector(".pl-slider"),
+        $play = document.querySelector(".pl-button__play"),
+        $time = document.querySelector(".pl-time");
+
+    function formatTime(minutes) {
+        var mm = minutes % 60;
+        return Math.floor(minutes / 60) + "h " + (mm < 10 ? "0" + mm : mm) + "'";
+    }
+
+    frames[0].whenReady().then(function () {
+        document.getElementById("loading").style.display = "none";
+        globus.planet.flyExtent(frames[0].getExtent());
+        $play.innerText = "PAUSE";
+        la.play();
+    });
+
+    $play.addEventListener("click", function (e) {
+        if (e.target.innerText === "PLAY") {
+            e.target.innerText = "PAUSE";
+            la.play();
+        } else {
+            e.target.innerText = "PLAY";
+            la.pause();
+        }
+    });
+
+    document.querySelector(".pl-button__stop").addEventListener("click", function () {
+        $play.innerText = "PLAY";
+        la.stop();
+    });
+
+    $slider.addEventListener("input", function (e) {
+        $play.innerText = "PLAY";
+        la.pause();
+        var index = Number(e.target.value);
+        $time.innerText = formatTime(index);
+        la.setCurrentIndex(index, true);
+    });
+
+    la.events.on("change", function (currIndex) {
+        $slider.value = currIndex;
+        $time.innerText = formatTime(currIndex);
+    });
+</script>
+</body>
+
+</html>

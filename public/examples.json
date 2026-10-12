@@ -275,6 +275,21 @@
     "image": ""
   },
   {
+    "label": "GeoTIFF Time Series",
+    "id": "geoTiffTimeseries",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "time series",
+      "animation",
+      "LayerAnimation",
+      "bands",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
     "label": "GeoTIFF Stacked Bands",
     "id": "geoTiffStacked",
     "tags": [
