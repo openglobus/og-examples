@@ -56,7 +56,7 @@
     import {
         Globe,
         Layer,
-        OpenStreetMap,
+        Bing,
         GeoTIFFLayer,
         control
     } from "../../external/og/lib/og.es.js";
@@ -73,7 +73,7 @@
     var globus = new Globe({
         target: "globus",
         name: "Earth",
-        layers: [new OpenStreetMap(), attr],
+        layers: [new Bing(), attr],
         atmosphereEnabled: false,
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
