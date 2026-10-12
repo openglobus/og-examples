@@ -204,6 +204,78 @@
     "image": ""
   },
   {
+    "label": "GeoTIFF / COG",
+    "id": "geoTiff",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "cloud optimized geotiff",
+      "raster",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
+    "label": "GeoTIFF Bands",
+    "id": "geoTiffBands",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "bands",
+      "RGB",
+      "composite",
+      "Sentinel-2",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
+    "label": "GeoTIFF Mosaic",
+    "id": "geoTiffMosaic",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "mosaic",
+      "sources",
+      "proj4",
+      "GeoTIFFLayer",
+      "Layer",
+      "epsg"
+    ],
+    "image": ""
+  },
+  {
+    "label": "GeoTIFF NDVI",
+    "id": "geoTiffNdvi",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "NDVI",
+      "expression",
+      "bands",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
+    "label": "GeoTIFF Stacked Bands",
+    "id": "geoTiffStacked",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "sources",
+      "bands",
+      "false color",
+      "Sentinel-2",
+      "GeoTIFFLayer",
+      "Layer"
+    ],
+    "image": ""
+  },
+  {
     "label": "GeoImage Layer",
     "id": "geoImage",
     "tags": [

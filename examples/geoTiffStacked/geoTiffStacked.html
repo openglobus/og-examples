@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title>GeoTIFF Stacked Bands | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: single band Sentinel-2 files stacked into one multi band layer and shown as a false color image." />
+    <meta name="keywords" content="GeoTIFF, COG, sources, bands, false color, Sentinel-2, Layer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css">
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<div id="loading" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background-color:white;padding:10px;">LOADING...</div>
+
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        GlobusRgbTerrain,
+        OpenStreetMap,
+        GeoTIFFLayer
+    } from "../../external/og/lib/og.es.js";
+
+    var globus = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new OpenStreetMap()],
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    var path = "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/36/Q/WD/2020/7/S2A_36QWD_20200701_0_L2A/";
+
+    // Sentinel-2 keeps every band in a separate file.
+    // Each file becomes the next band of the layer in the order of the list.
+    // max - the largest value of the file, used for the contrast.
+    var sources = [
+        { url: path + "B04.tif", max: 4462 }, // band 1 - red
+        { url: path + "B03.tif", max: 2820 }, // band 2 - green
+        { url: path + "B02.tif", max: 2170 }, // band 3 - blue
+        { url: path + "B08.tif", max: 6214 }  // band 4 - near infrared
+    ];
+
+    // False color image: vegetation reflects near infrared strongly, so it looks red
+    var falseColor = new GeoTIFFLayer("Sentinel-2 False Color", {
+        sources: sources,
+        renderOptions: {
+            multi: {
+                r: { band: 4, min: 0, max: 6214 }, // near infrared
+                g: { band: 1, min: 0, max: 4462 }, // red
+                b: { band: 2, min: 0, max: 2820 }  // green
+            }
+        }
+    });
+
+    globus.planet.addLayer(falseColor);
+
+    falseColor.whenReady().then(function () {
+        document.getElementById("loading").style.display = "none";
+        globus.planet.flyExtent(falseColor.getExtent());
+    });
+</script>
+</body>
+
+</html>
