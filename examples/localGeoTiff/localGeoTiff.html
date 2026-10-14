@@ -3,9 +3,11 @@
     <title>GeoTIFF Local File | OpenGlobus Example</title>
     <meta name="description"
           content="OpenGlobus example: open a GeoTIFF (COG) from the local disk with a file input, without uploading it anywhere."/>
-    <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, GeoTIFFLayer, Layer"/>
+    <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, proj4, EPSG:6582, GeoTIFFLayer, Layer"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css">
+    <!-- proj4 is needed for the files in a projection other than WGS84, Web Mercator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 </head>
 
 <body>
@@ -24,6 +26,30 @@
         GeoTIFFLayer
     } from "../../external/og/lib/og.es.js";
 
+    function isBuiltInProjection(code) {
+        return code === 4326 || code === 3857 || code === 900913 ||
+            (code > 32600 && code <= 32660) || (code > 32700 && code <= 32760);
+    }
+
+    async function defineProjection(code) {
+        var name = "EPSG:" + code;
+        if (isBuiltInProjection(code) || proj4.defs(name)) {
+            return false;
+        }
+        var response = await fetch("https://epsg.io/" + code + ".proj4");
+        if (!response.ok) {
+            throw new Error("Cannot load the definition for " + name);
+        }
+
+        var definition = (await response.text()).trim();
+        if (definition.indexOf("+proj=") !== 0) {
+            throw new Error("No projection definition found for " + name);
+        }
+
+        proj4.defs(name, definition);
+        return true;
+    }
+
     var globus = new Globe({
         target: "globus",
         name: "Earth",
@@ -36,7 +62,16 @@
     var info = document.getElementById("info");
     var cog = null;
 
-    function openFile(file) {
+    function createLayer(file) {
+        return new GeoTIFFLayer(file.name, {
+            src: file,
+            renderOptions: {
+                resampleMethod: "bilinear"
+            }
+        });
+    }
+
+    async function openFile(file) {
         if (!file) {
             return;
         }
@@ -47,44 +82,26 @@
         }
 
         info.innerHTML = "Reading " + file.name + "...";
+        var layer = createLayer(file);
 
-        // src accepts a File or a Blob from the local disk, as well as an ArrayBuffer or an url string.
-        // The file is not read completely, only the parts needed for the visible tiles,
-        // exactly like HTTP range requests do for a remote COG.
-        var layer = new GeoTIFFLayer(file.name, {
-            src: file,
-            // A file on the disk is read fast, so the layer can load tiles the same way
-            // as XYZ does: a tile waits until its parent tile is loaded
-            waitForParentMaterial: true,
-            renderOptions: {
-                resampleMethod: "bilinear"
+        try {
+            var metadata = await layer.whenReady();
+            if (await defineProjection(metadata.crsCode)) {
+                layer.remove();
+                layer = createLayer(file);
+                await layer.whenReady();
             }
-        });
 
-        // the same with a promise: GeoTIFFLayer.fromBlob(file.name, file).then(...)
-
-        cog = layer;
-        globus.planet.addLayer(layer);
-
-        layer.whenReady().then(function (metadata) {
-            info.innerHTML = describeFile(file, metadata);
+            cog = layer;
+            globus.planet.addLayer(layer);
             globus.planet.flyExtent(layer.getExtent());
-        }).catch(function (err) {
-            info.innerHTML = "Cannot read " + file.name + ":<br/>" + err.message;
+        } catch (err) {
+            info.innerHTML = "Cannot load " + file.name + ":<br/>" + err.message;
             layer.remove();
             if (cog === layer) {
                 cog = null;
             }
-        });
-    }
-
-    function describeFile(file, metadata) {
-        return file.name + "<br/>" +
-            Math.round(file.size / 1048576) + " MB<br/>" +
-            metadata.width + " x " + metadata.height + " px<br/>" +
-            metadata.samplesPerPixel + " band(s)<br/>" +
-            "EPSG:" + metadata.crsCode + "<br/>" +
-            metadata.overviewCount + " overview level(s)";
+        }
     }
 
     document.getElementById("file").addEventListener("change", function (e) {
