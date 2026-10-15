@@ -83,6 +83,11 @@
     // Taken from https://labs.geomatico.es/maplibre-cog-protocol/data/timeseries.tif
     var FILE = "./timeseries.tif";
 
+    // Fetched once and shared by every layer.
+    var BUFFER = await fetch(FILE).then(function (r) {
+        return r.arrayBuffer();
+    });
+
     var BANDS = 127;
 
     var SCALE = 8 / 255;
@@ -97,7 +102,7 @@
     // One layer per time step. Every layer reads its own band of the same file.
     function createFrame(band) {
         return new GeoTIFFLayer("minute " + (band - 1), {
-            url: FILE,
+            src: BUFFER,
             renderOptions: {
                 resampleMethod: "bilinear",
                 single: {
