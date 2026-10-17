@@ -1,0 +1,137 @@
+<html>
+<head>
+    <title>Path Times | OpenGlobus Example</title>
+    <meta charset="utf-8"/>
+    <meta name="description" content="OpenGlobus example: time-dependent opacity for polylines and strips."/>
+    <meta name="keywords" content="pathTimes, Polyline, Strip, EntityCollection, time, opacity"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #frame {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #timePanel {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: min(300px, calc(100% - 32px));
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #182024;
+            font: 13px/1.4 Arial, sans-serif;
+        }
+
+        #time {
+            width: 100%;
+            margin: 8px 0 0;
+        }
+
+        #timeValue {
+            float: right;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+
+<body>
+<canvas id="frame"></canvas>
+<div id="timePanel">
+    <output id="timeValue" for="time">20.0 s</output>
+    <input id="time" aria-label="Elapsed time" type="range" min="0" max="60000" step="100" value="20000"/>
+</div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {control, Entity, EntityCollection, Renderer, Scene, scene, Vec3} from "../../external/og/lib/og.es.js";
+
+    const START = Date.now();
+    const DURATION = 60_000;
+    const POINTS = 120;
+
+    function spiral(radius, height) {
+        const path = [];
+        const times = [];
+        for (let i = 0; i < POINTS; i++) {
+            const a = (i / (POINTS - 1)) * Math.PI * 2;
+            path.push(new Vec3(Math.cos(a) * radius, height + i * 0.05, Math.sin(a) * radius));
+            times.push(START + (i / (POINTS - 1)) * DURATION);
+        }
+        return {path, times};
+    }
+
+    const outer = spiral(10, 0);
+    const inner = spiral(7, 2);
+
+    const track = new Entity({
+        polyline: {
+            path3v: [outer.path],
+            pathTimes: [outer.times],
+            thickness: 5,
+            color: "yellow"
+        }
+    });
+
+    const texturedTrack = new Entity({
+        polyline: {
+            path3v: [inner.path],
+            pathTimes: [inner.times],
+            thickness: 8,
+            color: "white",
+            src: "./template2.png"
+        }
+    });
+
+    const curtain = new Entity({
+        strip: {
+            path: outer.path.map((p) => [new Vec3(p.x, -4, p.z), p]),
+            pathTimes: outer.times,
+            color: "rgba(255, 140, 0, 0.6)"
+        }
+    });
+
+    const collection = new EntityCollection({entities: [track, texturedTrack, curtain]});
+    collection.setTimeOpacity(0.7, 0.2);
+
+    const renderer = new Renderer("frame", {
+        msaa: 0,
+        controls: [
+            new control.SimpleNavigation({speed: 0.01})
+        ],
+        autoActivate: true
+    });
+
+    class TimesScene extends Scene {
+        init() {
+            collection.addTo(this);
+            this.renderer.activeCamera.set(new Vec3(25, 25, 30), new Vec3(0, 2, 0), new Vec3(0, 1, 0));
+            this.renderer.activeCamera.update();
+        }
+    }
+
+    renderer.addScenes([new scene.Axes(), new TimesScene("TimesScene")]);
+
+    const slider = document.getElementById("time");
+    const timeValue = document.getElementById("timeValue");
+    slider.max = DURATION;
+    const applyTime = () => {
+        const elapsed = Number(slider.value);
+        collection.setTime(START + elapsed);
+        timeValue.value = `${(elapsed / 1000).toFixed(1)} s`;
+    };
+    slider.addEventListener("input", applyTime);
+    applyTime();
+</script>
+</body>
+
+</html>

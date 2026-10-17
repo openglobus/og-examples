@@ -535,6 +535,20 @@
     "image": ""
   },
   {
+    "label": "Path Times",
+    "id": "pathTimes",
+    "tags": [
+      "pathTimes",
+      "Polyline",
+      "Strip",
+      "EntityCollection",
+      "time",
+      "opacity",
+      "track"
+    ],
+    "image": ""
+  },
+  {
     "label": "Popup",
     "id": "pointPopup",
     "tags": [
