@@ -1,0 +1,159 @@
+<html>
+
+<head>
+    <title>Drag and Drop | OpenGlobus Example</title>
+    <meta charset="utf-8">
+    <meta name="description" content="OpenGlobus example: drag and drop 3d models onto the Moon." />
+    <meta name="keywords" content="Moon, drag and drop, gltf, glb, obj, Gltf, Object3d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+    <script
+        type="text/javascript"
+        src="https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_decoder.js"
+    ></script>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Centered hint over the map */
+        #dnd-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.8);
+            font: 16px/1.4 Arial, Helvetica, sans-serif;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app"></div>
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        LonLat,
+        RgbTerrain,
+        Gltf,
+        XYZ,
+        quadTreeStrategyType,
+        moon,
+        control,
+        ui
+    } from "../../external/og/lib/og.es.js";
+
+    DracoDecoderModule().then((decoderModule) => {
+        Gltf.connectDracoDecoderModule(decoderModule);
+    });
+
+    const app = document.getElementById("app");
+
+    const dockManager = new ui.DockManager({
+        host: app
+    });
+
+    const globeDialog = new ui.Dialog({
+        title: "Moon",
+        dock: "center",
+        hideToolbar: true
+    });
+
+    globeDialog.appendTo(app);
+    dockManager.attach(globeDialog);
+
+    const sat = new XYZ("moon", {
+        isBaseLayer: true,
+        pickingEnabled: false,
+        url: "https://{s}.terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
+        visibility: true,
+        maxNativeZoom: 10,
+        attribution: "Lunar Reconnaissance Orbiter - Global Morphology Mosaic 100m",
+        diffuse: [1, 1, 1.2],
+        ambient: [0.05, 0.05, 0.07]
+    });
+
+    const terrain = new RgbTerrain(null, {
+        geoidSrc: null,
+        maxZoom: 7,
+        url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png",
+        heightFactor: 0.5,
+        minHeight: -20000,
+        resolution: 0.1021,
+        gridSizeByZoom: [
+            64, 32, 16, 16, 32, 64, 64, 32, 16, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2
+        ]
+    });
+
+    let globe = new Globe({
+        name: "moon",
+        ellipsoid: moon,
+        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        target: globeDialog.container,
+        maxAltitude: 5841727,
+        terrain: terrain,
+        layers: [sat],
+        nightTextureSrc: null,
+        specularTextureSrc: null,
+        atmosphereEnabled: false,
+        gamma: 2.7,
+        exposure: 1,
+        uiContainer: app
+    });
+
+    globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
+    globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
+
+    globe.planet.addControl(new control.LayerSwitcher());
+    globe.planet.addControl(new control.DragAndDrop());
+
+    // Low oblique view: the look point is 126 m ahead and 82 m below the eye, which tilts
+    // the camera by about 33 degrees down.
+    const EYE = new LonLat(17.4027454513517, -5.765216799989668, 1889.6110209109195);
+    const LOOK = new LonLat(17.4038363, -5.7612121, 1808);
+
+    globe.planet.camera.setLonLat(EYE, LOOK);
+
+    let entityEditor = new control.EntityEditor({ visibility: true });
+    let entityTree = new control.EntityTree({ entityEditor, visibility: true });
+
+    globe.planet.addControl(entityEditor);
+    globe.planet.addControl(entityTree);
+
+    dockManager.dock(entityTree._dialog, "right", "start");
+    dockManager.dock(entityEditor._dialog, "right", "end");
+
+    entityEditor.events.on("select", (entity) => {
+        entityTree.addEntity(entity);
+    });
+
+    // Centered hint, hidden as soon as something has been dropped
+    const hint = document.createElement("div");
+    hint.id = "dnd-hint";
+    hint.textContent = "Drag and drop a GLTF, GLB or OBJ model onto the Moon";
+    globeDialog.container.appendChild(hint);
+
+    globeDialog.container.addEventListener("drop", () => {
+        hint.remove();
+    });
+
+    window.globe = globe;
+</script>
+</body>
+
+</html>

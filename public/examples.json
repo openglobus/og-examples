@@ -153,6 +153,21 @@
     "image": ""
   },
   {
+    "label": "Drag and Drop",
+    "id": "dragAndDrop",
+    "tags": [
+      "drag and drop",
+      "gltf",
+      "glb",
+      "obj",
+      "Moon",
+      "DragAndDrop",
+      "EntityEditor",
+      "EntityTree"
+    ],
+    "image": ""
+  },
+  {
     "label": "Drawing geometry on the ground",
     "id": "drawingControl",
     "tags": [

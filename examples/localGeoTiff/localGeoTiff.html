@@ -6,8 +6,6 @@
     <meta name="keywords" content="GeoTIFF, COG, local file, File, Blob, proj4, EPSG:6582, GeoTIFFLayer, Layer"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css">
-    <!-- proj4 is needed for the files in a projection other than WGS84, Web Mercator -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 </head>
 
 <body>
@@ -25,30 +23,6 @@
         OpenStreetMap,
         GeoTIFFLayer
     } from "../../external/og/lib/og.es.js";
-
-    function isBuiltInProjection(code) {
-        return code === 4326 || code === 3857 || code === 900913 ||
-            (code > 32600 && code <= 32660) || (code > 32700 && code <= 32760);
-    }
-
-    async function defineProjection(code) {
-        var name = "EPSG:" + code;
-        if (isBuiltInProjection(code) || proj4.defs(name)) {
-            return false;
-        }
-        var response = await fetch("https://epsg.io/" + code + ".proj4");
-        if (!response.ok) {
-            throw new Error("Cannot load the definition for " + name);
-        }
-
-        var definition = (await response.text()).trim();
-        if (definition.indexOf("+proj=") !== 0) {
-            throw new Error("No projection definition found for " + name);
-        }
-
-        proj4.defs(name, definition);
-        return true;
-    }
 
     var globus = new Globe({
         target: "globus",
@@ -86,15 +60,15 @@
 
         try {
             var metadata = await layer.whenReady();
-            if (await defineProjection(metadata.crsCode)) {
-                layer.remove();
-                layer = createLayer(file);
-                await layer.whenReady();
-            }
 
             cog = layer;
             globus.planet.addLayer(layer);
             globus.planet.flyExtent(layer.getExtent());
+
+            info.innerHTML = file.name + "<br/>EPSG:" + metadata.crsCode +
+                (metadata.crsResolved ? "" : " (unknown, placed as lon/lat)") +
+                "<br/>" + metadata.width + " x " + metadata.height + ", " +
+                metadata.samplesPerPixel + " band(s)";
         } catch (err) {
             info.innerHTML = "Cannot load " + file.name + ":<br/>" + err.message;
             layer.remove();

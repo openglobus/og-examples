@@ -5,8 +5,6 @@
     <meta name="keywords" content="GeoTIFF, COG, mosaic, sources, proj4, EPSG:2193, Layer" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css">
-    <!-- proj4 is needed for the files in a projection other than WGS84, Web Mercator or UTM -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 </head>
 
 <body>
@@ -19,11 +17,13 @@
         Globe,
         GlobusRgbTerrain,
         OpenStreetMap,
-        GeoTIFFLayer
+        GeoTIFFLayer,
+        proj4
     } from "../../external/og/lib/og.es.js";
 
-    // The files are in New Zealand Transverse Mercator (EPSG:2193).
-    // The layer finds the projection by its code in the global proj4 object.
+    // The files are in New Zealand Transverse Mercator (EPSG:2193), a projection the layer does
+    // not know by itself. Its definition goes to the proj4 openglobus transforms coordinates
+    // with, the one bundled in the library.
     proj4.defs(
         "EPSG:2193",
         "+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
