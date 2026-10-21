@@ -276,6 +276,22 @@
     "image": ""
   },
   {
+    "label": "GeoTIFF Advanced Custom Projection",
+    "id": "geoTiffCustomProjection",
+    "tags": [
+      "GeoTIFF",
+      "COG",
+      "sources",
+      "no-proj4",
+      "GeoTIFFLayer",
+      "Layer",
+      "custom",
+      "projection",
+      "no-epsg"
+    ],
+    "image": ""
+  },
+  {
     "label": "GeoTIFF NDVI",
     "id": "geoTiffNdvi",
     "tags": [
