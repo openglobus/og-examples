@@ -111,6 +111,9 @@
         nightTextureSrc: null,
         specularTextureSrc: null,
         atmosphereEnabled: false,
+        sun: {
+            dateTime: new Date(new Date().setUTCHours(11, 0, 0, 0))
+        },
         gamma: 2.7,
         exposure: 1,
         uiContainer: app
@@ -119,8 +122,8 @@
     globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
     globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
 
-    globe.planet.addControl(new control.LayerSwitcher());
-    globe.planet.addControl(new control.DragAndDrop());
+    const dragAndDrop = new control.DragAndDrop();
+    globe.planet.addControl(dragAndDrop);
 
     // Low oblique view: the look point is 126 m ahead and 82 m below the eye, which tilts
     // the camera by about 33 degrees down.
@@ -142,15 +145,19 @@
         entityTree.addEntity(entity);
     });
 
-    // Centered hint, hidden as soon as something has been dropped
+    // Centered hint, hidden after the first object is added
     const hint = document.createElement("div");
     hint.id = "dnd-hint";
     hint.textContent = "Drag and drop a GLTF, GLB or OBJ model onto the Moon";
     globeDialog.container.appendChild(hint);
 
-    globeDialog.container.addEventListener("drop", () => {
+    const hideHint = () => {
         hint.remove();
-    });
+        dragAndDrop.geoObjectsLayer.events.off("entityadd", hideHint);
+        dragAndDrop.markersLayer.events.off("entityadd", hideHint);
+    };
+    dragAndDrop.geoObjectsLayer.events.on("entityadd", hideHint);
+    dragAndDrop.markersLayer.events.on("entityadd", hideHint);
 
     window.globe = globe;
 </script>
