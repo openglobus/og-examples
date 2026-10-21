@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Mapterhorn Terrain | OpenGlobus Example</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="OpenGlobus example: Mapterhorn RGB terrain in the Alps using Terrarium elevation tiles." />
+    <meta name="keywords" content="terrain, Mapterhorn, MapterhornTerrain, RGB, Terrarium, elevation" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+</head>
+<body style="margin:0;">
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {Globe, Bing, OpenStreetMap, control, MapterhornTerrain} from "../../external/og/lib/og.es.js";
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Mapterhorn",
+        terrain: new MapterhornTerrain(),
+        layers: [new Bing(), new OpenStreetMap("OpenStreetMap", {visibility: false})],
+        viewExtent: [7.85, 46.35, 8.25, 46.65],
+        maxGridSize: 256,
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globe.planet.addControl(new control.LayerSwitcher());
+</script>
+</body>
+</html>

@@ -871,6 +871,19 @@
     "image": ""
   },
   {
+    "label": "Mapterhorn Terrain",
+    "id": "mapterhorn",
+    "tags": [
+      "terrain",
+      "Mapterhorn",
+      "MapterhornTerrain",
+      "RGB",
+      "Terrarium",
+      "elevation"
+    ],
+    "image": ""
+  },
+  {
     "label": "BIL Terrain",
     "id": "bilTerrain",
     "tags": [
