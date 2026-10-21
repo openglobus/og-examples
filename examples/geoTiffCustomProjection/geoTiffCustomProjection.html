@@ -135,12 +135,12 @@
             layers: [new OpenStreetMap()],
             atmosphereEnabled: false,
             lightEnabled: false,
-            fontsSrc: "../../res/fonts",
-            resourcesSrc: "../../res"
+            fontsSrc: "../../external/og/lib/res/fonts",
+            resourcesSrc: "../../external/og/lib/res"
         });
 
         const layer = new GeoTIFFLayer(" Custom projectionCOG", {
-            src: "https://download.osgeo.org/geotiff/samples/pci_eg/acea.tif",
+            src: "./acea.tif",
             // pass 99999 as a custom CRS code to indicate that this is a custom projection.
             crs: 99999,
             projFunc: customProjFunc,
