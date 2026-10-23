@@ -35,10 +35,10 @@
     // Each file becomes the next band of the layer in the order of the list.
     // max - the largest value of the file, used for the contrast.
     var sources = [
-        { url: path + "B04.tif", max: 4462 }, // band 1 - red
-        { url: path + "B03.tif", max: 2820 }, // band 2 - green
-        { url: path + "B02.tif", max: 2170 }, // band 3 - blue
-        { url: path + "B08.tif", max: 6214 }  // band 4 - near infrared
+        { src: path + "B04.tif", max: 4462 }, // band 1 - red
+        { src: path + "B03.tif", max: 2820 }, // band 2 - green
+        { src: path + "B02.tif", max: 2170 }, // band 3 - blue
+        { src: path + "B08.tif", max: 6214 }  // band 4 - near infrared
     ];
 
     // False color image: vegetation reflects near infrared strongly, so it looks red
