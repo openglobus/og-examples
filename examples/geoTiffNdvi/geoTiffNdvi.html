@@ -29,7 +29,7 @@
 
     // PlanetScope image with 4 bands: 1 - blue, 2 - green, 3 - red, 4 - near infrared
     var ndvi = new GeoTIFFLayer("NDVI", {
-        url: "https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif",
+        src: "https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif",
         renderOptions: {
             single: {
                 // formula calculated for every pixel, b1..bN are the band values.
