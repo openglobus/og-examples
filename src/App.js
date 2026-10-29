@@ -101,8 +101,9 @@ const ExampleDetail = ({examplesUrl, examples, refresh}) => {
                     )}
                 </div>
                 <div className="og-examples__list-container">
-                    <List 
-                        examples={examples} 
+                    <List
+                        examples={examples}
+                        examplesUrl={examplesUrl}
                         onClick={(id) => {
                             if (window.location.pathname.endsWith(id)) {
                                 refresh();
@@ -174,7 +175,7 @@ function App() {
     return (
         <Router>
             {!isMobile && (
-                <List examples={examples} onClick={(id) => {
+                <List examples={examples} examplesUrl={examplesUrl} onClick={(id) => {
                     if (window.location.pathname.endsWith(id)) {
                         refresh();
                     }

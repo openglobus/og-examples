@@ -11,6 +11,13 @@
     padding: 0 18px 0px 14px;
 }
 
+.og-sandbox_version {
+    padding: 0 18px 10px 14px;
+    color: #91a4c7;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
 .og-sandbox_list {
     height: 100%;
     overflow: auto;

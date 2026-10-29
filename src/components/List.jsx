@@ -1,5 +1,5 @@
 import "./List.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {NavLink} from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 
@@ -7,8 +7,33 @@ function normalizeText(value) {
     return (value || "").toString().toLowerCase();
 }
 
-function List({examples, onClick}) {
+function List({examples, examplesUrl, onClick}) {
     const [filter, setFilter] = useState('');
+    const [ogVersion, setOgVersion] = useState('');
+
+    // The version of the very library the examples import, it is baked into the lib on build.
+    useEffect(() => {
+        if (!examplesUrl) {
+            return;
+        }
+
+        let cancelled = false;
+        const libUrl = `${examplesUrl}/../external/og/lib/og.es.js`;
+
+        import(/* webpackIgnore: true */ libUrl)
+            .then((og) => {
+                if (!cancelled) {
+                    setOgVersion(og.version || '');
+                }
+            })
+            .catch((error) => {
+                console.error('Error reading the openglobus version:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [examplesUrl]);
 
     const query = normalizeText(filter).trim();
 
@@ -75,6 +100,9 @@ function List({examples, onClick}) {
 
     return (
         <div className="og-sandbox_examples">
+            {ogVersion ? (
+                <div className="og-sandbox_version">openglobus v{ogVersion}</div>
+            ) : null}
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <Form.Control
                     type="text"
