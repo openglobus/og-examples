@@ -1,0 +1,99 @@
+<html>
+<head>
+    <title>GeoTIFF Terrain | OpenGlobus Example</title>
+    <meta charset="utf-8"/>
+    <meta name="description"
+          content="OpenGlobus example: GeoTiffTerrain reading heights straight from a 1 m USGS 3DEP cloud optimized GeoTIFF of Zion National Park."/>
+    <meta name="keywords"
+          content="terrain, GeoTiffTerrain, GeoTIFF, COG, cloud optimized, elevation, DEM, USGS, 3DEP, Zion"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        #loadingScreen {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: rgba(16, 24, 32, 0.82);
+            color: #e8eef2;
+            font: 14px/1.4 Arial, sans-serif;
+            transition: opacity 0.4s ease-out;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body style="margin:0;">
+<div id="loadingScreen">Reading the GeoTIFF overviews…</div>
+
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {
+        Globe,
+        Bing,
+        OpenStreetMap,
+        GeoTiffTerrain,
+        GlobusRgbTerrain,
+        control
+    } from "../../external/og/lib/og.es.js";
+
+    // Heights are read from the COG overviews over range requests, no tile server involved.
+    const zion = new GeoTiffTerrain("USGS Zion 1m", {
+        src: "https://terrain.openglobus.org/cog/zion.tif",
+        attribution: '<a href="https://www.usgs.gov/3d-elevation-program" target="_blank">USGS 3DEP</a> 1m Zion NP',
+        // Pixels per segment side read from the GeoTIFF
+        sampleSize: 256,
+        //plainGridSize: 256
+    });
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: [zion, new GlobusRgbTerrain()],
+        layers: [new Bing(), new OpenStreetMap("OpenStreetMap", {visibility: false})],
+        //maxGridSize: 256,
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    //
+    // Loading screen
+    //
+    const loadingScreen = document.getElementById("loadingScreen");
+
+    function hideLoadingScreen() {
+        loadingScreen.classList.add("hidden");
+        loadingScreen.addEventListener("transitionend", () => loadingScreen.remove(), {once: true});
+    }
+
+    zion.whenReady().then(() => {
+        console.log(`${zion.name}: native zoom ${zion.maxNativeZoom}, extent ${zion.reader.extentWgs84.toString()}`);
+
+        hideLoadingScreen();
+        flyToZion();
+    });
+
+    function flyToZion() {
+        globe.planet.flyExtent(zion.reader.extentWgs84, undefined, {duration: 4000});
+    }
+
+    globe.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.ToggleWireframe(),
+        new control.ElevationProfileControl(),
+        new control.TimelineControl()
+    ]);
+</script>
+</body>
+</html>

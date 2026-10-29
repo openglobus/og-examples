@@ -2,8 +2,8 @@
 <head>
     <title>Mapterhorn Terrain | OpenGlobus Example</title>
     <meta charset="utf-8" />
-    <meta name="description" content="OpenGlobus example: Mapterhorn RGB terrain in the Alps using Terrarium elevation tiles." />
-    <meta name="keywords" content="terrain, Mapterhorn, MapterhornTerrain, RGB, Terrarium, elevation" />
+    <meta name="description" content="OpenGlobus example: Mapterhorn and OpenGlobus RGB terrains in the Alps at two mesh densities, switched in the layer switcher." />
+    <meta name="keywords" content="terrain, Mapterhorn, MapterhornTerrain, GlobusRgbTerrain, RGB, Terrarium, elevation, plainGridSize" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
 </head>
@@ -12,12 +12,21 @@
 <script type="module" id="og-sandbox-script">
     'use strict';
 
-    import {Globe, Bing, OpenStreetMap, control, MapterhornTerrain} from "../../external/og/lib/og.es.js";
+    import {Globe, Bing, OpenStreetMap, control, GlobusRgbTerrain, MapterhornTerrain} from "../../external/og/lib/og.es.js";
+
+    // The same elevation data at two mesh densities each: plainGridSize is the number of
+    // segment vertices by its side. Switch them in the layer switcher to compare.
+    const terrains = [
+        new MapterhornTerrain("Mapterhorn 256"),
+        new MapterhornTerrain("Mapterhorn 128", {plainGridSize: 128}),
+        new GlobusRgbTerrain("OpenGlobus 128"),
+        new GlobusRgbTerrain("OpenGlobus 256", {plainGridSize: 256})
+    ];
 
     const globe = new Globe({
         target: "globus",
         name: "Mapterhorn",
-        terrain: new MapterhornTerrain(),
+        terrain: terrains,
         layers: [new Bing(), new OpenStreetMap("OpenStreetMap", {visibility: false})],
         viewExtent: [7.85, 46.35, 8.25, 46.65],
         maxGridSize: 256,

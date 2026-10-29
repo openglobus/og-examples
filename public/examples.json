@@ -981,5 +981,20 @@
       "projection"
     ],
     "image": ""
+  },
+  {
+    "label": "GeoTIFF Terrain",
+    "id": "geoTiffTerrain",
+    "tags": [
+      "terrain",
+      "GeoTiffTerrain",
+      "GeoTIFF",
+      "COG",
+      "elevation",
+      "DEM",
+      "USGS",
+      "Zion"
+    ],
+    "image": ""
   }
 ]
