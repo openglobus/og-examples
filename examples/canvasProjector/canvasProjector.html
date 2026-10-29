@@ -128,8 +128,7 @@
 
     const depthCamera = new DepthCamera({
         showFrustum: true,
-        // The footprint reads the depth map back to the CPU every frame, it is slow.
-        showFootprint: false,
+        //showFootprint: false,
         frustumColor: "rgba(155,255,155,0.7)",
         near: 100,
         far: 100000,
@@ -140,7 +139,6 @@
 
     const projectorCamera = depthCamera.camera;
     projectorCamera.setLonLat(new LonLat(9.17, 46.45, 9000), new LonLat(9.17, 46.46, 0));
-    // A square viewport matches the canvas, so the picture is not stretched.
     projectorCamera.setViewportSize(CANVAS_SIZE, CANVAS_SIZE);
     projectorCamera.setHorizontalViewAngle(30);
     projectorCamera.update();
@@ -148,14 +146,10 @@
     const projector = new Projector({
         enabled: true,
         depthCamera: depthCamera,
-        // In the "color" mode the canvas is laid over the surface like a decal,
-        // tinted by color and faded by its alpha.
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
         image: sourceCanvas,
-        // Uncheck "Source enabled" in the editor to render the color alone: the canvas
-        // stays assigned and is uploaded again once it is enabled back.
         sourceEnabled: true
     });
     globe.planet.renderer.projectors.add(projector);
@@ -168,7 +162,7 @@
         projector.source = sourceCanvas;
     }, REDRAW_INTERVAL);
 
-    // C aims the projector at the terrain point under the mouse.
+    // Key 'C' aims the projector at the terrain point under the mouse.
     globe.planet.renderer.events.on("charkeypress", input.KEY_C, () => {
         const mouseGroundPoint = globe.planet.getCartesianFromMouseTerrain();
         if (!mouseGroundPoint) return;
