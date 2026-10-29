@@ -1,0 +1,209 @@
+<html>
+<head>
+    <title>Video Projector | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: three projectors over the Alps projecting a video, an image and the screen texture onto the terrain."/>
+    <meta name="keywords"
+          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, video, image, texture, source, sourceEnabled, projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Bing,
+        DepthCamera,
+        Entity,
+        Globe,
+        GlobusRgbTerrain,
+        LonLat,
+        Object3d,
+        OpenStreetMap,
+        Projector,
+        Vector,
+        control,
+        input
+    } from "../../external/og/lib/og.es.js";
+
+    const objects = new Vector("Objects", {
+        scaleByDistance: [1, 1, 1]
+    });
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new Bing(null), new OpenStreetMap(null, {visibility: false}), objects],
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globe.planet.viewLonLat(new LonLat(9.17, 46.28, 22000), new LonLat(9.17, 46.47, 0));
+
+    globe.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.EntityEditor({editMode: "yaw"})
+    ]);
+
+    // A DepthCameraHandler renders the depth map every projector projects through.
+    const depthCameraHandler = new control.DepthCameraHandler();
+    globe.planet.addControl(depthCameraHandler);
+
+    // A plain white cube in front of the first projector
+    objects.add(new Entity({
+        name: "screen-cube",
+        lonlat: new LonLat(9.08, 46.455, 5000),
+        independentPicking: true,
+        geoObject: {
+            tag: "screen-cube",
+            object3d: Object3d.createCube(1000, 1000, 1000).setColor("white")
+        }
+    }));
+
+    //
+    // Sources
+    //
+
+    function createVideo(src) {
+        const video = document.createElement("video");
+        video.src = src;
+        video.crossOrigin = "anonymous";
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        video.play().catch((error) => {
+            console.warn(`Unable to autoplay ${src}`, error);
+        });
+        return video;
+    }
+
+    function createImage(src) {
+        const image = new Image();
+        // The example page and its files are served from different origins, without CORS
+        // the image cannot be uploaded into a WebGL texture.
+        image.crossOrigin = "anonymous";
+        image.src = src;
+        return image;
+    }
+
+    const renderer = globe.planet.renderer;
+    const canvas = renderer.handler.canvas;
+
+    //
+    // Video projector. An HTMLVideoElement is uploaded on every new video frame.
+    //
+    const videoDepthCamera = new DepthCamera({
+        showFrustum: true,
+        // The footprint reads the depth map back to the CPU every frame, it is slow.
+        showFootprint: false,
+        frustumColor: "rgba(255,120,120,0.7)",
+        near: 100,
+        far: 100000,
+        depthBiasWorld: 100.0,   // meters
+        normalBias: 0.45      // 0.2 .. 1.0
+    });
+    depthCameraHandler.add(videoDepthCamera);
+
+    const videoCamera = videoDepthCamera.camera;
+    videoCamera.setLonLat(new LonLat(9.08, 46.45, 9000), new LonLat(9.08, 46.46, 0));
+    // The viewport size only sets the shape of the projected picture. Matching the
+    // source aspect ratio keeps it unstretched.
+    videoCamera.setViewportSize(640, 360);
+    videoCamera.setHorizontalViewAngle(30);
+    videoCamera.update();
+
+    const videoProjector = new Projector({
+        enabled: true,
+        depthCamera: videoDepthCamera,
+        // In the "color" mode the source is laid over the surface like a decal,
+        // tinted by color and faded by its alpha.
+        color: [1.0, 1.0, 1.0, 1.0],
+        renderMode: "color",
+        priority: 0,
+        // Uncheck "Source enabled" in the editor to render the color alone: the source
+        // stays assigned and is uploaded again once it is enabled back.
+        sourceEnabled: true,
+        video: createVideo("./smpte_360p.mp4")
+    });
+    renderer.projectors.add(videoProjector);
+
+    //
+    // Image projector. An image, canvas, ImageBitmap or VideoFrame is uploaded once.
+    //
+    const imageDepthCamera = new DepthCamera({
+        showFrustum: true,
+        showFootprint: false,
+        frustumColor: "rgba(140,190,255,0.7)",
+        near: 100,
+        far: 100000,
+        depthBiasWorld: 100.0,
+        normalBias: 0.45
+    });
+    depthCameraHandler.add(imageDepthCamera);
+
+    const imageCamera = imageDepthCamera.camera;
+    imageCamera.setLonLat(new LonLat(9.17, 46.45, 9000), new LonLat(9.17, 46.46, 0));
+    imageCamera.setViewportSize(640, 448);
+    imageCamera.setHorizontalViewAngle(30);
+    imageCamera.update();
+
+    const imageProjector = new Projector({
+        enabled: true,
+        depthCamera: imageDepthCamera,
+        color: [1.0, 1.0, 1.0, 1.0],
+        renderMode: "color",
+        priority: 0,
+        sourceEnabled: true,
+        image: createImage("./grid.jpg")
+    });
+    renderer.projectors.add(imageProjector);
+
+    //
+    // Texture projector. A ready WebGL texture is sampled as is and never deleted by the
+    // projector manager. Here it is the rendered frame itself, projected back onto the terrain.
+    //
+    const textureDepthCamera = new DepthCamera({
+        showFrustum: true,
+        showFootprint: false,
+        frustumColor: "rgba(235,160,255,0.7)",
+        near: 100,
+        far: 100000,
+        depthBiasWorld: 100.0,
+        normalBias: 0.45
+    });
+    depthCameraHandler.add(textureDepthCamera);
+
+    const textureCamera = textureDepthCamera.camera;
+    textureCamera.setLonLat(new LonLat(9.26, 46.45, 9000), new LonLat(9.26, 46.46, 0));
+    textureCamera.setViewportSize(canvas.width, canvas.height);
+    textureCamera.setHorizontalViewAngle(30);
+    textureCamera.update();
+
+    const textureProjector = new Projector({
+        enabled: true,
+        depthCamera: textureDepthCamera,
+        color: [1.0, 1.0, 1.0, 1.0],
+        renderMode: "color",
+        priority: 0,
+        sourceEnabled: true,
+        texture: renderer.screenTexture.screen
+    });
+    renderer.projectors.add(textureProjector);
+
+    // The screen texture is a new texture after every resize.
+    renderer.events.on("resizeend", () => {
+        textureCamera.setViewportSize(canvas.width, canvas.height);
+        textureCamera.setHorizontalViewAngle(30);
+        textureCamera.update();
+        textureProjector.source = renderer.screenTexture.screen;
+    });
+</script>
+</body>
+</html>

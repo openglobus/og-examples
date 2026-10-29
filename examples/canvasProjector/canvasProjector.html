@@ -1,0 +1,182 @@
+<html>
+<head>
+    <title>Canvas Projector | OpenGlobus Example</title>
+    <meta name="description"
+          content="OpenGlobus example: a projector showing an animated 2d canvas on the terrain, a ball bouncing off the walls and counting its bounces."/>
+    <meta name="keywords"
+          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, canvas, source, sourceEnabled, projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+
+<script type="module" id="og-sandbox-script">
+    "use strict";
+
+    import {
+        Bing,
+        DepthCamera,
+        Entity,
+        Globe,
+        GlobusRgbTerrain,
+        LonLat,
+        Object3d,
+        OpenStreetMap,
+        Projector,
+        Vector,
+        control,
+        input
+    } from "../../external/og/lib/og.es.js";
+
+    const objects = new Vector("Objects", {
+        scaleByDistance: [1, 1, 1]
+    });
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain: new GlobusRgbTerrain(),
+        layers: [new Bing(null), new OpenStreetMap(null, {visibility: false}), objects],
+        atmosphereEnabled: true,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globe.planet.viewLonLat(new LonLat(9.17, 46.38, 14000), new LonLat(9.17, 46.47, 0));
+
+    globe.planet.addControls([
+        new control.LayerSwitcher(),
+        new control.EntityEditor({editMode: "yaw"})
+    ]);
+
+    const depthCameraHandler = new control.DepthCameraHandler();
+    globe.planet.addControl(depthCameraHandler);
+
+    // A plain white cube in front of the projector
+    objects.add(new Entity({
+        name: "screen-cube",
+        lonlat: new LonLat(9.17, 46.455, 5000),
+        independentPicking: true,
+        geoObject: {
+            tag: "screen-cube",
+            object3d: Object3d.createCube(1000, 1000, 1000).setColor("white")
+        }
+    }));
+
+    //
+    // Animated 2d canvas: a ball bouncing off the walls, counting its bounces.
+    //
+    const CANVAS_SIZE = 512;
+    const BALL_RADIUS = 56;
+    const BALL_SPEED = 7;         // pixels per redraw
+    const REDRAW_INTERVAL = 30;   // milliseconds
+
+    const sourceCanvas = document.createElement("canvas");
+    sourceCanvas.width = sourceCanvas.height = CANVAS_SIZE;
+    const ctx = sourceCanvas.getContext("2d");
+
+    let ballX = CANVAS_SIZE * 0.5;
+    let ballY = CANVAS_SIZE * 0.5;
+    let ballAngle = Math.PI * 0.27;
+    let bounces = 0;
+
+    // A random kick on every bounce, so the ball never settles into one path.
+    function bounce() {
+        bounces++;
+        ballAngle += (Math.random() - 0.5) * 0.6;
+    }
+
+    function move() {
+        ballX += Math.cos(ballAngle) * BALL_SPEED;
+        ballY += Math.sin(ballAngle) * BALL_SPEED;
+
+        const min = BALL_RADIUS;
+        const max = CANVAS_SIZE - BALL_RADIUS;
+
+        if (ballX < min || ballX > max) {
+            ballX = Math.max(min, Math.min(max, ballX));
+            ballAngle = Math.PI - ballAngle;
+            bounce();
+        }
+
+        if (ballY < min || ballY > max) {
+            ballY = Math.max(min, Math.min(max, ballY));
+            ballAngle = -ballAngle;
+            bounce();
+        }
+    }
+
+    function draw() {
+        ctx.fillStyle = "#1e90ff";
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, BALL_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff6a00";
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 48px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(bounces), ballX, ballY);
+    }
+
+    draw();
+
+    const depthCamera = new DepthCamera({
+        showFrustum: true,
+        // The footprint reads the depth map back to the CPU every frame, it is slow.
+        showFootprint: false,
+        frustumColor: "rgba(155,255,155,0.7)",
+        near: 100,
+        far: 100000,
+        depthBiasWorld: 1.0,   // meters
+        normalBias: 0.45      // 0.2 .. 1.0
+    });
+    depthCameraHandler.add(depthCamera);
+
+    const projectorCamera = depthCamera.camera;
+    projectorCamera.setLonLat(new LonLat(9.17, 46.45, 9000), new LonLat(9.17, 46.46, 0));
+    // A square viewport matches the canvas, so the picture is not stretched.
+    projectorCamera.setViewportSize(CANVAS_SIZE, CANVAS_SIZE);
+    projectorCamera.setHorizontalViewAngle(30);
+    projectorCamera.update();
+
+    const projector = new Projector({
+        enabled: true,
+        depthCamera: depthCamera,
+        // In the "color" mode the canvas is laid over the surface like a decal,
+        // tinted by color and faded by its alpha.
+        color: [1.0, 1.0, 1.0, 1.0],
+        renderMode: "color",
+        priority: 0,
+        image: sourceCanvas,
+        // Uncheck "Source enabled" in the editor to render the color alone: the canvas
+        // stays assigned and is uploaded again once it is enabled back.
+        sourceEnabled: true
+    });
+    globe.planet.renderer.projectors.add(projector);
+
+    // A canvas is uploaded once: redrawing it is not enough, the source has to be
+    // assigned again to re-upload the new pixels.
+    setInterval(() => {
+        move();
+        draw();
+        projector.source = sourceCanvas;
+    }, REDRAW_INTERVAL);
+
+    // C aims the projector at the terrain point under the mouse.
+    globe.planet.renderer.events.on("charkeypress", input.KEY_C, () => {
+        const mouseGroundPoint = globe.planet.getCartesianFromMouseTerrain();
+        if (!mouseGroundPoint) return;
+
+        const upNormal = globe.planet.ellipsoid.getSurfaceNormal3v(projectorCamera.eye);
+        projectorCamera.set(projectorCamera.eye, mouseGroundPoint, upNormal);
+        projectorCamera.update();
+    });
+</script>
+</body>
+</html>
