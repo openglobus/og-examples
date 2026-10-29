@@ -707,14 +707,18 @@
     "image": ""
   },
   {
-    "label": "Vector Layer",
+    "label": "Natural Vector Layers",
     "id": "vectorLayer",
     "tags": [
       "Layer",
       "Vector",
       "Entity",
       "Geometry",
-      "geoJson"
+      "geoJson",
+      "Polygon",
+      "Polyline",
+      "Ecoregions",
+      "Rivers"
     ],
     "image": ""
   },

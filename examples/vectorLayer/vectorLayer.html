@@ -1,14 +1,35 @@
 <html>
 <head>
-    <title>Vector Layer | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Vector Layer." />
-    <meta name="keywords" content="Layer, Vector, Entity, Geometry, geoJson" />
+    <title>Natural Vector Layers | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: two independent Vector overlays, RESOLVE 2017 ecoregions as polygons colored by biome and Natural Earth rivers as polylines." />
+    <meta name="keywords" content="Layer, Vector, Entity, Geometry, geoJson, Polygon, Polyline, Ecoregions, Rivers, LayerSwitcher" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        .info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            pointer-events: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .info:empty {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
 <div id="globus" style="width:100%;height:100%"></div>
+<div id="info" class="info"></div>
     <script type="module" id="og-sandbox-script">
     'use strict';
 
@@ -17,65 +38,120 @@
         Entity,
         GlobusRgbTerrain,
         OpenStreetMap,
-        Vector
+        Vector,
+        control
     } from "../../external/og/lib/og.es.js";
 
+    // RESOLVE 2017 biome palette
+    const BIOME_COLORS = {
+        "Tropical & Subtropical Moist Broadleaf Forests": "#38A700",
+        "Tropical & Subtropical Dry Broadleaf Forests": "#CCCD65",
+        "Tropical & Subtropical Coniferous Forests": "#88CE66",
+        "Temperate Broadleaf & Mixed Forests": "#00734C",
+        "Temperate Conifer Forests": "#458970",
+        "Boreal Forests/Taiga": "#7AB6F5",
+        "Tropical & Subtropical Grasslands, Savannas & Shrublands": "#FEAA01",
+        "Temperate Grasslands, Savannas & Shrublands": "#FEFF73",
+        "Flooded Grasslands & Savannas": "#BEE7FF",
+        "Montane Grasslands & Shrublands": "#D6C39D",
+        "Tundra": "#9ED7C2",
+        "Mediterranean Forests, Woodlands & Scrub": "#FE0000",
+        "Deserts & Xeric Shrublands": "#CC6767",
+        "Mangroves": "#FE01C4"
+    };
+
+    const FILL_ALPHA = 0.55;
+    const HOVER_ALPHA = 0.85;
+
+    function biomeRgb(biome) {
+        const hex = BIOME_COLORS[biome] || "#999999";
+        return [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+    }
+
     var osm = new OpenStreetMap();
+
+    var ecoregions = new Vector("Ecoregions", {
+        'visibility': true,
+        'isBaseLayer': false,
+        'diffuse': [0, 0, 0],
+        'ambient': [1, 1, 1],
+        'attribution': 'Ecoregions: <a href="https://ecoregions.appspot.com/" target="_blank">RESOLVE 2017</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>'
+    });
+
+    // Above the ecoregions, not pickable so hover reaches the polygons
+    var rivers = new Vector("Rivers", {
+        'visibility': true,
+        'isBaseLayer': false,
+        'diffuse': [0, 0, 0],
+        'ambient': [1, 1, 1],
+        'zIndex': 1,
+        'pickingEnabled': false,
+        'attribution': 'Rivers: <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a>'
+    });
 
     var globus = new Globe({
         target: "globus",
         name: "Earth",
         terrain: new GlobusRgbTerrain(),
-        layers: [osm],
+        layers: [osm, ecoregions, rivers],
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
-    fetch("./countries.json")
-        .then(r => {
-            return r.json();
-        }).then(data => {
-        var countries = new Vector("Countries", {
-            'visibility': true,
-            'isBaseLayer': false,
-            'diffuse': [0, 0, 0],
-            'ambient': [1, 1, 1]
-        });
+    globus.planet.addControl(new control.LayerSwitcher());
 
-        countries.addTo(globus.planet);
-
-        var f = data.features;
-        for (let i = 0; i < f.length; i++) {
-            var fi = f[i];
-            countries.add(new Entity({
+    fetch("./ecoregions.geojson")
+        .then(r => r.json())
+        .then(data => {
+            ecoregions.addEntities(data.features.map(f => new Entity({
+                'properties': f.properties,
                 'geometry': {
-                    'type': fi.geometry.type,
-                    'coordinates': fi.geometry.coordinates,
+                    'type': f.geometry.type,
+                    'coordinates': f.geometry.coordinates,
                     'style': {
-                        'fillColor': "rgba(255,255,255,0.6)"
+                        'fillColor': [...biomeRgb(f.properties.biome), FILL_ALPHA],
+                        'lineColor': "rgba(0, 0, 0, 0.25)",
+                        'lineWidth': 1
                     }
                 }
-            }));
-        }
+            })));
+        });
 
-        countries.events.on("mouseleave", function (e) {
-            e.pickingObject.geometry.setFillColor(1, 1, 1, 0.6);
-            e.pickingObject.geometry.setLineColor(0.2, 0.6, 0.8, 1.0);
+    // Major rivers (low scalerank) are drawn wider
+    fetch("./rivers.geojson")
+        .then(r => r.json())
+        .then(data => {
+            rivers.addEntities(data.features.map(f => new Entity({
+                'properties': f.properties,
+                'geometry': {
+                    'type': f.geometry.type,
+                    'coordinates': f.geometry.coordinates,
+                    'style': {
+                        'lineColor': "rgb(0, 70, 200)",
+                        'lineWidth': f.properties.scalerank <= 2 ? 3 : f.properties.scalerank <= 5 ? 2 : 1
+                    }
+                }
+            })));
         });
-        countries.events.on("mouseenter", function (e) {
-            e.pickingObject.geometry.bringToFront();
-            e.pickingObject.geometry.setFillColor(1, 0, 0, 0.4);
-            e.pickingObject.geometry.setLineColor(1, 0, 0, 1.0);
-        });
-        countries.events.on("lclick", function (e) {
-            globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-        });
-        countries.events.on("touchstart", function (e) {
-            globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-        });
+
+    const info = document.getElementById("info");
+
+    ecoregions.events.on("mouseenter", function (e) {
+        let p = e.pickingObject.properties;
+        e.pickingObject.geometry.setFillColor(...biomeRgb(p.biome), HOVER_ALPHA);
+        info.textContent = `${p.name} · ${p.biome}`;
+    });
+    ecoregions.events.on("mouseleave", function (e) {
+        e.pickingObject.geometry.setFillColor(...biomeRgb(e.pickingObject.properties.biome), FILL_ALPHA);
+        info.textContent = "";
+    });
+    ecoregions.events.on("lclick", function (e) {
+        globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
+    });
+    ecoregions.events.on("touchstart", function (e) {
+        globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
     });
 </script>
 </body>
 
 </html>
-
