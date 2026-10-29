@@ -111,8 +111,11 @@
             });
 
             // Approximate camera parameters for the Kilimanjaro reference photo.
-            const AR_CAMERA_POSITION = new LonLat(37.41477, -2.70365);
-            const AR_CAMERA_EYE_HEIGHT = 0;
+            const AR_CAMERA_POSITION = new LonLat(
+                37.414838584735364,
+                -2.7036790173588097,
+                1130.1299583952805
+            );
             const AR_CAMERA_AZIMUTH = 189.5;
             const AR_CAMERA_TILT = 2.25;
             const AR_CAMERA_HORIZONTAL_FOV = 17;
@@ -123,6 +126,8 @@
                 "https://www.istockphoto.com/photo/three-giraffe-in-national-park-of-kenya-gm697689066-129229411";
 
             globe.planet.camera.setHorizontalViewAngle(AR_CAMERA_HORIZONTAL_FOV);
+
+            globe.planet.camera.setTerrainCollisionActivity(false);
             globe.planet.addLayer(createPeakLabelLayer(globe.planet.ellipsoid));
             globe.planet.addLayer(createPhotoAttributionLayer());
 
@@ -131,35 +136,26 @@
             flyToArLocation();
 
             function flyToArLocation() {
-                globe.planet.terrain.getHeightAsync(AR_CAMERA_POSITION, (terrainHeight) => {
-                    const cameraHeight = (terrainHeight ?? 0) + AR_CAMERA_EYE_HEIGHT;
-                    const { cameraPosition, lookAtPosition } = createArCameraPose(cameraHeight);
-
-                    globe.planet.camera.flyLonLat(cameraPosition, {
-                        look: lookAtPosition,
-                        linearPath: true,
-                        duration: 3000
-                    });
+                globe.planet.camera.flyLonLat(AR_CAMERA_POSITION, {
+                    look: createArLookAtPosition(),
+                    linearPath: true,
+                    duration: 3000
                 });
             }
 
-            function createArCameraPose(cameraHeight) {
-                const cameraPosition = new LonLat(
-                    AR_CAMERA_POSITION.lon,
-                    AR_CAMERA_POSITION.lat,
-                    cameraHeight
-                );
+            function createArLookAtPosition() {
                 const lookAtPosition = globe.planet.ellipsoid.getBearingDestination(
-                    cameraPosition,
+                    AR_CAMERA_POSITION,
                     AR_CAMERA_AZIMUTH,
                     AR_TARGET_DISTANCE
                 );
 
                 // Local-horizon approximation; sufficient for visually aligning this reference photo.
                 lookAtPosition.height =
-                    cameraHeight + AR_TARGET_DISTANCE * Math.tan((AR_CAMERA_TILT * Math.PI) / 180);
+                    AR_CAMERA_POSITION.height +
+                    AR_TARGET_DISTANCE * Math.tan((AR_CAMERA_TILT * Math.PI) / 180);
 
-                return { cameraPosition, lookAtPosition };
+                return lookAtPosition;
             }
 
             function createPeakLabelLayer(ellipsoid) {
