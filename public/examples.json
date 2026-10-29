@@ -950,5 +950,36 @@
       "projection"
     ],
     "image": ""
+  },
+  {
+    "label": "Video Projector",
+    "id": "videoProjector",
+    "tags": [
+      "Projector",
+      "DepthCamera",
+      "DepthCameraHandler",
+      "video",
+      "image",
+      "texture",
+      "source",
+      "sourceEnabled",
+      "projection"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Canvas Projector",
+    "id": "canvasProjector",
+    "tags": [
+      "Projector",
+      "DepthCamera",
+      "DepthCameraHandler",
+      "canvas",
+      "animated",
+      "source",
+      "sourceEnabled",
+      "projection"
+    ],
+    "image": ""
   }
 ]

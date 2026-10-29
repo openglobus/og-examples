@@ -239,7 +239,9 @@
         depthCamera: depthCamera,
         color: [1.0, 1.0, 0.0, 1.0],
         renderMode: "light",
-        priority: 0
+        priority: 0,
+        // Solid color only, no image/video/texture source. See the Video Projector example for those.
+        // sourceEnabled: false
     });
     globe.planet.renderer.projectors.add(projector);
 
