@@ -1,0 +1,550 @@
+<html>
+<head>
+    <title>Famous Functions Procedural Terrain | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: Famous Functions Procedural Terrain. Famous mathematical functions as the relief of a small planet, made in web workers." />
+    <meta name="keywords" content="Planet, ProceduralTerrain, CanvasTiles, terrain, worker, Ellipsoid, Label, math, functions" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        #legend {
+            position: absolute;
+            left: 12px;
+            bottom: 34px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font: 12px Verdana, sans-serif;
+        }
+
+        #legend .bar {
+            width: 220px;
+            height: 12px;
+            margin: 6px 0 2px;
+        }
+
+        #legend .labels {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<div id="legend">
+    Function value
+    <div class="bar"></div>
+    <div class="labels"><span>min</span><span>max</span></div>
+</div>
+<script type="module" id="og-sandbox-script">
+
+    'use strict';
+
+    import {
+        Globe,
+        Ellipsoid,
+        ProceduralTerrain,
+        CanvasTiles,
+        Vector,
+        Entity,
+        LonLat,
+        control,
+        quadTreeStrategyType
+    } from "../../external/og/lib/og.es.js";
+
+    // Small planet, the functions are the relief of square areas on its equator
+    const RADIUS = 1000000;
+
+    // 4 x 7 areas, sizes in degrees: an area is about a zoom 12 tile
+    const CENTER_LON = 0,
+        CENTER_LAT = 0,
+        AREA_SIZE = 0.04,
+        AREA_STEP = 0.055;
+
+    const ROWS = [1.5, 0.5, -0.5, -1.5].map((k) => CENTER_LAT + k * AREA_STEP),
+        COLUMNS = [-3, -2, -1, 0, 1, 2, 3].map((k) => CENTER_LON + k * AREA_STEP),
+        HALF_SIZE = AREA_SIZE / 2;
+
+    // Function values min..max are the heights LOW..HIGH in meters, exaggerated vertically
+    const VERTICAL_SCALE = 4,
+        RELIEF = 0.0385 * AREA_SIZE * (Math.PI / 180) * RADIUS * VERTICAL_SCALE,
+        LOW = -0.25 * RELIEF,
+        HIGH = 0.75 * RELIEF;
+
+    // Heights and images are made down to this zoom
+    const MAX_ZOOM = 19;
+
+    const GRID_SIZE = 64,
+        TILE_SIZE = 256;
+
+    // Google Turbo colormap, the improved rainbow (jet): 11 stops of its 256 entries, value 0..1 and color
+    // https://research.google/blog/turbo-an-improved-rainbow-colormap-for-visualization/
+    // https://gist.github.com/mikhailov-work/6a308c20e494d9e0ccc29036b28faa7a
+    const COLORMAP = [
+        [0, [48, 18, 59]], [0.1, [69, 92, 207]], [0.2, [62, 155, 254]], [0.3, [25, 213, 205]],
+        [0.4, [70, 248, 132]], [0.5, [164, 252, 60]], [0.6, [225, 221, 55]], [0.7, [254, 167, 50]],
+        [0.8, [240, 91, 18]], [0.9, [195, 37, 3]], [1, [122, 4, 3]]
+    ];
+
+    // Plains between the areas
+    const PLAINS_COLOR = [58, 62, 70];
+
+    // Workers make the heights and the tile images, the pool and the functions are below
+    const runJob = createWorkerPool();
+
+    //
+    // ProceduralTerrain asks getHeights for the heights of every segment. It returns a promise and the worker
+    // makes them, so the main thread is free. (GRID_SIZE + 1)² heights fit plainGridSize and are taken as they are.
+    //
+    const terrain = new ProceduralTerrain("Procedural", {
+        geoidSrc: null,
+        minZoom: 0,
+        maxZoom: MAX_ZOOM,
+        plainGridSize: GRID_SIZE,
+        maxHeight: HIGH,
+        getHeights: (segment) => runJob("heights", segment, GRID_SIZE)
+    });
+
+    // Base layer, its images come from the same worker
+    const colors = new CanvasTiles("Function values", {
+        isBaseLayer: true,
+        visibility: true,
+        maxNativeZoom: MAX_ZOOM,
+        // sRGB color, converted to linear light: 0.003 would be almost 0
+        specular: [0.85, 0.78, 0.6],
+        shininess: 20,
+        drawTile: (material, applyImage) => {
+            runJob("image", material.segment, TILE_SIZE).then(applyImage);
+        }
+    });
+
+    // Function names and formulas over the areas
+    const labels = new Vector("Function names", {
+        pickingEnabled: false,
+        labelMaxLetters: 48
+    });
+
+    labels.setEntities(mathFunctions().flatMap((fn, i) => {
+        let lonLat = new LonLat(
+            COLUMNS[i % COLUMNS.length],
+            ROWS[Math.floor(i / COLUMNS.length)] + HALF_SIZE + (AREA_STEP - AREA_SIZE) / 2,
+            20
+        );
+        return [
+            new Entity({
+                lonlat: lonLat,
+                label: {
+                    text: fn.name,
+                    size: 20,
+                    face: "Karla-Bold",
+                    color: "white",
+                    outline: 0.2,
+                    outlineColor: "rgba(0, 0, 0, 0.8)",
+                    align: "center",
+                    offset: [0, 11]
+                }
+            }),
+            new Entity({
+                lonlat: lonLat,
+                label: {
+                    text: fn.formula,
+                    size: 13,
+                    face: "Karla-Medium",
+                    color: "rgb(255, 214, 140)",
+                    outline: 0.2,
+                    outlineColor: "rgba(0, 0, 0, 0.8)",
+                    align: "center",
+                    offset: [0, -8]
+                }
+            })
+        ];
+    }));
+
+    document.querySelector("#legend .bar").style.background = `linear-gradient(to right, ${COLORMAP.map(
+        ([v, c]) => `rgb(${c}) ${v * 100}%`
+    ).join(", ")})`;
+
+    window.globe = new Globe({
+        name: "Math planet",
+        target: "globus",
+        ellipsoid: new Ellipsoid(RADIUS, RADIUS),
+        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        maxAltitude: 3500000,
+        viewExtent: [
+            COLUMNS[0] - AREA_STEP / 2, ROWS[ROWS.length - 1] - AREA_STEP / 2,
+            COLUMNS[COLUMNS.length - 1] + AREA_STEP / 2, ROWS[0] + AREA_STEP / 2
+        ],
+        navigation: {
+            mode: "free"
+        },
+        terrain: terrain,
+        layers: [colors, labels],
+        nightTextureSrc: null,
+        // White 1x1 specular mask: the highlights are everywhere
+        specularTextureSrc: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
+        specularMinCameraHeight: 0,
+        fontsSrc: "../../external/og/lib/res/fonts",
+        atmosphereEnabled: true,
+        atmosphereParameters: {
+            ATMOS_HEIGHT: 50000,
+            BOTTOM_RADIUS: RADIUS,
+            EQUATORIAL_RADIUS: RADIUS
+        }
+    });
+
+    globe.planet.addControl(new control.TimelineControl());
+    globe.planet.addControl(new control.ElevationProfileControl());
+    globe.planet.addControl(new control.RulerSwitcher({
+        ignoreTerrain: false
+    }));
+
+    globe.planet.setLodSize(256, 312);
+    globe.planet.renderer.handler.pixelRatio = 1.6;
+
+    //
+    // Worker pool: returns runJob(type, segment, size), a job goes to the least busy worker
+    // and its answer resolves the promise
+    //
+    function createWorkerPool() {
+        const workerUrl = URL.createObjectURL(new Blob(
+            [`(${functionsWorker.toString()})((${mathFunctions.toString()})(), ${RADIUS}, ${LOW}, ${HIGH}, ` +
+                `${JSON.stringify(ROWS)}, ${JSON.stringify(COLUMNS)}, ${HALF_SIZE}, ${JSON.stringify(COLORMAP)}, ${JSON.stringify(PLAINS_COLOR)});`],
+            { type: "text/javascript" }
+        ));
+
+        const jobs = new Map();
+        let jobCounter = 0;
+
+        const workers = Array.from({ length: Math.min(Math.max((navigator.hardwareConcurrency || 4) - 1, 1), 6) }, () => {
+            let w = new Worker(workerUrl);
+            w.jobs = 0;
+            w.onmessage = (e) => {
+                let job = jobs.get(e.data.id);
+                jobs.delete(e.data.id);
+                w.jobs--;
+                job.resolve(e.data.result);
+            };
+            return w;
+        });
+
+        return (type, segment, size) => {
+            let e = segment.getExtent(),
+                w = workers.reduce((a, b) => (b.jobs < a.jobs ? b : a)),
+                id = jobCounter++;
+
+            w.jobs++;
+
+            return new Promise((resolve) => {
+                jobs.set(id, { resolve });
+                w.postMessage({
+                    id,
+                    type,
+                    size,
+                    extent: [e.southWest.lon, e.southWest.lat, e.northEast.lon, e.northEast.lat]
+                });
+            });
+        };
+    }
+
+    //
+    // Functions: name, formula, argument ranges and f(x, y, d), d is the sample spacing for the fractal details.
+    // Used by the labels and, as text, by the worker, so it must be self-contained.
+    //
+    function mathFunctions() {
+
+        // Bessel function of the first kind, order 0
+        function j0(x) {
+            let ax = Math.abs(x);
+            if (ax < 8) {
+                let y = x * x,
+                    a = 57568490574.0 + y * (-13362590354.0 + y * (651619640.7 + y * (-11214424.18 + y * (77392.33017 + y * -184.9052456)))),
+                    b = 57568490411.0 + y * (1029532985.0 + y * (9494680.718 + y * (59272.64853 + y * (267.8532712 + y))));
+                return a / b;
+            }
+            let z = 8 / ax,
+                y = z * z,
+                xx = ax - 0.785398164,
+                p = 1 + y * (-0.1098628627e-2 + y * (0.2734510407e-4 + y * (-0.2073370639e-5 + y * 0.2093887211e-6))),
+                q = -0.1562499995e-1 + y * (0.1430488765e-3 + y * (-0.6911147651e-5 + y * (0.7621095161e-6 - y * 0.934935152e-7)));
+            return Math.sqrt(0.636619772 / ax) * (Math.cos(xx) * p - z * Math.sin(xx) * q);
+        }
+
+        // Weierstrass function, the terms longer than the spacing
+        function weierstrass(x, d) {
+            let sum = 0;
+            for (let n = 0, a = 1, b = Math.PI; n < 40 && b * d < 1; n++, a *= 0.6, b *= 3) {
+                sum += a * Math.cos(b * x);
+            }
+            return sum;
+        }
+
+        // Smooth escape time of z = z**2 + c, the set is a plateau; burning makes the Burning Ship
+        function escapeTime(x, y, cx, cy, d, burning) {
+            let maxIter = Math.min(64 + 48 * Math.log2(1 / d), 2000);
+            for (let n = 0; n < maxIter; n++) {
+                if (burning) {
+                    x = Math.abs(x);
+                    y = Math.abs(y);
+                }
+                let xx = x * x,
+                    yy = y * y;
+                if (xx + yy > 65536) {
+                    let nu = n + 1 - Math.log2(Math.log2(xx + yy) / 2);
+                    return 1 - 1 / (1 + nu / 30);
+                }
+                y = 2 * x * y + cy;
+                x = xx - yy + cx;
+            }
+            return 1;
+        }
+
+        // Newton's method for z**3 - 1, smooth number of the steps to a root
+        function newton(x, y) {
+            const TOLERANCE = 1e-6;
+            for (let n = 0; n < 64; n++) {
+                // z - (z**3 - 1) / (3 z**2)
+                let x2 = x * x - y * y,
+                    y2 = 2 * x * y,
+                    fx = x2 * x - y2 * y - 1,
+                    fy = x2 * y + y2 * x,
+                    dx = 3 * x2,
+                    dy = 3 * y2,
+                    q = dx * dx + dy * dy;
+                if (q < 1e-30) {
+                    return 64;
+                }
+                let sx = (fx * dx + fy * dy) / q,
+                    sy = (fy * dx - fx * dy) / q,
+                    step = Math.sqrt(sx * sx + sy * sy);
+                x -= sx;
+                y -= sy;
+                if (step < TOLERANCE) {
+                    let k = step > 0 ? Math.log(step) / Math.log(TOLERANCE) : 2;
+                    return n - Math.log2(Math.min(Math.max(k, 1), 2));
+                }
+            }
+            return 64;
+        }
+
+        // |Gamma(x + iy)|, Lanczos approximation and reflection
+        const LANCZOS = [
+            0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059,
+            12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+        ];
+
+        function gammaAbs(x, y) {
+            if (x < 0.5) {
+                let sin = Math.sqrt(Math.sin(Math.PI * x) ** 2 + Math.sinh(Math.PI * y) ** 2);
+                return Math.PI / (sin * gammaAbs(1 - x, -y));
+            }
+            x -= 1;
+            let ax = LANCZOS[0],
+                ay = 0;
+            for (let i = 1; i < 9; i++) {
+                let q = (x + i) ** 2 + y * y;
+                ax += (LANCZOS[i] * (x + i)) / q;
+                ay -= (LANCZOS[i] * y) / q;
+            }
+            let tx = x + 7.5,
+                lnT = 0.5 * Math.log(tx * tx + y * y),
+                argT = Math.atan2(y, tx);
+            return Math.sqrt(2 * Math.PI) * Math.exp((x + 0.5) * lnT - y * argT - tx) * Math.sqrt(ax * ax + ay * ay);
+        }
+
+        // Shubert function factor
+        function shubert(x) {
+            let sum = 0;
+            for (let k = 1; k <= 5; k++) {
+                sum += k * Math.cos((k + 1) * x + k);
+            }
+            return sum;
+        }
+
+        const r2 = (x, y) => x * x + y * y;
+
+        return [
+            // Surfaces
+            { name: "Paraboloid", formula: "z = x**2 + y**2", x: [-1, 1], y: [-1, 1], f: (x, y) => r2(x, y) },
+            { name: "Saddle", formula: "z = x**2 - y**2", x: [-1, 1], y: [-1, 1], f: (x, y) => x * x - y * y },
+            { name: "Monkey saddle", formula: "z = x**3 - 3x y**2", x: [-1, 1], y: [-1, 1], f: (x, y) => x * x * x - 3 * x * y * y },
+            { name: "Cone", formula: "z = -sqrt(x**2 + y**2)", x: [-1, 1], y: [-1, 1], f: (x, y) => -Math.sqrt(r2(x, y)) },
+            { name: "Helicoid", formula: "z = atan2(y, x)", x: [-1, 1], y: [-1, 1], f: (x, y) => Math.atan2(y, x) },
+            { name: "Gaussian", formula: "z = exp(-(x**2 + y**2))", x: [-2.5, 2.5], y: [-2.5, 2.5], f: (x, y) => Math.exp(-r2(x, y)) },
+            { name: "Heart", formula: "(x**2 + y**2 - 1)**3 - x**2 y**3", x: [-1.5, 1.5], y: [-1.3, 1.7], f: (x, y) =>
+                -Math.cbrt((r2(x, y) - 1) ** 3 - x * x * y ** 3) },
+
+            // Waves
+            { name: "Mexican hat", formula: "z = (1 - r**2) exp(-r**2 / 2)", x: [-4, 4], y: [-4, 4], f: (x, y) => (1 - r2(x, y)) * Math.exp(-r2(x, y) / 2) },
+            { name: "Sinc", formula: "z = sin(r) / r", x: [-15, 15], y: [-15, 15], f: (x, y) => { let r = Math.sqrt(r2(x, y)); return r < 1e-9 ? 1 : Math.sin(r) / r; } },
+            { name: "Ripple", formula: "z = sin(x**2 + y**2)", x: [-2.5, 2.5], y: [-2.5, 2.5], f: (x, y) => Math.sin(r2(x, y)) },
+            { name: "Egg crate", formula: "z = sin(x) sin(y)", x: [-2 * Math.PI, 2 * Math.PI], y: [-2 * Math.PI, 2 * Math.PI], f: (x, y) => Math.sin(x) * Math.sin(y) },
+            { name: "Bessel J0", formula: "z = J0(r)", x: [-15, 15], y: [-15, 15], f: (x, y) => j0(Math.sqrt(r2(x, y))) },
+            { name: "Chladni figure", formula: "abs(cos 3πx cos 7πy - cos 7πx cos 3πy)", x: [-1, 1], y: [-1, 1], f: (x, y) =>
+                Math.abs(Math.cos(3 * Math.PI * x) * Math.cos(7 * Math.PI * y) - Math.cos(7 * Math.PI * x) * Math.cos(3 * Math.PI * y)) },
+            { name: "Interference", formula: "sin(k r1) + sin(k r2)", x: [-1, 1], y: [-1, 1], f: (x, y) =>
+                Math.sin(30 * Math.sqrt(r2(x + 0.3, y))) + Math.sin(30 * Math.sqrt(r2(x - 0.3, y))) },
+
+            // Complex functions and fractals
+            { name: "Complex sine", formula: "z = abs(sin(x + iy))", x: [-2 * Math.PI, 2 * Math.PI], y: [-2, 2], f: (x, y) => Math.sqrt(Math.sin(x) ** 2 + Math.sinh(y) ** 2) },
+            { name: "Gamma function", formula: "z = min(abs(Gamma(x + iy)), 6)", x: [-4.3, 4.3], y: [-2.5, 2.5], f: (x, y) => Math.min(gammaAbs(x, y), 6) },
+            { name: "Weierstrass", formula: "z = W(x) + W(y)", x: [-1, 1], y: [-1, 1], f: (x, y, d) => weierstrass(x, d) + weierstrass(y, d) },
+            { name: "Newton fractal", formula: "z**3 - 1 = 0", x: [-1.5, 1.5], y: [-1.5, 1.5], f: (x, y) => Math.min(newton(x, y), 16) },
+            { name: "Mandelbrot set", formula: "z = z**2 + c", x: [-2.2, 0.8], y: [-1.5, 1.5], f: (x, y, d) => escapeTime(0, 0, x, y, d, false) },
+            { name: "Julia set", formula: "z = z**2 - 0.8 + 0.156i", x: [-1.6, 1.6], y: [-1.6, 1.6], f: (x, y, d) => escapeTime(x, y, -0.8, 0.156, d, false) },
+            { name: "Burning Ship", formula: "z = (abs(Re z) + i abs(Im z))**2 + c", x: [-2.3, 1.2], y: [-1.2, 2.3], f: (x, y, d) => escapeTime(0, 0, x, -y, d, true) },
+
+            // Optimization test functions
+            { name: "Peaks", formula: "MATLAB peaks(x, y)", x: [-3, 3], y: [-3, 3], f: (x, y) =>
+                3 * (1 - x) ** 2 * Math.exp(-x * x - (y + 1) ** 2) -
+                10 * (x / 5 - x ** 3 - y ** 5) * Math.exp(-x * x - y * y) -
+                Math.exp(-((x + 1) ** 2) - y * y) / 3 },
+            { name: "Rosenbrock, log", formula: "(1 - x)**2 + 100(y - x**2)**2", x: [-2, 2], y: [-1, 3], f: (x, y) => Math.log1p((1 - x) ** 2 + 100 * (y - x * x) ** 2) },
+            { name: "Himmelblau, log", formula: "(x**2 + y - 11)**2 + (x + y**2 - 7)**2", x: [-5, 5], y: [-5, 5], f: (x, y) => Math.log1p((x * x + y - 11) ** 2 + (x + y * y - 7) ** 2) },
+            { name: "Rastrigin", formula: "x**2 + y**2 - 10(cos 2πx + cos 2πy)", x: [-5.12, 5.12], y: [-5.12, 5.12], f: (x, y) =>
+                20 + r2(x, y) - 10 * (Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y)) },
+            { name: "Ackley", formula: "Ackley(x, y)", x: [-5, 5], y: [-5, 5], f: (x, y) =>
+                -20 * Math.exp(-0.2 * Math.sqrt(0.5 * r2(x, y))) -
+                Math.exp(0.5 * (Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y))) + Math.E + 20 },
+            { name: "Eggholder", formula: "Eggholder(x, y)", x: [-512, 512], y: [-512, 512], f: (x, y) =>
+                -(y + 47) * Math.sin(Math.sqrt(Math.abs(x / 2 + y + 47))) - x * Math.sin(Math.sqrt(Math.abs(x - (y + 47)))) },
+            { name: "Shubert", formula: "Shubert(x, y)", x: [-2.5, 2.5], y: [-2.5, 2.5], f: (x, y) => shubert(x) * shubert(y) }
+        ];
+    }
+
+    //
+    // Worker: makes the heights for ProceduralTerrain getHeights and the images for CanvasTiles.
+    // It is made from the function text, so it must be self-contained.
+    //
+    function functionsWorker(FUNCTIONS, RADIUS, LOW, HIGH, ROWS, COLUMNS, HALF_SIZE, COLORMAP, PLAINS_COLOR) {
+
+        const D2R = Math.PI / 180;
+
+        function smoothstep(a, b, x) {
+            let t = Math.min(Math.max((x - a) / (b - a), 0), 1);
+            return t * t * (3 - 2 * t);
+        }
+
+        // Function ranges, to scale the values to the heights
+        for (const fn of FUNCTIONS) {
+            let n = 128,
+                d = (fn.x[1] - fn.x[0]) / n;
+            fn.min = Infinity;
+            fn.max = -Infinity;
+            for (let i = 0; i <= n; i++) {
+                for (let j = 0; j <= n; j++) {
+                    let v = fn.f(fn.x[0] + (j / n) * (fn.x[1] - fn.x[0]), fn.y[0] + (i / n) * (fn.y[1] - fn.y[0]), d);
+                    fn.min = Math.min(fn.min, v);
+                    fn.max = Math.max(fn.max, v);
+                }
+            }
+        }
+
+        const COLUMN_STEP = COLUMNS[1] - COLUMNS[0],
+            ROW_STEP = ROWS[0] - ROWS[1];
+
+        // Last value 0..1 and area weight, for the colors
+        let value = 0,
+            weight = 0;
+
+        // Height of a point: the function of the nearest area, fading to the plains at the area edges
+        function getHeight(lon, lat, spacing) {
+            let row = Math.min(Math.max(Math.round((ROWS[0] - lat) / ROW_STEP), 0), ROWS.length - 1),
+                column = Math.min(Math.max(Math.round((lon - COLUMNS[0]) / COLUMN_STEP), 0), COLUMNS.length - 1),
+                centerLat = ROWS[row],
+                dLon = lon - COLUMNS[column];
+
+            let u = (dLon * Math.cos(centerLat * D2R)) / HALF_SIZE,
+                v = (lat - centerLat) / HALF_SIZE,
+                edge = 1 - Math.max(Math.abs(u), Math.abs(v));
+
+            if (edge <= 0) {
+                weight = 0;
+                return 0;
+            }
+
+            let fn = FUNCTIONS[row * COLUMNS.length + column],
+                width = fn.x[1] - fn.x[0],
+                x = fn.x[0] + ((u + 1) / 2) * width,
+                y = fn.y[0] + ((v + 1) / 2) * (fn.y[1] - fn.y[0]),
+                d = (spacing / (HALF_SIZE * D2R * RADIUS)) * (width / 2),
+                t = (fn.f(x, y, d) - fn.min) / (fn.max - fn.min);
+
+            value = Math.min(Math.max(t, 0), 1);
+            weight = smoothstep(0, 0.05, edge);
+
+            return (LOW + value * (HIGH - LOW)) * weight;
+        }
+
+        // Colormap lookup table
+        const LUT_SIZE = 2048,
+            lut = new Uint8Array(LUT_SIZE * 3);
+
+        for (let i = 0; i < LUT_SIZE; i++) {
+            let v = i / (LUT_SIZE - 1),
+                k = 1;
+            while (k < COLORMAP.length - 1 && COLORMAP[k][0] < v) {
+                k++;
+            }
+            let [v0, c0] = COLORMAP[k - 1],
+                [v1, c1] = COLORMAP[k],
+                t = Math.min(Math.max((v - v0) / (v1 - v0), 0), 1);
+            for (let c = 0; c < 3; c++) {
+                lut[i * 3 + c] = c0[c] + (c1[c] - c0[c]) * t;
+            }
+        }
+
+        // getHeights answer: (size + 1)² heights evenly spaced in the segment extent, rows from north to south
+        function makeHeights([west, south, east, north], size) {
+            let gs = size + 1,
+                dLon = (east - west) / size,
+                dLat = (north - south) / size,
+                spacing = dLat * D2R * RADIUS,
+                heights = new Float32Array(gs * gs);
+
+            for (let i = 0; i < gs; i++) {
+                for (let j = 0; j < gs; j++) {
+                    heights[i * gs + j] = getHeight(west + j * dLon, north - i * dLat, spacing);
+                }
+            }
+
+            return heights;
+        }
+
+        // CanvasTiles image: colors of the values in the pixel centers
+        function makeImage([west, south, east, north], size) {
+            let dLon = (east - west) / size,
+                dLat = (north - south) / size,
+                spacing = dLat * D2R * RADIUS,
+                data = new ImageData(size, size),
+                rgba = data.data;
+
+            for (let i = 0, k = 0; i < size; i++) {
+                for (let j = 0; j < size; j++, k += 4) {
+                    getHeight(west + (j + 0.5) * dLon, north - (i + 0.5) * dLat, spacing);
+                    let c = Math.round(value * (LUT_SIZE - 1)) * 3;
+                    rgba[k] = PLAINS_COLOR[0] + (lut[c] - PLAINS_COLOR[0]) * weight;
+                    rgba[k + 1] = PLAINS_COLOR[1] + (lut[c + 1] - PLAINS_COLOR[1]) * weight;
+                    rgba[k + 2] = PLAINS_COLOR[2] + (lut[c + 2] - PLAINS_COLOR[2]) * weight;
+                    rgba[k + 3] = 255;
+                }
+            }
+
+            return createImageBitmap(data);
+        }
+
+        self.onmessage = async (e) => {
+            let { id, type, extent, size } = e.data;
+
+            if (type === "heights") {
+                let heights = makeHeights(extent, size);
+                self.postMessage({ id, result: heights }, [heights.buffer]);
+            } else {
+                let image = await makeImage(extent, size);
+                self.postMessage({ id, result: image }, [image]);
+            }
+        };
+    }
+</script>
+</body>
+</html>

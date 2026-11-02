@@ -545,6 +545,31 @@
     "image": ""
   },
   {
+    "label": "Procedural Terrain",
+    "id": "proceduralTerrain",
+    "tags": [
+      "Planet",
+      "ProceduralTerrain",
+      "terrain",
+      "worker"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Famous Functions Procedural Terrain",
+    "id": "famousFuncProceduralTerrain",
+    "tags": [
+      "Planet",
+      "ProceduralTerrain",
+      "CanvasTiles",
+      "terrain",
+      "worker",
+      "Label",
+      "math"
+    ],
+    "image": ""
+  },
+  {
     "label": "Multiple Globuses",
     "id": "multipleViewports",
     "tags": [
