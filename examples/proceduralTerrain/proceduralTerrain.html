@@ -1,0 +1,144 @@
+<html>
+<head>
+    <title>Procedural Terrain | OpenGlobus Example</title>
+    <meta name="description" content="OpenGlobus example: Procedural Terrain. Big waves over a small planet, the heights are made in a web worker." />
+    <meta name="keywords" content="Planet, ProceduralTerrain, terrain, worker, Ellipsoid" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+</head>
+
+<body>
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+
+    'use strict';
+
+    import {
+        Globe,
+        Ellipsoid,
+        ProceduralTerrain,
+        CanvasTiles,
+        control,
+        quadTreeStrategyType
+    } from "../../external/og/lib/og.es.js";
+
+    // Small planet radius
+    const RADIUS = 1000_000;
+
+    // Wave height in meters and the number of waves around the planet, even for the flat poles
+    const AMPLITUDE = 100_000,
+        WAVES = 8;
+
+    const GRID_SIZE = 32;
+
+    //
+    // ProceduralTerrain asks getHeights for the heights of every segment. It returns a promise
+    // and the worker makes them, so the main thread is free.
+    //
+    const runJob = createWorker();
+
+    const terrain = new ProceduralTerrain("Waves", {
+        geoidSrc: null,
+        minZoom: 0,
+        maxZoom: 14,
+        plainGridSize: GRID_SIZE,
+        // The highest point, the far crests over the horizon are not culled
+        maxHeight: AMPLITUDE,
+        getHeights: (segment) => runJob(segment)
+    });
+
+    // One canvas for all tiles: applyCanvas copies it to the tile texture right away.
+    const cnv = document.createElement("canvas"),
+        ctx = cnv.getContext("2d");
+    cnv.width = cnv.height = 256;
+
+    const grid = new CanvasTiles("Grid", {
+        isBaseLayer: true,
+        drawTile: (material, applyCanvas) => {
+            ctx.fillStyle = "rgb(205, 200, 185)";
+            ctx.fillRect(0, 0, 256, 256);
+            ctx.strokeStyle = "rgba(60, 60, 60, 0.5)";
+            ctx.strokeRect(0, 0, 256, 256);
+            ctx.fillStyle = "rgba(60, 60, 60, 0.8)";
+            ctx.font = "12px Verdana";
+            ctx.textAlign = "center";
+            ctx.fillText(material.segment.tileIndex, 128, 132);
+            applyCanvas(cnv);
+        }
+    });
+
+    window.globe = new Globe({
+        name: "Waves",
+        target: "globus",
+        ellipsoid: new Ellipsoid(RADIUS, RADIUS),
+        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        maxAltitude: 3500000,
+        terrain: terrain,
+        layers: [grid],
+        nightTextureSrc: null,
+        specularTextureSrc: null,
+        atmosphereEnabled: false
+    });
+
+    globe.planet.addControl(new control.TimelineControl());
+    globe.planet.addControl(new control.ElevationProfileControl());
+
+    globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
+    globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
+
+    //
+    // Worker: (GRID_SIZE + 1)^2 heights evenly spaced in the segment extent in degrees,
+    // rows from north to south. It is made from the function text, so it must be self-contained.
+    //
+    function wavesWorker(AMPLITUDE, WAVES) {
+        const D2R = Math.PI / 180;
+
+        self.onmessage = (e) => {
+            let { id, size, extent: [west, south, east, north] } = e.data,
+                gs = size + 1,
+                heights = new Float32Array(gs * gs);
+
+            for (let i = 0; i < gs; i++) {
+                let lat = north - (i / size) * (north - south);
+                for (let j = 0; j < gs; j++) {
+                    let lon = west + (j / size) * (east - west);
+                    heights[i * gs + j] = AMPLITUDE * Math.sin(WAVES * lon * D2R) * Math.sin(WAVES * lat * D2R);
+                }
+            }
+
+            self.postMessage({ id, heights }, [heights.buffer]);
+        };
+    }
+
+    // Returns runJob(segment), the promise of the segment heights from the worker
+    function createWorker() {
+        const worker = new Worker(URL.createObjectURL(new Blob(
+            [`(${wavesWorker.toString()})(${AMPLITUDE}, ${WAVES});`],
+            { type: "text/javascript" }
+        )));
+
+        const jobs = new Map();
+        let jobCounter = 0;
+
+        worker.onmessage = (e) => {
+            jobs.get(e.data.id)(e.data.heights);
+            jobs.delete(e.data.id);
+        };
+
+        return (segment) => {
+            let e = segment.getExtent(),
+                id = jobCounter++;
+
+            return new Promise((resolve) => {
+                jobs.set(id, resolve);
+                worker.postMessage({
+                    id,
+                    size: GRID_SIZE,
+                    extent: [e.southWest.lon, e.southWest.lat, e.northEast.lon, e.northEast.lat]
+                });
+            });
+        };
+    }
+</script>
+</body>
+</html>
