@@ -4,7 +4,7 @@
     <meta name="description"
           content="OpenGlobus example: a Projector with a depth camera above Mount Rainier, with live controls for near/far, render mode, colors and depth bias."/>
     <meta name="keywords"
-          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, frustum, depth bias, projection, Mount Rainier"/>
+          content="Projector, DepthCamera, EntityEditor, frustum, depth bias, projection, Mount Rainier"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
     <style>
@@ -166,7 +166,6 @@
 
     import {
         Bing,
-        DepthCamera,
         Globe,
         GlobusRgbTerrain,
         LonLat,
@@ -201,42 +200,24 @@
         new control.TimelineControl()
     ]);
 
-    // A DepthCameraHandler renders the depth map the projector projects through,
-    // and owns the frustum pyramid entity.
-    const depthCameraHandler = new control.DepthCameraHandler();
-    globe.planet.addControl(depthCameraHandler);
-
-    const depthCamera = new DepthCamera({
-        showFrustum: true,
-        showFootprint: false,
-        frustumLength: 10,
-        frustumColor: "rgba(155,255,155,0.7)",
-        // Projector throw range: nothing is projected closer than near or beyond far.
-        // The depth buffer is spread over this range, so the tighter it is fitted
-        // around the target, the more precise the projection and the fewer artifacts.
-        near: 100,
-        far: 100000,
-        depthBiasWorld: 1.0,   // meters
-        normalBias: 0.45       // 0.2 .. 1.0
-    });
-    depthCameraHandler.add(depthCamera);
-
-    const projectorCamera = depthCamera.camera;
-    projectorCamera.setLonLat(PROJECTOR_POSITION);
-    // Orientation in the local planet frame. setPitchYawRoll takes radians,
-    // while the Entity Editor shows the same angles in degrees.
-    projectorCamera.setPitchYawRoll(
-        PROJECTOR_PITCH * math.RADIANS,
-        PROJECTOR_YAW * math.RADIANS,
-        PROJECTOR_ROLL * math.RADIANS
-    );
-    projectorCamera.setViewportSize(1920, 1080);
-    projectorCamera.setHorizontalViewAngle(30);
-    projectorCamera.update();
-
+    // The projector creates its DepthCamera from these params; the renderer renders
+    // its depth map and shows the frustum pyramid entity.
     const projector = new Projector({
         enabled: true,
-        depthCamera: depthCamera,
+        depthCamera: {
+            showFrustum: true,
+            showFootprint: false,
+            frustumLength: 10,
+            frustumColor: "rgba(155,255,155,0.7)",
+            near: 100,
+            far: 100000,
+            depthBiasWorld: 1.0,   // meters
+            normalBias: 0.45,      // 0.2 .. 1.0
+            lonLat: PROJECTOR_POSITION,
+            pitch: PROJECTOR_PITCH * math.RADIANS,
+            yaw: PROJECTOR_YAW * math.RADIANS,
+            roll: PROJECTOR_ROLL * math.RADIANS
+        },
         color: [1.0, 1.0, 0.0, 1.0],
         renderMode: "light",
         priority: 0,
@@ -244,6 +225,14 @@
         // sourceEnabled: false
     });
     globe.planet.renderer.projectors.add(projector);
+
+    // The camera exists once the projector is added.
+    const depthCamera = projector.depthCamera;
+    const projectorCamera = depthCamera.camera;
+    // A 16:9 frustum, the depth framebuffer itself stays square.
+    projectorCamera.setViewportSize(1920, 1080);
+    projectorCamera.setHorizontalViewAngle(30);
+    projectorCamera.update();
 
     //
     // Controls
@@ -265,10 +254,6 @@
         depthCamera.frustumColor = [rgb[0], rgb[1], rgb[2], parseFloat($("ppFrustumOpacity").value)];
     }
 
-    // Projector "lens": viewport size only sets the shape of the projected image,
-    // the depth map resolution is the DepthCamera framebuffer and stays fixed.
-    // Horizontal FOV is re-applied after the size, because the camera stores the
-    // vertical angle and derives it from the horizontal one and the aspect ratio.
     function applyProjectorLens() {
         const width = parseInt($("ppWidth").value, 10);
         const height = parseInt($("ppHeight").value, 10);

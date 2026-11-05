@@ -4,7 +4,7 @@
     <meta name="description"
           content="OpenGlobus example: three projectors over the Alps projecting a video, an image and the screen texture onto the terrain."/>
     <meta name="keywords"
-          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, video, image, texture, source, sourceEnabled, projection"/>
+          content="Projector, DepthCamera, EntityEditor, video, image, texture, source, sourceEnabled, projection"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -17,7 +17,6 @@
 
     import {
         Bing,
-        DepthCamera,
         Entity,
         Globe,
         GlobusRgbTerrain,
@@ -50,10 +49,6 @@
         new control.LayerSwitcher(),
         new control.EntityEditor({editMode: "yaw"})
     ]);
-
-    // A DepthCameraHandler renders the depth map every projector projects through.
-    const depthCameraHandler = new control.DepthCameraHandler();
-    globe.planet.addControl(depthCameraHandler);
 
     // A plain white cube in front of the first projector
     objects.add(new Entity({
@@ -96,67 +91,57 @@
     const renderer = globe.planet.renderer;
     const canvas = renderer.handler.canvas;
 
+    function setProjectorLens(projector, width, height) {
+        const camera = projector.depthCamera.camera;
+        camera.setViewportSize(width, height);
+        camera.setHorizontalViewAngle(30);
+        camera.update();
+    }
+
     //
     // Video projector. An HTMLVideoElement is uploaded on every new video frame.
     //
-    const videoDepthCamera = new DepthCamera({
-        showFrustum: true,
-        // The footprint reads the depth map back to the CPU every frame, it is slow.
-        showFootprint: false,
-        frustumColor: "rgba(255,120,120,0.7)",
-        near: 100,
-        far: 100000,
-        depthBiasWorld: 100.0,   // meters
-        normalBias: 0.45      // 0.2 .. 1.0
-    });
-    depthCameraHandler.add(videoDepthCamera);
-
-    const videoCamera = videoDepthCamera.camera;
-    videoCamera.setLonLat(new LonLat(9.08, 46.45, 9000), new LonLat(9.08, 46.46, 0));
-    // The viewport size only sets the shape of the projected picture. Matching the
-    // source aspect ratio keeps it unstretched.
-    videoCamera.setViewportSize(640, 360);
-    videoCamera.setHorizontalViewAngle(30);
-    videoCamera.update();
-
     const videoProjector = new Projector({
         enabled: true,
-        depthCamera: videoDepthCamera,
+        depthCamera: {
+            showFrustum: true,
+            // The footprint reads the depth map back to the CPU every frame, it is slow.
+            showFootprint: false,
+            frustumColor: "rgba(255,120,120,0.7)",
+            near: 100,
+            far: 100000,
+            depthBiasWorld: 100.0,   // meters
+            normalBias: 0.45,        // 0.2 .. 1.0
+            lonLat: [9.08, 46.45, 9000],
+            lookLonLat: [9.08, 46.46, 0]
+        },
         // In the "color" mode the source is laid over the surface like a decal,
         // tinted by color and faded by its alpha.
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
-        // Uncheck "Source enabled" in the editor to render the color alone: the source
-        // stays assigned and is uploaded again once it is enabled back.
         sourceEnabled: true,
         video: createVideo("./smpte_360p.mp4")
     });
     renderer.projectors.add(videoProjector);
+    setProjectorLens(videoProjector, 640, 360);
 
     //
     // Image projector. An image, canvas, ImageBitmap or VideoFrame is uploaded once.
     //
-    const imageDepthCamera = new DepthCamera({
-        showFrustum: true,
-        showFootprint: false,
-        frustumColor: "rgba(140,190,255,0.7)",
-        near: 100,
-        far: 100000,
-        depthBiasWorld: 100.0,
-        normalBias: 0.45
-    });
-    depthCameraHandler.add(imageDepthCamera);
-
-    const imageCamera = imageDepthCamera.camera;
-    imageCamera.setLonLat(new LonLat(9.17, 46.45, 9000), new LonLat(9.17, 46.46, 0));
-    imageCamera.setViewportSize(640, 448);
-    imageCamera.setHorizontalViewAngle(30);
-    imageCamera.update();
-
     const imageProjector = new Projector({
         enabled: true,
-        depthCamera: imageDepthCamera,
+        depthCamera: {
+            showFrustum: true,
+            showFootprint: false,
+            frustumColor: "rgba(140,190,255,0.7)",
+            near: 100,
+            far: 100000,
+            depthBiasWorld: 100.0,
+            normalBias: 0.45,
+            lonLat: [9.17, 46.45, 9000],
+            lookLonLat: [9.17, 46.46, 0]
+        },
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
@@ -164,31 +149,25 @@
         image: createImage("./grid.jpg")
     });
     renderer.projectors.add(imageProjector);
+    setProjectorLens(imageProjector, 640, 448);
 
     //
     // Texture projector. A ready WebGL texture is sampled as is and never deleted by the
     // projector manager. Here it is the rendered frame itself, projected back onto the terrain.
     //
-    const textureDepthCamera = new DepthCamera({
-        showFrustum: true,
-        showFootprint: false,
-        frustumColor: "rgba(235,160,255,0.7)",
-        near: 100,
-        far: 100000,
-        depthBiasWorld: 100.0,
-        normalBias: 0.45
-    });
-    depthCameraHandler.add(textureDepthCamera);
-
-    const textureCamera = textureDepthCamera.camera;
-    textureCamera.setLonLat(new LonLat(9.26, 46.45, 9000), new LonLat(9.26, 46.46, 0));
-    textureCamera.setViewportSize(canvas.width, canvas.height);
-    textureCamera.setHorizontalViewAngle(30);
-    textureCamera.update();
-
     const textureProjector = new Projector({
         enabled: true,
-        depthCamera: textureDepthCamera,
+        depthCamera: {
+            showFrustum: true,
+            showFootprint: false,
+            frustumColor: "rgba(235,160,255,0.7)",
+            near: 100,
+            far: 100000,
+            depthBiasWorld: 100.0,
+            normalBias: 0.45,
+            lonLat: [9.26, 46.45, 9000],
+            lookLonLat: [9.26, 46.46, 0]
+        },
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
@@ -196,12 +175,11 @@
         texture: renderer.screenTexture.screen
     });
     renderer.projectors.add(textureProjector);
+    setProjectorLens(textureProjector, canvas.width, canvas.height);
 
     // The screen texture is a new texture after every resize.
     renderer.events.on("resizeend", () => {
-        textureCamera.setViewportSize(canvas.width, canvas.height);
-        textureCamera.setHorizontalViewAngle(30);
-        textureCamera.update();
+        setProjectorLens(textureProjector, canvas.width, canvas.height);
         textureProjector.source = renderer.screenTexture.screen;
     });
 </script>

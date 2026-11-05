@@ -956,7 +956,6 @@
     "tags": [
       "Projector",
       "DepthCamera",
-      "DepthCameraHandler",
       "EntityEditor",
       "projection",
       "frustum",
@@ -971,7 +970,6 @@
     "tags": [
       "Projector",
       "DepthCamera",
-      "DepthCameraHandler",
       "EntityEditor",
       "nested",
       "entity",
@@ -986,7 +984,6 @@
     "tags": [
       "Projector",
       "DepthCamera",
-      "DepthCameraHandler",
       "video",
       "image",
       "texture",
@@ -1002,7 +999,6 @@
     "tags": [
       "Projector",
       "DepthCamera",
-      "DepthCameraHandler",
       "canvas",
       "animated",
       "source",

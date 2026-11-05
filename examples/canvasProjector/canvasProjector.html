@@ -4,7 +4,7 @@
     <meta name="description"
           content="OpenGlobus example: a projector showing an animated 2d canvas on the terrain, a ball bouncing off the walls and counting its bounces."/>
     <meta name="keywords"
-          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, canvas, source, sourceEnabled, projection"/>
+          content="Projector, DepthCamera, EntityEditor, canvas, source, sourceEnabled, projection"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -17,7 +17,6 @@
 
     import {
         Bing,
-        DepthCamera,
         Entity,
         Globe,
         GlobusRgbTerrain,
@@ -50,9 +49,6 @@
         new control.LayerSwitcher(),
         new control.EntityEditor({editMode: "yaw"})
     ]);
-
-    const depthCameraHandler = new control.DepthCameraHandler();
-    globe.planet.addControl(depthCameraHandler);
 
     // A plain white cube in front of the projector
     objects.add(new Entity({
@@ -126,25 +122,20 @@
 
     draw();
 
-    const depthCamera = new DepthCamera({
-        showFrustum: true,
-        frustumColor: "rgba(155,255,155,0.7)",
-        near: 100,
-        far: 100000,
-        depthBiasWorld: 1.0,   // meters
-        normalBias: 0.45      // 0.2 .. 1.0
-    });
-    depthCameraHandler.add(depthCamera);
-
-    const projectorCamera = depthCamera.camera;
-    projectorCamera.setLonLat(new LonLat(9.17, 46.45, 9000), new LonLat(9.17, 46.46, 0));
-    projectorCamera.setViewportSize(CANVAS_SIZE, CANVAS_SIZE);
-    projectorCamera.setHorizontalViewAngle(30);
-    projectorCamera.update();
-
     const projector = new Projector({
         enabled: true,
-        depthCamera: depthCamera,
+        depthCamera: {
+            showFrustum: true,
+            frustumColor: "rgba(155,255,155,0.7)",
+            near: 100,
+            far: 100000,
+            depthBiasWorld: 1.0,   // meters
+            normalBias: 0.45,      // 0.2 .. 1.0
+            // Square frustum, as the canvas and the default 512x512 depth frame.
+            horizontalViewAngle: 30,
+            lonLat: [9.17, 46.45, 9000],
+            lookLonLat: [9.17, 46.46, 0]
+        },
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
@@ -152,6 +143,9 @@
         sourceEnabled: true
     });
     globe.planet.renderer.projectors.add(projector);
+
+    // The camera exists once the projector is added.
+    const projectorCamera = projector.depthCamera.camera;
 
     // A canvas is uploaded once: redrawing it is not enough, the source has to be
     // assigned again to re-upload the new pixels.

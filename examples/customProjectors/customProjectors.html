@@ -4,7 +4,7 @@
     <meta name="description"
           content="OpenGlobus example: five nested projectors carried by one parent entity over the Swiss Alps, moved with the Entity Editor."/>
     <meta name="keywords"
-          content="Projector, DepthCamera, DepthCameraHandler, EntityEditor, nested entities, relativePosition, Switzerland"/>
+          content="Projector, DepthCamera, EntityEditor, nested entities, relativePosition, Switzerland"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -17,7 +17,6 @@
 
     import {
         Bing,
-        DepthCamera,
         Entity,
         Globe,
         GlobusRgbTerrain,
@@ -74,9 +73,6 @@
         new control.EntityEditor({editMode: "yaw"})
     ]);
 
-    const depthCameraHandler = new control.DepthCameraHandler();
-    globe.planet.addControl(depthCameraHandler);
-
     // The parent entity. Everything else hangs off it.
     const ball = new Entity({
         name: "projector-ball",
@@ -94,26 +90,20 @@
 
     for (let i = 0; i < PROJECTORS.length; i++) {
 
-        const depthCamera = new DepthCamera({
-            // The frustum here is our own nested entity
-            showFrustum: false,
-            showFootprint: false,
-            near: 1000,
-            far: 20000000,
-            excludeLayers: [rigLayer],
-            depthBiasWorld: 1.0,
-            normalBias: 0.45
-        });
-        depthCameraHandler.add(depthCamera);
-
-        const camera = depthCamera.camera;
-        camera.setViewportSize(1024, 1024);   // square projection
-        camera.setHorizontalViewAngle(PROJECTOR_FOV);
-        camera.update();
-
         const projector = new Projector({
             enabled: true,
-            depthCamera: depthCamera,
+            depthCamera: {
+                // The frustum here is our own nested entity
+                showFrustum: false,
+                showFootprint: false,
+                near: 1000,
+                far: 20000000,
+                excludeLayers: [rigLayer],
+                depthBiasWorld: 1.0,
+                normalBias: 0.45,
+                // Square projection, as the default 512x512 depth frame.
+                horizontalViewAngle: PROJECTOR_FOV
+            },
             color: PROJECTORS[i].color,
             renderMode: "light",
             priority: 0,
@@ -122,6 +112,9 @@
         });
         projector.setOpacity(PROJECTOR_OPACITY);
         globe.planet.renderer.projectors.add(projector);
+
+        // The camera exists once the projector is added.
+        const camera = projector.depthCamera.camera;
 
         // Nested child: it moves with the ball, but can still be offset on its own.
         // All of them sit in the local center.
