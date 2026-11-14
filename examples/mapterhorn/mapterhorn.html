@@ -2,7 +2,7 @@
 <head>
     <title>Mapterhorn Terrain | OpenGlobus Example</title>
     <meta charset="utf-8" />
-    <meta name="description" content="OpenGlobus example: Mapterhorn and OpenGlobus RGB terrains in the Alps at two mesh densities, switched in the layer switcher." />
+    <meta name="description" content="OpenGlobus example: Mapterhorn and OpenGlobus RGB terrains in the Alps at several mesh densities, switched in the layer switcher." />
     <meta name="keywords" content="terrain, Mapterhorn, MapterhornTerrain, GlobusRgbTerrain, RGB, Terrarium, elevation, plainGridSize" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
@@ -12,12 +12,14 @@
 <script type="module" id="og-sandbox-script">
     'use strict';
 
-    import {Globe, Bing, OpenStreetMap, control, GlobusRgbTerrain, MapterhornTerrain} from "../../external/og/lib/og.es.js";
+    import {Globe, Bing, OpenStreetMap, control, GlobusRgbTerrain, MapterhornTerrain, LonLat} from "../../external/og/lib/og.es.js";
 
-    // The same elevation data at two mesh densities each: plainGridSize is the number of
+    // The same elevation data at different mesh densities: plainGridSize is the number of
     // segment vertices by its side. Switch them in the layer switcher to compare.
+    // Mapterhorn 512 uses every pixel of its 512px tiles.
     const terrains = [
-        new MapterhornTerrain("Mapterhorn 256"),
+        new MapterhornTerrain("Mapterhorn 256"), // default grid size
+        new MapterhornTerrain("Mapterhorn 512", {plainGridSize: 512}),
         new MapterhornTerrain("Mapterhorn 128", {plainGridSize: 128}),
         new GlobusRgbTerrain("OpenGlobus 128"),
         new GlobusRgbTerrain("OpenGlobus 256", {plainGridSize: 256})
@@ -28,14 +30,16 @@
         name: "Mapterhorn",
         terrain: terrains,
         layers: [new Bing(), new OpenStreetMap("OpenStreetMap", {visibility: false})],
-        viewExtent: [7.85, 46.35, 8.25, 46.65],
-        maxGridSize: 256,
+        maxGridSize: 512,
         atmosphereEnabled: true,
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
 
     globe.planet.addControl(new control.LayerSwitcher());
+
+    // The Matterhorn seen from the Zermatt side, looking down at its summit.
+    globe.planet.viewLonLat(new LonLat(7.73, 46.02, 6800), new LonLat(7.6586, 45.9764, 4478));
 </script>
 </body>
 </html>
