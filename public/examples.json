@@ -1021,5 +1021,32 @@
       "Zion"
     ],
     "image": ""
+  },
+  {
+    "label": "Basic Cube Planet",
+    "id": "basicCubePlanet",
+    "tags": [
+      "cube",
+      "EquiangularCubeQuadTreeStrategy",
+      "quadTreeStrategyPrototype",
+      "CanvasTiles",
+      "tiles"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Cube Planet",
+    "id": "cubePlanet",
+    "tags": [
+      "terrain",
+      "ProceduralTerrain",
+      "EmptyTerrain",
+      "cube",
+      "EquiangularCubeQuadTreeStrategy",
+      "CanvasTiles",
+      "gnomonic",
+      "geosphere"
+    ],
+    "image": ""
   }
 ]

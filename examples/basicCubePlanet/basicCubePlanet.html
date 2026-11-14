@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Basic Cube Planet | OpenGlobus Example</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="OpenGlobus example: a planet on the cube quad tree, each tile drawn with its cube face, zoom and index." />
+    <meta name="keywords" content="cube, EquiangularCubeQuadTreeStrategy, quadTreeStrategyPrototype, CanvasTiles, tiles" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css" />
+</head>
+<body style="margin:0;">
+<div id="globus" style="width:100%;height:100%"></div>
+<script type="module" id="og-sandbox-script">
+    'use strict';
+
+    import {
+        Globe,
+        CanvasTiles,
+        EquiangularCubeQuadTreeStrategy,
+        control
+    } from "../../external/og/lib/og.es.js";
+
+    const FACE_COLORS = ["#e6e6e6", "#d9534f", "#5cb85c", "#428bca", "#f0ad4e", "#6f5499"];
+
+    // Each tile is painted with the color of its cube face and signed with the face and z / x / y
+    const tiles = new CanvasTiles("Cube tiles", {
+        isBaseLayer: true,
+        drawTile: (material, applyCanvas) => {
+            const {tileGroup, tileX, tileY, tileZoom} = material.segment,
+                canvas = document.createElement("canvas");
+
+            canvas.width = canvas.height = 256;
+
+            const ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = FACE_COLORS[tileGroup];
+            ctx.fillRect(0, 0, 256, 256);
+
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(0, 0, 256, 256);
+
+            ctx.fillStyle = "black";
+            ctx.font = "bold 28px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(`face ${tileGroup}`, 128, 110);
+            ctx.fillText(`${tileZoom} / ${tileX} / ${tileY}`, 128, 150);
+
+            applyCanvas(canvas);
+        }
+    });
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Basic cube planet",
+        quadTreeStrategyPrototype: EquiangularCubeQuadTreeStrategy,
+        layers: [tiles],
+        navigation: {
+            mode: "free"
+        },
+        atmosphereEnabled: false,
+        nightTextureSrc: null,
+        specularTextureSrc: null,
+        resourcesSrc: "../../external/og/lib/res",
+        fontsSrc: "../../external/og/lib/res/fonts"
+    });
+
+    globe.planet.addControl(new control.ToggleWireframe());
+    globe.planet.addControl(new control.DebugInfo());
+</script>
+</body>
+</html>
