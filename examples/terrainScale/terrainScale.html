@@ -78,10 +78,10 @@
         return size >= 1000
             ? `${size / 1000} km`
             : size >= 1
-              ? `${size} m`
-              : size >= 0.01
-                ? `${Math.round(size * 100)} cm`
-                : `${Math.round(size * 1000)} mm`;
+                ? `${size} m`
+                : size >= 0.01
+                    ? `${Math.round(size * 100)} cm`
+                    : `${Math.round(size * 1000)} mm`;
     }
 
     const CENTER = new LonLat(24.5, 25.0);
@@ -91,8 +91,6 @@
     const K = 1 / Math.cos((CENTER.lat * Math.PI) / 180);
     const center = CENTER.forwardMercator();
 
-    // Cube centers in ground meters from the center, x to the east, y to the north,
-    // (ux, uy) is the direction from the center. The cubes are along the grid axes, so the walls are straight.
     const cubes = CUBES.map((size, i) => {
         let a = Math.PI / 2 - i * STEP,
             ux = Math.cos(a),
@@ -101,12 +99,12 @@
     });
 
     // Elevation grid, deeper segments get finer meshes to show the smallest cubes
-    const GRID_SIZE = 64,
-        MAX_ZOOM = 35;
+    const GRID_SIZE = 32;
+    const MAX_ZOOM = 35;
 
-    const gridSizeByZoom = [64, 32, 16, 8, 8, 8, 16, 16, 32, 32];
+    const gridSizeByZoom = [32, 32, 16, 8, 8, 8, 16, 16];
     for (let z = gridSizeByZoom.length; z <= MAX_ZOOM; z++) {
-        gridSizeByZoom.push(64);
+        gridSizeByZoom.push(GRID_SIZE);
     }
 
     function getHeights(segment) {
@@ -121,7 +119,7 @@
         let near = cubes.filter((c) => {
             let h = c.size / 2;
             return (
-                c.size >= 2 * step && c.x + h > west && c.x - h < east && c.y + h > south && c.y - h < north
+                c.size >= step && c.x + h > west && c.x - h < east && c.y + h > south && c.y - h < north
             );
         });
 
