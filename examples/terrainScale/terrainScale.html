@@ -64,6 +64,8 @@
         ProceduralTerrain,
         OpenStreetMap,
         Bing,
+        Vector,
+        Entity,
         control
     } from "../../external/og/lib/og.es.js";
 
@@ -152,7 +154,7 @@
         maxHeight: CUBES[0]
     });
 
-    const osm = new OpenStreetMap();
+    const osm = new OpenStreetMap(null, {visibility: false});
     const sat = new Bing();
 
     const globe = new Globe({
@@ -160,6 +162,7 @@
         name: "Earth",
         terrain,
         layers: [osm, sat],
+        fontsSrc: "../../external/og/lib/res/fonts",
         minAltitude: 0.002,
         sun: {
             dateTime: new Date(Date.UTC(2026, 5, 21, 14, 0))
@@ -201,10 +204,56 @@
         );
     }
 
+    const labels = new Vector("Sizes", {
+        pickingEnabled: false
+    });
+
+    for (let c of cubes) {
+        c.top = globe.planet.ellipsoid.lonLatToCartesian(toLonLat(c.x, c.y, 1.35 * c.size));
+        c.entity = new Entity({
+            lonlat: toLonLat(c.x, c.y, 1.35 * c.size),
+            label: {
+                text: getLabel(c.size),
+                size: 22,
+                face: "Karla-Bold",
+                color: "white",
+                outline: 0.2,
+                outlineColor: "rgba(0, 0, 0, 0.8)",
+                align: "center"
+            }
+        });
+    }
+
+    labels.setEntities(cubes.map((c) => c.entity));
+    globe.planet.addLayer(labels);
+
+    // Positions are relative to the center the eye was at, it follows the eye near the ground
+    let relativeCenter = null;
+
+    function updateLabels() {
+        let cam = globe.planet.camera,
+            eye = cam.eye;
+        for (let c of cubes) {
+            let isVisible = c.size / eye.distance(c.top) > 0.02;
+            if (c.entity.getVisibility() !== isVisible) {
+                c.entity.setVisibility(isVisible);
+            }
+        }
+
+        let alt = Math.max(cam.getAltitude() || cam.getLonLat().height, 0.001);
+        if (!relativeCenter || eye.distance(relativeCenter) > 0.1 * alt) {
+            relativeCenter = eye.clone();
+            globe.renderer.setRelativeCenter();
+        }
+    }
+
+    globe.planet.camera.events.on("viewchange", updateLabels);
+
     const SPACE_EYE = toLonLat(0, -150000, 120000),
         SPACE_LOOK = toLonLat(0, 0, 0);
 
     globe.planet.camera.setLonLat(SPACE_EYE, SPACE_LOOK);
+    updateLabels();
 
     //
     // Panel
