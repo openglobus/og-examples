@@ -1,0 +1,130 @@
+<html>
+
+<head>
+    <title>Drag and Drop on Earth | OpenGlobus Example</title>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="OpenGlobus example: drag and drop 3d models, images and GeoTIFF layers or terrains onto the Earth."/>
+    <meta name="keywords" content="Earth, drag and drop, gltf, glb, obj, GeoTIFF, terrain, Bing, OpenStreetMap"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <script
+            type="text/javascript"
+            src="https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_decoder.js"
+    ></script>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #dnd-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.85);
+            font: 16px/1.4 Arial, Helvetica, sans-serif;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            white-space: nowrap;
+        }
+
+        #dnd-hint small {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+<div id="app"></div>
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        LonLat,
+        GlobusRgbTerrain,
+        Gltf,
+        OpenStreetMap,
+        Bing,
+        control,
+        ui
+    } from "../../external/og/lib/og.es.js";
+
+    DracoDecoderModule().then((decoderModule) => {
+        Gltf.connectDracoDecoderModule(decoderModule);
+    });
+
+    const app = document.getElementById("app");
+
+    const dockManager = new ui.DockManager({
+        host: app
+    });
+
+    const globeDialog = new ui.Dialog({
+        title: "Earth",
+        dock: "center",
+        hideToolbar: true
+    });
+
+    globeDialog.appendTo(app);
+    dockManager.attach(globeDialog);
+
+    const osm = new OpenStreetMap();
+    const sat = new Bing();
+
+    let globe = new Globe({
+        name: "earth",
+        target: globeDialog.container,
+        terrain: new GlobusRgbTerrain(),
+        layers: [osm, sat],
+        uiContainer: app
+    });
+
+    globe.planet.addControl(new control.LayerSwitcher());
+
+    const dragAndDrop = new control.DragAndDrop();
+    globe.planet.addControl(dragAndDrop);
+
+    // Oblique view to Mont Blanc from the north
+    globe.planet.camera.setLonLat(new LonLat(6.87, 45.93, 6000), new LonLat(6.865, 45.833, 4000));
+
+    let entityEditor = new control.EntityEditor({visibility: true});
+    let entityTree = new control.EntityTree({entityEditor, visibility: true});
+
+    globe.planet.addControl(entityEditor);
+    globe.planet.addControl(entityTree);
+
+    dockManager.dock(entityTree._dialog, "right", "start");
+    dockManager.dock(entityEditor._dialog, "right", "end");
+
+    entityEditor.events.on("select", (entity) => {
+        entityTree.addEntity(entity);
+    });
+
+    // Centered hint, hidden after the first drop
+    const hint = document.createElement("div");
+    hint.id = "dnd-hint";
+    hint.innerHTML =
+        "Drag and drop a GeoTIFF onto the Earth, as a layer or as a terrain<br>" +
+        "<small>It is placed by its georeference. GLTF, GLB, OBJ models and images go to the drop point</small>";
+    globeDialog.container.appendChild(hint);
+
+    globeDialog.container.addEventListener("drop", () => hint.remove(), {once: true});
+
+    window.globe = globe;
+</script>
+</body>
+
+</html>

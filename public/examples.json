@@ -168,6 +168,25 @@
     "image": ""
   },
   {
+    "label": "Drag and Drop on Earth",
+    "id": "dragAndDropEarth",
+    "tags": [
+      "drag and drop",
+      "gltf",
+      "glb",
+      "obj",
+      "GeoTIFF",
+      "GeoTiffTerrain",
+      "Earth",
+      "Bing",
+      "OpenStreetMap",
+      "DragAndDrop",
+      "EntityEditor",
+      "EntityTree"
+    ],
+    "image": ""
+  },
+  {
     "label": "Drawing geometry on the ground",
     "id": "drawingControl",
     "tags": [
@@ -552,6 +571,20 @@
       "ProceduralTerrain",
       "terrain",
       "worker"
+    ],
+    "image": ""
+  },
+  {
+    "label": "Terrain Scale",
+    "id": "terrainScale",
+    "tags": [
+      "Earth",
+      "ProceduralTerrain",
+      "terrain",
+      "scale",
+      "gridSizeByZoom",
+      "nearPlaneStrategy",
+      "minAltitude"
     ],
     "image": ""
   },

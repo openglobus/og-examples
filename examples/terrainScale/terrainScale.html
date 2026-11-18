@@ -1,0 +1,231 @@
+<html>
+
+<head>
+    <title>Terrain Scale | OpenGlobus Example</title>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="OpenGlobus example: procedural terrain of cubes from a 10 km mountain down to a 1 cm sugar cube, seen from space and from the ground."/>
+    <meta name="keywords" content="Earth, ProceduralTerrain, terrain, scale, gridSizeByZoom, near plane, minAltitude"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #globus {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            padding: 8px;
+            background: rgba(20, 20, 24, 0.8);
+            border-radius: 6px;
+            font: 13px Arial, Helvetica, sans-serif;
+            color: #ddd;
+        }
+
+        #panel button {
+            display: block;
+            width: 100%;
+            margin: 2px 0;
+            padding: 4px 8px;
+            border: 0;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ddd;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        #panel button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+<div id="globus"></div>
+<div id="panel"></div>
+<script type="module" id="og-sandbox-script">
+    import {
+        Globe,
+        LonLat,
+        ProceduralTerrain,
+        OpenStreetMap,
+        Bing,
+        control
+    } from "../../external/og/lib/og.es.js";
+
+    //
+    // Cubes of the terrain, the side is the height too. Each next one is smaller, from a mountain to a sugar cube.
+    //
+    const CUBES = [10000, 3000, 828, 330, 100, 30, 15, 3, 1, 0.3, 0.1, 0.03, 0.01];
+
+    function getLabel(size) {
+        return size >= 1000 ? `${size / 1000} km` : size >= 1 ? `${size} m` : `${Math.round(size * 100)} cm`;
+    }
+
+    const CENTER = new LonLat(24.5, 25.0);
+    const DISTANCE = 2.5;
+    const STEP = (2 * Math.PI) / CUBES.length;
+
+    const K = 1 / Math.cos((CENTER.lat * Math.PI) / 180);
+    const center = CENTER.forwardMercator();
+
+    // Cube centers in ground meters from the center, x to the east, y to the north,
+    // (ux, uy) is the direction from the center. The cubes are along the grid axes, so the walls are straight.
+    const cubes = CUBES.map((size, i) => {
+        let a = Math.PI / 2 - i * STEP,
+            ux = Math.cos(a),
+            uy = Math.sin(a);
+        return {size, ux, uy, x: ux * DISTANCE * size, y: uy * DISTANCE * size};
+    });
+
+    // Elevation grid, deeper segments get finer meshes to show the smallest cubes
+    const GRID_SIZE = 64,
+        MAX_ZOOM = 30;
+
+    const gridSizeByZoom = [64, 32, 16, 8, 8, 8, 16, 16, 32, 32];
+    for (let z = gridSizeByZoom.length; z <= MAX_ZOOM; z++) {
+        gridSizeByZoom.push(64);
+    }
+
+    function getHeights(segment) {
+        let e = segment.getExtent(),
+            west = (e.southWest.lon - center.lon) / K,
+            east = (e.northEast.lon - center.lon) / K,
+            south = (e.southWest.lat - center.lat) / K,
+            north = (e.northEast.lat - center.lat) / K;
+
+        let step = (east - west) / GRID_SIZE;
+
+        let near = cubes.filter((c) => {
+            let h = c.size / 2;
+            return (
+                c.size >= 2 * step && c.x + h > west && c.x - h < east && c.y + h > south && c.y - h < north
+            );
+        });
+
+        if (!near.length) {
+            return null;
+        }
+
+        let gs = GRID_SIZE + 1,
+            heights = new Float32Array(gs * gs);
+
+        for (let i = 0; i < gs; i++) {
+            let y = north - i * step;
+            for (let j = 0; j < gs; j++) {
+                let x = west + j * step;
+                for (let c of near) {
+                    let dx = x - c.x,
+                        dy = y - c.y,
+                        h = c.size / 2;
+                    if (Math.abs(dx) < h && Math.abs(dy) < h) {
+                        heights[i * gs + j] = c.size;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return heights;
+    }
+
+    const terrain = new ProceduralTerrain("Cubes", {
+        getHeights,
+        plainGridSize: GRID_SIZE,
+        gridSizeByZoom,
+        minZoom: 0,
+        maxZoom: MAX_ZOOM,
+        maxHeight: CUBES[0]
+    });
+
+    const osm = new OpenStreetMap();
+    const sat = new Bing();
+
+    const globe = new Globe({
+        target: "globus",
+        name: "Earth",
+        terrain,
+        layers: [osm, sat],
+        minAltitude: 0.002,
+        sun: {
+            dateTime: new Date(Date.UTC(2026, 5, 21, 14, 0))
+        }
+    });
+
+    globe.planet.addControl(new control.LayerSwitcher());
+
+    //
+    // Near plane by the camera altitude, the default one stops at 10 cm
+    //
+    const defaultNear = globe.planet.nearPlaneStrategy;
+
+    globe.planet.nearPlaneStrategy = {
+        applyNear(camera) {
+            if (camera.isOrthographic || camera.frustums.length !== 1) {
+                defaultNear.applyNear(camera);
+                return;
+            }
+            let alt = Math.max(camera.getAltitude() || camera.getLonLat().height, 0.001),
+                near = Math.min(Math.max(10 ** Math.floor(Math.log10(alt * 0.01)), 0.0001), 1000);
+            if (camera.frustums[0].near !== near) {
+                camera.setNearFar(near);
+            }
+        }
+    };
+
+    function toLonLat(x, y, height) {
+        return LonLat.inverseMercator(center.lon + x * K, center.lat + y * K, height);
+    }
+
+    function flyToCube(c) {
+        let s = c.size,
+            back = 2.2 * s,
+            side = 0.9 * s;
+        globe.planet.camera.flyLonLat(
+            toLonLat(c.x - c.ux * back - c.uy * side, c.y - c.uy * back + c.ux * side, 0.75 * s),
+            {look: toLonLat(c.x, c.y, 0.4 * s), linearPath: true}
+        );
+    }
+
+    const SPACE_EYE = toLonLat(0, -150000, 120000),
+        SPACE_LOOK = toLonLat(0, 0, 0);
+
+    globe.planet.camera.setLonLat(SPACE_EYE, SPACE_LOOK);
+
+    //
+    // Panel
+    //
+    const panel = document.getElementById("panel");
+
+    function addButton(text, onclick) {
+        let b = document.createElement("button");
+        b.textContent = text;
+        b.onclick = onclick;
+        panel.appendChild(b);
+    }
+
+    addButton("From space", () => globe.planet.camera.flyLonLat(SPACE_EYE, {look: SPACE_LOOK, linearPath: true}));
+
+    for (let c of cubes) {
+        addButton(getLabel(c.size), () => flyToCube(c));
+    }
+
+    window.globe = globe;
+</script>
+</body>
+
+</html>
