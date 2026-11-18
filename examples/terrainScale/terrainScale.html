@@ -72,10 +72,16 @@
     //
     // Cubes of the terrain, the side is the height too. Each next one is smaller, from a mountain to a sugar cube.
     //
-    const CUBES = [10000, 3000, 828, 330, 100, 30, 15, 3, 1, 0.3, 0.1, 0.03, 0.01];
+    const CUBES = [10000, 3000, 828, 330, 100, 30, 15, 3, 1, 0.3, 0.1, 0.03, 0.01, 0.003, 0.001];
 
     function getLabel(size) {
-        return size >= 1000 ? `${size / 1000} km` : size >= 1 ? `${size} m` : `${Math.round(size * 100)} cm`;
+        return size >= 1000
+            ? `${size / 1000} km`
+            : size >= 1
+              ? `${size} m`
+              : size >= 0.01
+                ? `${Math.round(size * 100)} cm`
+                : `${Math.round(size * 1000)} mm`;
     }
 
     const CENTER = new LonLat(24.5, 25.0);
@@ -96,7 +102,7 @@
 
     // Elevation grid, deeper segments get finer meshes to show the smallest cubes
     const GRID_SIZE = 64,
-        MAX_ZOOM = 30;
+        MAX_ZOOM = 35;
 
     const gridSizeByZoom = [64, 32, 16, 8, 8, 8, 16, 16, 32, 32];
     for (let z = gridSizeByZoom.length; z <= MAX_ZOOM; z++) {
@@ -163,7 +169,7 @@
         terrain,
         layers: [osm, sat],
         fontsSrc: "../../external/og/lib/res/fonts",
-        minAltitude: 0.002,
+        minAltitude: 0.0002,
         sun: {
             dateTime: new Date(Date.UTC(2026, 5, 21, 14, 0))
         }
@@ -183,7 +189,7 @@
                 return;
             }
             let alt = Math.max(camera.getAltitude() || camera.getLonLat().height, 0.001),
-                near = Math.min(Math.max(10 ** Math.floor(Math.log10(alt * 0.01)), 0.0001), 1000);
+                near = Math.min(Math.max(10 ** Math.floor(Math.log10(alt * 0.01)), 0.00001), 1000);
             if (camera.frustums[0].near !== near) {
                 camera.setNearFar(near);
             }
