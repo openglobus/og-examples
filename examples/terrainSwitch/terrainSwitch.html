@@ -1,63 +1,143 @@
 <html>
 <head>
     <title>Terrain Provider Switching | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Terrain Provider Switching." />
-    <meta name="keywords" content="terrain, switching" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta name="description"
+          content="OpenGlobus example: switching the terrain provider of the planet: the ellipsoid, OpenGlobus RGB, Mapterhorn, a cloud optimized GeoTIFF and a procedural terrain."/>
+    <meta name="keywords"
+          content="terrain, switching, setTerrain, EmptyTerrain, GlobusRgbTerrain, MapterhornTerrain, GeoTiffTerrain, ProceduralTerrain"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        .terrains {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            padding: 10px;
+        }
+
+        .terrains button {
+            margin: 3px;
+        }
+
+        .terrains button.active {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
-<body>
+<body style="margin:0;">
 <div id="globus" style="width:100%;height:100%"></div>
-<div style="position: absolute; left:0; padding:10px;top:0">
-    <button id="btnEmpty" style="float:left; margin: 3px;">Geoid</button>
-    <button id="btnMapbox" style="float:left; margin: 3px;">OpenGlobus HighRes</button>
-    <button id="btnBil" style="float:left; margin: 3px;">Bil16-Italy</button>
+<div class="terrains">
+    <button id="btnEmpty">Empty</button>
+    <button id="btnOg" class="active">OpenGlobus RGB</button>
+    <button id="btnMapterhorn">Mapterhorn</button>
+    <button id="btnGeoTiff">GeoTIFF Zion</button>
+    <button id="btnProcedural">Procedural</button>
 </div>
 <script type="module" id="og-sandbox-script">
+    'use strict';
 
     import {
         Globe,
-        GlobusRgbTerrain,
         OpenStreetMap,
         EmptyTerrain,
-        BilTerrain
+        GlobusRgbTerrain,
+        MapterhornTerrain,
+        GeoTiffTerrain,
+        ProceduralTerrain,
+        LonLat
     } from "../../external/og/lib/og.es.js";
 
-    document.getElementById("btnEmpty").onclick = function () {
-        globus.planet.setTerrain(emptyTerrain);
-    };
+    //
+    // Procedural terrain: waves of 2 km with the period of half a degree, made right in getHeights
+    //
+    const AMPLITUDE = 2000,
+        PERIOD = 0.5,
+        GRID_SIZE = 32;
 
-    document.getElementById("btnMapbox").onclick = function () {
-        globus.planet.setTerrain(highResTerrain);
-    };
+    const K = (2 * Math.PI) / PERIOD;
 
-    document.getElementById("btnBil").onclick = function () {
-        globus.planet.setTerrain(bilTerrain);
-    };
+    function waves(segment) {
+        const e = segment.getExtent(),
+            west = e.southWest.lon,
+            south = e.southWest.lat,
+            east = e.northEast.lon,
+            north = e.northEast.lat,
+            gs = GRID_SIZE + 1,
+            heights = new Float32Array(gs * gs);
 
-    let emptyTerrain = new EmptyTerrain(),
-        highResTerrain = new GlobusRgbTerrain(),
-        bilTerrain = new BilTerrain({
-            url: "//openglobus.org/geoserver/og/",
-            layers: "og:n44_e009_1arc_v3",
-            imageSize: 128,
-            gridSizeByZoom: [64, 64, 32, 32, 32, 16, 8, 8, 8, 8, 8, 16, 32, 64, 64, 64, 64, 64, 64, 32, 32, 32, 16, 8],
-            extent: [[8.9, 44.0], [10.0, 45]]
-        });
+        for (let i = 0; i < gs; i++) {
+            const y = north - (i / GRID_SIZE) * (north - south);
+            for (let j = 0; j < gs; j++) {
+                const ll = segment.getLonLat(west + (j / GRID_SIZE) * (east - west), y);
+                heights[i * gs + j] = AMPLITUDE * Math.sin(K * ll.lon) * Math.sin(K * ll.lat);
+            }
+        }
 
-    let osm = new OpenStreetMap();
+        return heights;
+    }
 
-    let globus = new Globe({
+    const emptyTerrain = new EmptyTerrain();
+
+    const ogTerrain = new GlobusRgbTerrain();
+
+    const mapterhornTerrain = new MapterhornTerrain();
+
+    const geoTiffTerrain = new GeoTiffTerrain("USGS Zion 1m", {
+        src: "https://terrain.openglobus.org/cog/zion.tif",
+        attribution: '<a href="https://www.usgs.gov/3d-elevation-program" target="_blank">USGS 3DEP</a> 1m Zion NP',
+        sampleSize: 256
+    });
+
+    const proceduralTerrain = new ProceduralTerrain("Waves", {
+        geoidSrc: null,
+        minZoom: 0,
+        maxZoom: 14,
+        plainGridSize: GRID_SIZE,
+        maxHeight: AMPLITUDE,
+        getHeights: waves
+    });
+
+    const globe = new Globe({
         target: "globus",
         name: "Earth",
-        terrain: emptyTerrain,
-        layers: [osm],
+        terrain: ogTerrain,
+        layers: [new OpenStreetMap()],
+        atmosphereEnabled: true,
         resourcesSrc: "../../external/og/lib/res",
         fontsSrc: "../../external/og/lib/res/fonts"
     });
+
+    window.globe = globe;
+
+    globe.planet.viewLonLat(new LonLat(7.73, 46.02, 6800), new LonLat(7.6586, 45.9764, 4478));
+
+    function flyToZion() {
+        geoTiffTerrain.whenReady().then(() => {
+            globe.planet.flyExtent(geoTiffTerrain.reader.extentWgs84, undefined, {duration: 4000});
+        });
+    }
+
+    function setTerrain(terrain, button) {
+        globe.planet.setTerrain(terrain);
+        document.querySelectorAll(".terrains button").forEach((b) => b.classList.toggle("active", b === button));
+    }
+
+    document.getElementById("btnEmpty").onclick = (e) => setTerrain(emptyTerrain, e.target);
+
+    document.getElementById("btnOg").onclick = (e) => setTerrain(ogTerrain, e.target);
+
+    document.getElementById("btnMapterhorn").onclick = (e) => setTerrain(mapterhornTerrain, e.target);
+
+    document.getElementById("btnGeoTiff").onclick = (e) => {
+        setTerrain(geoTiffTerrain, e.target);
+        flyToZion();
+    };
+
+    document.getElementById("btnProcedural").onclick = (e) => setTerrain(proceduralTerrain, e.target);
 </script>
 </body>
 
 </html>
-

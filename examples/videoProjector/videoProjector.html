@@ -2,9 +2,9 @@
 <head>
     <title>Video Projector | OpenGlobus Example</title>
     <meta name="description"
-          content="OpenGlobus example: three projectors over the Alps projecting a video, an image and the screen texture onto the terrain."/>
+          content="OpenGlobus example: three projectors over the Alps projecting a video, an image and a texture drawn by a shader onto the terrain."/>
     <meta name="keywords"
-          content="Projector, DepthCamera, EntityEditor, video, image, texture, source, sourceEnabled, projection"/>
+          content="Projector, DepthCamera, EntityEditor, video, image, texture, shader, ShaderProgram, Framebuffer, source, sourceEnabled, projection"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
 </head>
@@ -18,15 +18,16 @@
     import {
         Bing,
         Entity,
+        Framebuffer,
         Globe,
         GlobusRgbTerrain,
         LonLat,
         Object3d,
         OpenStreetMap,
         Projector,
+        ShaderProgram,
         Vector,
-        control,
-        input
+        control
     } from "../../external/og/lib/og.es.js";
 
     const objects = new Vector("Objects", {
@@ -81,15 +82,12 @@
 
     function createImage(src) {
         const image = new Image();
-        // The example page and its files are served from different origins, without CORS
-        // the image cannot be uploaded into a WebGL texture.
         image.crossOrigin = "anonymous";
         image.src = src;
         return image;
     }
 
     const renderer = globe.planet.renderer;
-    const canvas = renderer.handler.canvas;
 
     function setProjectorLens(projector, width, height) {
         const camera = projector.depthCamera.camera;
@@ -115,8 +113,6 @@
             lonLat: [9.08, 46.45, 9000],
             lookLonLat: [9.08, 46.46, 0]
         },
-        // In the "color" mode the source is laid over the surface like a decal,
-        // tinted by color and faded by its alpha.
         color: [1.0, 1.0, 1.0, 1.0],
         renderMode: "color",
         priority: 0,
@@ -153,8 +149,62 @@
 
     //
     // Texture projector. A ready WebGL texture is sampled as is and never deleted by the
-    // projector manager. Here it is the rendered frame itself, projected back onto the terrain.
+    // projector manager. Here a small shader draws animated rings into the texture every frame.
     //
+    const handler = renderer.handler;
+
+    handler.addProgram(new ShaderProgram("projectorRings", {
+        uniforms: {
+            time: "float"
+        },
+        attributes: {
+            corners: "vec2"
+        },
+        vertexShader: `attribute vec2 corners;
+            varying vec2 uv;
+            void main(void) {
+                uv = corners * 0.5 + 0.5;
+                gl_Position = vec4(corners, 0.0, 1.0);
+            }`,
+        fragmentShader: `precision highp float;
+            uniform float time;
+            varying vec2 uv;
+            void main(void) {
+                float r = length(uv - 0.5);
+                float rings = 0.5 + 0.5 * sin(40.0 * r - 4.0 * time);
+                vec3 color = 0.5 + 0.5 * cos(time + 6.28 * uv.x + vec3(0.0, 2.0, 4.0));
+                gl_FragColor = vec4(color * rings, 1.0);
+            }`
+    }));
+
+    const ringsFramebuffer = new Framebuffer(handler, {
+        width: 512,
+        height: 512,
+        useDepth: false,
+        targets: [{filter: "LINEAR"}]
+    });
+    ringsFramebuffer.init();
+
+    // The rings are drawn before the frame, the projector samples them in the same frame
+    renderer.events.on("predraw", () => {
+        const gl = handler.gl;
+        const sh = handler.programs.projectorRings;
+
+        ringsFramebuffer.activate();
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.BLEND);
+
+        sh.activate();
+        gl.bindBuffer(gl.ARRAY_BUFFER, renderer.screenFramePositionBuffer);
+        gl.vertexAttribPointer(sh.attributes.corners, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform1f(sh.uniforms.time, performance.now() / 1000);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        ringsFramebuffer.deactivate();
+        gl.enable(gl.DEPTH_TEST);
+        renderer.enableBlendDefault();
+    });
+
     const textureProjector = new Projector({
         enabled: true,
         depthCamera: {
@@ -172,16 +222,10 @@
         renderMode: "color",
         priority: 0,
         sourceEnabled: true,
-        texture: renderer.screenTexture.screen
+        texture: ringsFramebuffer.textures[0]
     });
     renderer.projectors.add(textureProjector);
-    setProjectorLens(textureProjector, canvas.width, canvas.height);
-
-    // The screen texture is a new texture after every resize.
-    renderer.events.on("resizeend", () => {
-        setProjectorLens(textureProjector, canvas.width, canvas.height);
-        textureProjector.source = renderer.screenTexture.screen;
-    });
+    setProjectorLens(textureProjector, 512, 512);
 </script>
 </body>
 </html>

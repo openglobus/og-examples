@@ -746,8 +746,13 @@
     "label": "Terrain Provider Switching",
     "id": "terrainSwitch",
     "tags": [
-      "terrain",
-      "switching"
+      "Terrain",
+      "setTerrain",
+      "EmptyTerrain",
+      "GlobusRgbTerrain",
+      "MapterhornTerrain",
+      "GeoTiffTerrain",
+      "ProceduralTerrain"
     ],
     "image": ""
   },
