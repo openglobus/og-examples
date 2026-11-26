@@ -185,13 +185,7 @@
         specularTextureSrc: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
         specularMinCameraHeight: 0,
         fontsSrc: "../../external/og/lib/res/fonts",
-        atmosphereEnabled: true,
-        aerialPerspectiveEnabled: false,
-        atmosphereParameters: {
-            ATMOS_HEIGHT: 50000,
-            BOTTOM_RADIUS: RADIUS,
-            EQUATORIAL_RADIUS: RADIUS
-        }
+        atmosphereEnabled: false
     });
 
     globe.planet.addControl(new control.TimelineControl());
@@ -201,7 +195,6 @@
     }));
 
     globe.planet.setLodSize(256, 312);
-    globe.planet.renderer.handler.pixelRatio = 1.6;
 
     //
     // Worker pool: returns runJob(type, segment, size), a job goes to the least busy worker
