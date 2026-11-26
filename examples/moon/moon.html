@@ -1,16 +1,36 @@
 <html>
 <head>
     <title>Moon | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Moon." />
-    <meta name="keywords" content="Planet, Moon, Entity, projection" />
+    <meta charset="utf-8"/>
+    <meta name="description"
+          content="OpenGlobus example: Moon on the equiangular cube quad tree, the terrain and the imagery are the og-tiler tiles of the six cube faces."/>
+    <meta name="keywords"
+          content="Planet, Moon, Entity, Vector, Geometry, geoJson, Geology, SkyBox, cube, EquiangularCubeQuadTreeStrategy, CubeRgbTerrain, og-tiler, webp"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
+    <style>
+        .info {
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            z-index: 10;
+            pointer-events: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .info:empty {
+            display: none;
+        }
+    </style>
 </head>
-
-</html>
-
-<body>
+<body style="margin:0;">
 <div id="globus" style="width:100%;height:100%"></div>
+<div id="info" class="info"></div>
 <script type="module" id="og-sandbox-script">
 
     'use strict';
@@ -19,18 +39,19 @@
         Globe,
         XYZ,
         control,
-        RgbTerrain,
-        quadTreeStrategyType,
+        CubeRgbTerrain,
+        EquiangularCubeQuadTreeStrategy,
         moon,
         Entity,
         Vector,
         LonLat,
-        GeoImage
+        GeoImage,
+        scene
     } from "../../external/og/lib/og.es.js";
 
     let boot = new GeoImage("appolo11-bootprint", {
-        src: "Apollo_11_bootprint.jpg",
-        corners: [[23.472860008891054,0.6741784451421893],[23.472873082709846,0.6742068883279126],[23.47290553091237,0.6741923147363605],[23.472892671128694,0.674164039580197]],
+        src: "./Apollo_11_bootprint.jpg",
+        corners: [[23.472860008891054, 0.6741784451421893], [23.472873082709846, 0.6742068883279126], [23.47290553091237, 0.6741923147363605], [23.472892671128694, 0.674164039580197]],
         visibility: true,
         isBaseLayer: false,
         pickingEnabled: false,
@@ -69,68 +90,65 @@
         scaleByDistance: [0, 0, 15000000],
     });
 
-    const sat = new XYZ("moon", {
-        isBaseLayer: true,
-        pickingEnabled: false,
-        url: "https://{s}.terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
-        visibility: true,
-        maxNativeZoom: 10,
-        attribution: "Lunar Reconnaissance Orbiter - Global Morphology Mosaic 100m",
-        diffuse: [1, 1, 1.2],
-        ambient: [0.05, 0.05, 0.07],
-    });
-
-    const sat2 = new XYZ("Lunar QuickMap", {
-        isBaseLayer: true,
-        pickingEnabled: false,
-        url: "https://lroc-tiles.quickmap.io/tiles/wac_nac_nacroi/lunar-fulleqc/{z}/{x}/{y}.jpg",
+    // The units of the Unified Geologic Map of the Moon in their colors of the map, geology.geojson
+    const geology = new Vector("Geology", {
         visibility: false,
-        attribution: `<a href="https://lunar.quickmap.io">Lunar QuickMap</a>, a collaboration between NASA, Arizona State University & Applied Coherent Technology Corp.`,
-        //maxNativeZoom: 10,
-        diffuse: [1, 1, 1.2],
-        ambient: [0.05, 0.05, 0.07],
-        urlRewrite: (s) => `https://lroc-tiles.quickmap.io/tiles/wac_nac_nacroi/lunar-fulleqc/${s.tileZoom + 1}/${s.tileX}/${s.tileY}.jpg`
-    });
-
-    const appoloSat = new XYZ("APPOLO_SAT", {
         isBaseLayer: false,
-        pickingEnabled: false,
-        url: "https://{s}.terrain.openglobus.org/moon/sat_appolo/{z}/{x}/{y}.png",
-        visibility: true,
-        maxNativeZoom: 12,
-        extent: [[30.4294, 19.9771], [30.9162, 20.3639]]
+        attribution: `Geology: <a href="https://astrogeology.usgs.gov/search/map/unified_geologic_map_of_the_moon_1_5m_2020" target="_blank">Unified Geologic Map of the Moon, 1:5M, 2020</a>`
     });
 
-    var highResTerrain = new RgbTerrain(null, {
-        geoidSrc: null,
-        maxZoom: 7,
-        //maxNativeZoom: 7,
-        url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png",
-        heightFactor: 0.5,
-        minHeight: -20000,
-        resolution: 0.1021,
-        gridSizeByZoom: [
-            64, 32, 16, 16, 32, 64, 64, 32, 16, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2
-        ]
+    // Tiles of og-tiler, <face>/<z>/<x>/<y>.webp, the face is segment.tileGroup:
+    //   ./tif2tiles.sh --s_file Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif --dest ./dem_cube --zoom 0-7 --strategy equiangular
+    //   ./tif2tiles.sh --s_file Lunar_LRO_LOLAKaguya_DEMmerge_60N60S_512ppd.tif --dest ./dem_cube --zoom 0-8 --strategy equiangular
+    //   ./tif2tiles.sh --s_file Lunar_LRO_LROC-WAC_Mosaic_global_100m_June2013.tif --dest ./sat_cube --zoom 0-7 \
+    //       --strategy equiangular --norgbify
+
+    const sat = new XYZ("LROC WAC 100m", {
+        isBaseLayer: true,
+        pickingEnabled: false,
+        url: "https://{s}.terrain.openglobus.org/moon/sat_cube/{f}/{z}/{x}/{y}.webp",
+        visibility: true,
+        maxNativeZoom: 7,
+        attribution: "Lunar Reconnaissance Orbiter - LROC WAC Global Morphology Mosaic 100m",
+    });
+
+    // LOLA heights up to the zoom 7 everywhere, SLDEM ones of the zoom 8 between 60N and 60S
+    const terrain = new CubeRgbTerrain("LOLA + SLDEM", {
+        url: "https://{s}.terrain.openglobus.org/moon/dem_cube/{f}/{z}/{x}/{y}.webp",
+        maxNativeZoom: 7,
+        maxZoom: 10,
+        minHeight: -10000,
+        resolution: 0.1,
+        maxHeight: 10800,
+        attribution: `Terrain: <a href="https://astrogeology.usgs.gov/search/map/moon_lro_lola_dem_118m" target="_blank">LRO LOLA DEM 118m</a>, ` +
+            `<a href="https://astrogeology.usgs.gov/search/map/moon_lro_lola_selene_kaguya_tc_dem_merge_60n60s_59m" target="_blank">LRO LOLA - SELENE Kaguya TC DEM Merge 60N60S 59m</a>`
     });
 
     window.globe = new Globe({
         ellipsoid: moon,
-        name: "mars",
-        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        name: "moon",
+        quadTreeStrategyPrototype: EquiangularCubeQuadTreeStrategy,
         target: "globus",
         maxAltitude: 5841727,
-        terrain: highResTerrain,
-        layers: [sat, sat2, boot, appoloSat, mountains, craters, maria, vallis, lacus],
+        terrain: terrain,
+        layers: [sat, geology, boot, mountains, craters, maria, vallis, lacus],
         nightTextureSrc: null,
         specularTextureSrc: null,
         atmosphereEnabled: false,
-        gamma: 2.7,
-        exposure: 1,
+        // gamma: 2.7,
+        // exposure: 1,
         fontsSrc: "./fonts",
-        // sun: {
-        //     stopped: true
-        // }
+        navigation: {
+            mode: "free"
+        },
+        skybox: new scene.SkyBox({
+            px: "./px.webp",
+            nx: "./nx.webp",
+            py: "./py.webp",
+            ny: "./ny.webp",
+            pz: "./pz.webp",
+            nz: "./nz.webp"
+        })
     });
 
     window.boot = boot;
@@ -143,8 +161,42 @@
         ignoreTerrain: false
     }));
 
-    globe.planet.renderer.controls.SimpleSkyBackground.colorOne = "rgb(0, 0, 0)";
-    globe.planet.renderer.controls.SimpleSkyBackground.colorTwo = "rgb(0, 0, 0)";
+    globe.planet.renderer.controls.SimpleSkyBackground.deactivate();
+
+    const GEOLOGY_ALPHA = 0.45;
+    const GEOLOGY_HOVER_ALPHA = 0.8;
+    const info = document.getElementById("info");
+    let units = {};
+
+    const unitRgb = (unit) => [1, 3, 5].map((i) => parseInt(units[unit].color.slice(i, i + 2), 16) / 255);
+
+    fetch("./geology.geojson").then((r) => r.json()).then((data) => {
+        units = data.units;
+        geology.addEntities(data.features.map((f) => new Entity({
+            properties: f.properties,
+            geometry: {
+                type: f.geometry.type,
+                coordinates: f.geometry.coordinates,
+                style: {
+                    fillColor: [...unitRgb(f.properties.unit), GEOLOGY_ALPHA],
+                    lineWidth: 0
+                }
+            }
+        })));
+    });
+
+    geology.events.on("mouseenter", (e) => {
+        const unit = e.pickingObject.properties.unit;
+        e.pickingObject.geometry.setFillColor(...unitRgb(unit), GEOLOGY_HOVER_ALPHA);
+        info.textContent = `${unit} · ${units[unit].name}`;
+    });
+    geology.events.on("mouseleave", (e) => {
+        e.pickingObject.geometry.setFillColor(...unitRgb(e.pickingObject.properties.unit), GEOLOGY_ALPHA);
+        info.textContent = "";
+    });
+    geology.events.on("lclick", (e) => {
+        globe.planet.flyExtent(e.pickingObject.geometry.getExtent());
+    });
 
 
     fetch("./mountains.json").then((r) => r.json()).then((data) => {
@@ -157,7 +209,6 @@
             "Ephesis-Regular",
             30,
             true,
-            /*"rgb(144,245,455)"*/
             "rgb(355,355,355)")
         );
         mountains.setEntities(entities);
@@ -258,7 +309,7 @@
         });
 
         if (!forceHeight) {
-            highResTerrain.getHeightAsync(ll, (h) => {
+            terrain.getHeightAsync(ll, (h) => {
 
                 ll.height = h + 10000;
 
@@ -267,8 +318,6 @@
                         ray: {
                             startPosition: ell.lonLatToCartesian(new LonLat(ll.lon, ll.lat, h)),
                             endPosition: ell.lonLatToCartesian(ll),
-                            //startColor: "rgba(144,245,455,0.7)",
-                            //endColor: "rgba(144,245,455,0.0)",
                             startColor: "rgba(255,255,255,0.7)",
                             endColor: "rgba(255,255,255,0.0)",
                             thickness: 3
@@ -285,5 +334,4 @@
     }
 </script>
 </body>
-
-
+</html>

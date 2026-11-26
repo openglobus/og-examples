@@ -547,8 +547,15 @@
       "Planet",
       "Mars",
       "Entity",
-      "projection",
-      "SkyBox"
+      "geoJson",
+      "Geology",
+      "Vector",
+      "Geometry",
+      "SkyBox",
+      "cube",
+      "EquiangularCubeQuadTreeStrategy",
+      "CubeRgbTerrain",
+      "Space"
     ],
     "image": ""
   },
@@ -559,7 +566,15 @@
       "Planet",
       "Moon",
       "Entity",
-      "projection"
+      "Vector",
+      "Geometry",
+      "geoJson",
+      "Geology",
+      "SkyBox",
+      "cube",
+      "EquiangularCubeQuadTreeStrategy",
+      "CubeRgbTerrain",
+      "Space"
     ],
     "image": ""
   },

@@ -1,14 +1,36 @@
 <html>
 <head>
     <title>Mars | OpenGlobus Example</title>
-    <meta name="description" content="OpenGlobus example: Mars." />
-    <meta name="keywords" content="Planet, Mars, Entity, projection, SkyBox" />
+    <meta charset="utf-8"/>
+    <meta name="description"
+          content="OpenGlobus example: Mars on the equiangular cube quad tree, the terrain and the imagery are the og-tiler tiles of the six cube faces."/>
+    <meta name="keywords"
+          content="Planet, Mars, Entity, Vector, Geometry, geoJson, Geology, SkyBox, cube, EquiangularCubeQuadTreeStrategy, CubeRgbTerrain, og-tiler, webp"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../external/og/lib/og.css" type="text/css"/>
-</head>
+    <style>
+        .info {
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            z-index: 10;
+            pointer-events: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+        }
 
-<body>
-<div id="globus" style="width:100%;height:100%;"></div>
+        .info:empty {
+            display: none;
+        }
+    </style>
+</head>
+<body style="margin:0;">
+<div id="globus" style="width:100%;height:100%"></div>
+<div id="info" class="info"></div>
 <script type="module" id="og-sandbox-script">
 
     'use strict';
@@ -17,8 +39,8 @@
         Globe,
         XYZ,
         control,
-        RgbTerrain,
-        quadTreeStrategyType,
+        CubeRgbTerrain,
+        EquiangularCubeQuadTreeStrategy,
         mars,
         Vector,
         Entity,
@@ -26,25 +48,41 @@
         scene
     } from "../../external/og/lib/og.es.js";
 
-    const sat1 = new XYZ("Mars-Viking", {
+    // Tiles of og-tiler, <face>/<z>/<x>/<y>.webp, the face is segment.tileGroup:
+    //   ./tif2tiles.sh --s_file Mars_HRSC_MOLA_BlendDEM_Global_200mp_v2.tif --dest ./dem_cube --zoom 0-7 --strategy equiangular
+    //   ./tif2tiles.sh --s_file Mars_Viking_MDIM21_ClrMosaic_global_232m_BASE.tif --b "-180 90 180 -90" --norgbify \
+    //       --dest ./sat_cube --zoom 0-7 --strategy equiangular
+
+    const sat = new XYZ("Mars-Viking", {
         isBaseLayer: true,
         pickingEnabled: false,
-        url: "https://terrain.openglobus.org/mars/sat/{z}/{x}/{y}.png",
-        maxNativeZoom: 8,
+        url: "https://{s}.terrain.openglobus.org/mars/sat_cube/{f}/{z}/{x}/{y}.webp",
+        maxNativeZoom: 7,
+        attribution: "Viking MDIM 2.1 Color Mosaic 232m"
     });
 
-    const sat_arcgis = new XYZ("Mars-arcgis", {
-        isBaseLayer: true,
-        pickingEnabled: false,
-        url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDIM/MapServer/tile/{z}/{y}/{x}?blankTile=false",
+    const terrain = new CubeRgbTerrain("Mars HRSC + MOLA", {
+        url: "https://{s}.terrain.openglobus.org/mars/dem_cube/{f}/{z}/{x}/{y}.webp",
+        maxNativeZoom: 7,
+        maxZoom: 10,
+        minHeight: -10000,
+        resolution: 0.1,
+        maxHeight: 22000,
+        heightFactor: 1.1,
+        attribution: `Terrain: <a href="https://astrogeology.usgs.gov/search/map/mars_mgs_mola_mex_hrsc_blended_dem_global_200m_v2" target="_blank">MGS MOLA - MEX HRSC Blended DEM Global 200m v2</a>`
     });
 
-    var highResTerrain = new RgbTerrain("Mars", {
-        geoidSrc: null,
-        maxZoom: 8,
-        maxNativeZoom: 8,
-        url: "https://{s}.terrain.openglobus.org/mars/dem/{z}/{x}/{y}.png",
-        heightFactor: 1.1
+    // The units of the geologic map of Mars colored by their age, geology.geojson
+    const geology = new Vector("Geology", {
+        visibility: false,
+        isBaseLayer: false,
+        attribution: `Geology: <a href="https://pubs.usgs.gov/publication/sim3292" target="_blank">Geologic map of Mars, USGS SIM 3292</a>`
+    });
+
+    const countries = new Vector("Countries", {
+        visibility: false,
+        isBaseLayer: false,
+        opacity: 0.12,
     });
 
     const mountains = new Vector("Mountains", {
@@ -66,39 +104,42 @@
         scaleByDistance: [0, 0, 12000000],
     });
 
-    let globe = new Globe({
+    window.globe = new Globe({
         ellipsoid: mars,
         name: "mars",
-        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        quadTreeStrategyPrototype: EquiangularCubeQuadTreeStrategy,
         target: "globus",
-        terrain: highResTerrain,
-    maxAltitude: 8100000,
-        layers: [sat1, sat_arcgis, mountains, craters, vallis],
+        terrain: terrain,
+        maxAltitude: 8100000,
+        layers: [sat, geology, countries, mountains, craters, vallis],
         nightTextureSrc: null,
         specularTextureSrc: null,
         fontsSrc: "./fonts",
+        navigation: {
+            mode: "free"
+        },
         atmosphereParameters: {
-        ATMOS_HEIGHT: 60000.0,
-        RAYLEIGH_SCALE: 0.18,
-        MIE_SCALE: 0.08,
-        GROUND_ALBEDO: 0.15,
-        BOTTOM_RADIUS: 3389508.0 - 3000,
-        EQUATORIAL_RADIUS: 3396200.0 - 3000,
-        rayleighScatteringCoefficient_0: 0.18,
-        rayleighScatteringCoefficient_1: 0.42,
-        rayleighScatteringCoefficient_2: 0.95,
-        // Dusty orange-grey, the default is the Earth blue [0.5, 0.8, 1.2]
-        scatteringColor: [1.15, 0.9, 0.7],
-        mieScatteringCoefficient: 8.0,
-        mieExtinctionCoefficient: 9.5,
-        ozoneAbsorptionCoefficient_0: 0.05,
-        ozoneAbsorptionCoefficient_1: 0.35,
-        ozoneAbsorptionCoefficient_2: 1.35,
-        ozoneDensityHeight: 10e3,
-        ozoneDensityWide: 30e3,
-        SUN_ANGULAR_RADIUS: 0.0031,
-        SUN_INTENSITY: 1.0,
-        disableSunDisk: false
+            ATMOS_HEIGHT: 60000.0,
+            RAYLEIGH_SCALE: 0.18,
+            MIE_SCALE: 0.08,
+            GROUND_ALBEDO: 0.15,
+            BOTTOM_RADIUS: 3389508.0 - 3000,
+            EQUATORIAL_RADIUS: 3396200.0 - 3000,
+            rayleighScatteringCoefficient_0: 0.18,
+            rayleighScatteringCoefficient_1: 0.42,
+            rayleighScatteringCoefficient_2: 0.95,
+            // Dusty orange-grey, the default is the Earth blue [0.5, 0.8, 1.2]
+            scatteringColor: [1.15, 0.9, 0.7],
+            mieScatteringCoefficient: 8.0,
+            mieExtinctionCoefficient: 9.5,
+            ozoneAbsorptionCoefficient_0: 0.05,
+            ozoneAbsorptionCoefficient_1: 0.35,
+            ozoneAbsorptionCoefficient_2: 1.35,
+            ozoneDensityHeight: 10e3,
+            ozoneDensityWide: 30e3,
+            SUN_ANGULAR_RADIUS: 0.0031,
+            SUN_INTENSITY: 1.0,
+            disableSunDisk: false
         },
         skybox: new scene.SkyBox({
             px: "./px.webp",
@@ -111,70 +152,123 @@
         atmosphereEnabled: true
     });
 
-globe.planet.atmosphereMaxOpacity = 1.0;
-globe.planet.atmosphereMinOpacity = 0.02;
-globe.planet.atmosphereOpacityCurveShift = 1.7;
+    globe.planet.atmosphereMaxOpacity = 1.0;
+    globe.planet.atmosphereMinOpacity = 0.02;
+    globe.planet.atmosphereOpacityCurveShift = 1.7;
 
     globe.planet.addControls([new control.DebugInfo()]);
     globe.planet.addControls([new control.TimelineControl()]);
     globe.planet.addControls([new control.LayerSwitcher()]);
     globe.planet.addControl(new control.OrthoSwitcher());
 
+    const GEOLOGY_ALPHA = 0.45;
+    const GEOLOGY_HOVER_ALPHA = 0.8;
+    const info = document.getElementById("info");
+    let units = {};
+
+    const unitRgb = (unit) => [1, 3, 5].map((i) => parseInt(units[unit].color.slice(i, i + 2), 16) / 255);
+
+    fetch("./geology.geojson").then((r) => r.json()).then((data) => {
+        units = data.units;
+        geology.addEntities(data.features.map((f) => new Entity({
+            properties: f.properties,
+            geometry: {
+                type: f.geometry.type,
+                coordinates: f.geometry.coordinates,
+                style: {
+                    fillColor: [...unitRgb(f.properties.unit), GEOLOGY_ALPHA],
+                    lineWidth: 0
+                }
+            }
+        })));
+    });
+
+    geology.events.on("mouseenter", (e) => {
+        const unit = e.pickingObject.properties.unit;
+        e.pickingObject.geometry.setFillColor(...unitRgb(unit), GEOLOGY_HOVER_ALPHA);
+        info.textContent = `${unit} · ${units[unit].name}`;
+    });
+    geology.events.on("mouseleave", (e) => {
+        e.pickingObject.geometry.setFillColor(...unitRgb(e.pickingObject.properties.unit), GEOLOGY_ALPHA);
+        info.textContent = "";
+    });
+    geology.events.on("lclick", (e) => {
+        globe.planet.flyExtent(e.pickingObject.geometry.getExtent());
+    });
+
+    fetch("./countries.json").then((r) => r.json()).then((data) => {
+        countries.addEntities(data.features.map((f) => new Entity({
+            geometry: {
+                type: f.geometry.type,
+                coordinates: f.geometry.coordinates,
+                style: {
+                    fillColor: "rgba(255,255,255,0.6)"
+                }
+            }
+        })));
+    });
+
+    countries.events.on("lclick", (e) => {
+        globe.planet.flyExtent(e.pickingObject.geometry.getExtent());
+    });
+    countries.events.on("touchstart", (e) => {
+        globe.planet.flyExtent(e.pickingObject.geometry.getExtent());
+    });
+
     fetch("./mountains.json").then((r) => r.json()).then((data) => {
         mountains.setEntities(data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties.name,
-                0,
-                0,
-                28,
-                "Ephesis-Regular",
-                30,
-                true,
-                "rgba(355,355,355,0.95)"
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties.name,
+            0,
+            0,
+            28,
+            "Ephesis-Regular",
+            30,
+            true,
+            "rgba(355,355,355,0.95)"
         )));
     });
 
     fetch("./craters.json").then((r) => r.json()).then((data) => {
         craters.setEntities(data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                `${f.properties.name} ${f.properties.diameter_km} km`,
-                0,
-                0.12,
-                0,
-                "Karla-Italic",
-                22,
-                true,
-                "rgb(355,303,244)"
-                //"rgb(156,217,255)"
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            `${f.properties.name} ${f.properties.diameter_km} km`,
+            0,
+            0.12,
+            0,
+            "Karla-Italic",
+            22,
+            true,
+            "rgb(355,303,244)"
         )));
     });
 
     fetch("./vallis.json").then((r) => r.json()).then((data) => {
         vallis.setEntities(data.features.map((f) => createLabelEntity(
-                new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
-                f.properties.name,
-                0.2,
-                0,
-                35 + 3,
-                "Karla-Light",
-                38,
-                false,
-                "rgba(355,355,655,0.65)",
-                15000
+            new LonLat(f.geometry.coordinates[0], f.geometry.coordinates[1]),
+            f.properties.name,
+            0.2,
+            0,
+            35 + 3,
+            "Karla-Light",
+            38,
+            false,
+            "rgba(355,355,655,0.65)",
+            15000
         )));
     });
 
     function createLabelEntity(
-            lonlat,
-            text,
-            letterSpacing = 0,
-            outline = 0,
-            offsetY = 0,
-            fontFace = "arial",
-            fontSize = 18,
-            showSpin = true,
-            color = "white",
-            forceHeight
+        lonlat,
+        text,
+        letterSpacing = 0,
+        outline = 0,
+        offsetY = 0,
+        fontFace = "arial",
+        fontSize = 18,
+        showSpin = true,
+        color = "white",
+        forceHeight
     ) {
         const ell = globe.planet.ellipsoid;
 
@@ -200,7 +294,7 @@ globe.planet.atmosphereOpacityCurveShift = 1.7;
         });
 
         if (!forceHeight) {
-            highResTerrain.getHeightAsync(ll, (h) => {
+            terrain.getHeightAsync(ll, (h) => {
                 ll.height = h + 8000;
 
                 if (showSpin) {
@@ -221,8 +315,6 @@ globe.planet.atmosphereOpacityCurveShift = 1.7;
 
         return res;
     }
-
 </script>
 </body>
 </html>
-
