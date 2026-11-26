@@ -49,10 +49,10 @@
     import {
         Globe,
         LonLat,
-        RgbTerrain,
+        CubeRgbTerrain,
+        EquiangularCubeQuadTreeStrategy,
         Gltf,
         XYZ,
-        quadTreeStrategyType,
         moon,
         control,
         ui
@@ -77,33 +77,31 @@
     globeDialog.appendTo(app);
     dockManager.attach(globeDialog);
 
-    const sat = new XYZ("moon", {
+    // The Moon of the Moon example: the og-tiler tiles of the six cube faces
+    const sat = new XYZ("LROC WAC 100m", {
         isBaseLayer: true,
         pickingEnabled: false,
-        url: "https://{s}.terrain.openglobus.org/moon/sat/{z}/{x}/{y}.png",
+        url: "https://{s}.terrain.openglobus.org/moon/sat_cube/{f}/{z}/{x}/{y}.webp",
         visibility: true,
-        maxNativeZoom: 10,
-        attribution: "Lunar Reconnaissance Orbiter - Global Morphology Mosaic 100m",
-        diffuse: [1, 1, 1.2],
-        ambient: [0.05, 0.05, 0.07]
+        maxNativeZoom: 7,
+        attribution: "Lunar Reconnaissance Orbiter - LROC WAC Global Morphology Mosaic 100m"
     });
 
-    const terrain = new RgbTerrain(null, {
-        geoidSrc: null,
-        maxZoom: 7,
-        url: "https://{s}.terrain.openglobus.org/moon/dem/{z}/{x}/{y}.png",
-        heightFactor: 0.5,
-        minHeight: -20000,
-        resolution: 0.1021,
-        gridSizeByZoom: [
-            64, 32, 16, 16, 32, 64, 64, 32, 16, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2
-        ]
+    const terrain = new CubeRgbTerrain("LOLA + SLDEM", {
+        url: "https://{s}.terrain.openglobus.org/moon/dem_cube/{f}/{z}/{x}/{y}.webp",
+        maxNativeZoom: 7,
+        maxZoom: 10,
+        minHeight: -10000,
+        resolution: 0.1,
+        maxHeight: 10800,
+        attribution: `Terrain: <a href="https://astrogeology.usgs.gov/search/map/moon_lro_lola_dem_118m" target="_blank">LRO LOLA DEM 118m</a>, ` +
+            `<a href="https://astrogeology.usgs.gov/search/map/moon_lro_lola_selene_kaguya_tc_dem_merge_60n60s_59m" target="_blank">LRO LOLA - SELENE Kaguya TC DEM Merge 60N60S 59m</a>`
     });
 
     let globe = new Globe({
         name: "moon",
         ellipsoid: moon,
-        quadTreeStrategyPrototype: quadTreeStrategyType.equi,
+        quadTreeStrategyPrototype: EquiangularCubeQuadTreeStrategy,
         target: globeDialog.container,
         maxAltitude: 5841727,
         terrain: terrain,
@@ -114,8 +112,6 @@
         sun: {
             dateTime: new Date(new Date().setUTCHours(11, 0, 0, 0))
         },
-        gamma: 2.7,
-        exposure: 1,
         uiContainer: app
     });
 
@@ -125,10 +121,10 @@
     const dragAndDrop = new control.DragAndDrop();
     globe.planet.addControl(dragAndDrop);
 
-    // Low oblique view: the look point is 126 m ahead and 82 m below the eye, which tilts
-    // the camera by about 33 degrees down.
-    const EYE = new LonLat(17.4027454513517, -5.765216799989668, 1889.6110209109195);
-    const LOOK = new LonLat(17.4038363, -5.7612121, 1808);
+    // Low oblique view: the look point is on the ground 126 m ahead and 82 m below the eye, which
+    // tilts the camera by about 33 degrees down. The ground is 1858.6 m there, 1876 m under the eye.
+    const EYE = new LonLat(17.4027454513517, -5.765216799989668, 1940.2);
+    const LOOK = new LonLat(17.4038363, -5.7612121, 1858.6);
 
     globe.planet.camera.setLonLat(EYE, LOOK);
 
