@@ -555,7 +555,8 @@
       "cube",
       "EquiangularCubeQuadTreeStrategy",
       "CubeRgbTerrain",
-      "Space"
+      "Space",
+      "NASA"
     ],
     "image": ""
   },
@@ -574,7 +575,8 @@
       "cube",
       "EquiangularCubeQuadTreeStrategy",
       "CubeRgbTerrain",
-      "Space"
+      "Space",
+      "NASA"
     ],
     "image": ""
   },
@@ -1068,6 +1070,23 @@
       "GeoTiffTerrain",
       "GeoTIFF",
       "COG",
+      "elevation",
+      "DEM",
+      "USGS",
+      "Zion"
+    ],
+    "image": ""
+  },
+  {
+    "label": "GeoTIFF Terrain Mosaic",
+    "id": "geoTiffTerrainMosaic",
+    "tags": [
+      "terrain",
+      "GeoTiffTerrain",
+      "GeoTIFF",
+      "COG",
+      "mosaic",
+      "sources",
       "elevation",
       "DEM",
       "USGS",
